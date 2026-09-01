@@ -1,0 +1,256 @@
+{
+  "models": [
+    {
+      "key": "hishab_conformer_large",
+      "name": "Conformer Large",
+      "checkpoint": "hishab/titu_stt_bn_conformer_large",
+      "params": "121.5M",
+      "gpu": "RTX 5080",
+      "is_new": false,
+      "local": true,
+      "throughput": 28.04,
+      "wall_clock": 47.15,
+      "lat_mean": 0.36,
+      "lat_p50": 0.34,
+      "lat_p95": 0.39,
+      "lat_p99": 0.5,
+      "failed": 0,
+      "n": 1322,
+      "wer": 0.14918110610016616,
+      "cer": 0.045541271205554436,
+      "wer_lo": 0.14182596508368403,
+      "wer_hi": 0.15664619161401505,
+      "word": [
+        2776,
+        564,
+        431,
+        22071
+      ],
+      "char": [
+        2523,
+        3513,
+        1435,
+        160091
+      ],
+      "wer_test": 0.14374190642418783,
+      "cer_test": 0.04476261721264418,
+      "wer_validation": 0.16203272582147132,
+      "cer_validation": 0.04736488275918268
+    },
+    {
+      "key": "ehzawad_fastconformer",
+      "name": "ehzawad FastConformer",
+      "checkpoint": "ehzawad/stt_bn_fastconformer",
+      "params": "115.6M",
+      "gpu": "RTX 5080",
+      "is_new": true,
+      "local": true,
+      "throughput": 29.39,
+      "wall_clock": 44.98,
+      "lat_mean": 0.34,
+      "lat_p50": 0.32,
+      "lat_p95": 0.37,
+      "lat_p99": 0.48,
+      "failed": 0,
+      "n": 1322,
+      "wer": 0.19479389192182925,
+      "cer": 0.056763527970301556,
+      "wer_lo": 0.18769624704154333,
+      "wer_hi": 0.20162617824294207,
+      "word": [
+        4050,
+        473,
+        401,
+        20827
+      ],
+      "char": [
+        3525,
+        3317,
+        2470,
+        158054
+      ],
+      "wer_test": 0.1964979449355329,
+      "cer_test": 0.057879995128825176,
+      "wer_validation": 0.1907675934548357,
+      "cer_validation": 0.05414875628985271
+    },
+    {
+      "key": "wav2vec2_local",
+      "name": "Wav2Vec2",
+      "checkpoint": "SayedShaun/bangla-wave2vec2-unigram",
+      "params": "315.5M",
+      "gpu": "RTX 5080",
+      "is_new": false,
+      "local": true,
+      "throughput": 26.26,
+      "wall_clock": 50.34,
+      "lat_mean": 0.38,
+      "lat_p50": 0.37,
+      "lat_p95": 0.43,
+      "lat_p99": 0.48,
+      "failed": 0,
+      "n": 1322,
+      "wer": 0.31576865258327397,
+      "cer": 0.09788538790239501,
+      "wer_lo": 0.30828875979000514,
+      "wer_hi": 0.3230116334661152,
+      "word": [
+        6969,
+        535,
+        478,
+        17831
+      ],
+      "char": [
+        7232,
+        3442,
+        5384,
+        151433
+      ],
+      "wer_test": 0.315916896571139,
+      "cer_test": 0.09869348132426367,
+      "wer_validation": 0.3154183849940136,
+      "cer_validation": 0.09599282905861023
+    },
+    {
+      "key": "hishab_fastconformer",
+      "name": "hishab FastConformer",
+      "checkpoint": "hishab/titu_stt_bn_fastconformer",
+      "params": "115.6M",
+      "gpu": "RTX 5080",
+      "is_new": false,
+      "local": true,
+      "throughput": 29.89,
+      "wall_clock": 44.24,
+      "lat_mean": 0.33,
+      "lat_p50": 0.32,
+      "lat_p95": 0.36,
+      "lat_p99": 0.48,
+      "failed": 0,
+      "n": 1322,
+      "wer": 0.36177703932273125,
+      "cer": 0.09027180903266707,
+      "wer_lo": 0.3473514546283174,
+      "wer_hi": 0.3767220972521425,
+      "word": [
+        5330,
+        3695,
+        120,
+        19828
+      ],
+      "char": [
+        5204,
+        7230,
+        2375,
+        156470
+      ],
+      "wer_test": 0.3621417712966612,
+      "cer_test": 0.09048207233694612,
+      "wer_validation": 0.3609152587468405,
+      "cer_validation": 0.08977937132030885
+    },
+    {
+      "key": "whisper_medium",
+      "name": "Whisper Medium",
+      "checkpoint": "SayedShaun/bengali-whisper-medium",
+      "params": "763.9M",
+      "gpu": "RTX 5080",
+      "is_new": false,
+      "local": true,
+      "throughput": 1.26,
+      "wall_clock": 1046.91,
+      "lat_mean": 7.89,
+      "lat_p50": 7.82,
+      "lat_p95": 9.53,
+      "lat_p99": 10.38,
+      "failed": 0,
+      "n": 1322,
+      "wer": 0.27870084658596406,
+      "cer": 0.08955860748922578,
+      "wer_lo": 0.2714409915905496,
+      "wer_hi": 0.28622118490880133,
+      "word": [
+        6177,
+        587,
+        281,
+        18820
+      ],
+      "char": [
+        6560,
+        3420,
+        4712,
+        152777
+      ],
+      "wer_test": 0.2787005236191656,
+      "cer_test": 0.08990796958995147,
+      "wer_validation": 0.27870160968471464,
+      "cer_validation": 0.08874039969849451
+    }
+  ],
+  "speed_probe": {
+    "ehzawad fastconformer": [
+      31.652984033442205,
+      30.550589150516316,
+      32.31901273247786,
+      425.20477645267863
+    ],
+    "hishab fastconformer": [
+      30.478867643331693,
+      28.185957383054,
+      32.63090743178812,
+      441.5846466968277
+    ],
+    "hishab conformer_large": [
+      34.305791404848506,
+      33.3833624162556,
+      35.65366404945962,
+      392.3244282916561
+    ],
+    "whisper medium": [
+      777.2144580279322,
+      777.0827986843262,
+      777.3959504498634,
+      17.31697070349185
+    ],
+    "wav2vec2 bangla": [
+      36.40086288926088,
+      36.33335003396496,
+      36.52786239981651,
+      369.74398219473863
+    ]
+  },
+  "asides": [
+    {
+      "key": "wav2vec2_remote",
+      "name": "Wav2Vec2 (remote service)",
+      "checkpoint": "same weights, ONNX under Triton",
+      "params": "315.5M",
+      "gpu": "RTX 3070 (remote)",
+      "is_new": false,
+      "local": false,
+      "throughput": 13.53,
+      "wall_clock": 97.72,
+      "lat_mean": 0.74,
+      "lat_p50": 0.69,
+      "lat_p95": 1.2,
+      "lat_p99": 1.66,
+      "failed": 0,
+      "n": 1322,
+      "wer": 0.3151752512065828,
+      "cer": 0.09770251571176905,
+      "wer_lo": 0.30780334014802607,
+      "wer_hi": 0.3225320024907017,
+      "word": [
+        6959,
+        519,
+        489,
+        17830
+      ],
+      "char": [
+        7213,
+        3414,
+        5401,
+        151435
+      ]
+    }
+  ]
+}

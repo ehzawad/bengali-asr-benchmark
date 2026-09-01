@@ -1,0 +1,12 @@
+# Exact versions verified working on this box (RTX 5080 / sm_120, CUDA 13.2 driver).
+# cu128 wheels are required: Blackwell is not supported by older CUDA builds.
+--extra-index-url https://download.pytorch.org/whl/cu128
+
+torch==2.11.0+cu128
+nemo_toolkit[asr]==2.7.3
+gradio==6.17.3
+soundfile==0.14.0
+
+# Pulled in by nemo_toolkit[asr], but pinned explicitly because app.py imports it
+# directly as the one resampling backend rather than leaving the choice implicit.
+librosa==1.0.0

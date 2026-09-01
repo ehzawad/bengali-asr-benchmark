@@ -1,0 +1,9 @@
+venv/
+model/
+certs/
+eval_fleurs_bn/
+service.log
+bench_*.log
+__pycache__/
+*.pyc
+.w2v_path
