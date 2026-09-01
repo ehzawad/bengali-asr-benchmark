@@ -9,7 +9,7 @@ same audio preprocessing path. Accuracy and speed are therefore both comparable
 across the whole table, which was not true of the earlier benchmark this
 replaces.
 
-Full report: [`asr_benchmark_v2.pdf`](asr_benchmark_v2.pdf)
+Full report: [`asr_benchmark.pdf`](asr_benchmark.pdf)
 
 ## Results
 
@@ -149,7 +149,7 @@ HARNESS=$PIPELINE/scripts/benchmark.py ./run_all_benchmarks.sh
 
 python speed_probe.py       # isolated per-model compute
 python collect_results.py   # -> outputs/summary.json
-python make_report.py       # -> asr_benchmark_v2.pdf
+python make_report.py       # -> asr_benchmark.pdf
 ```
 
 `make_report.py` renders exclusively from `outputs/summary.json`, which is
@@ -183,7 +183,7 @@ Notes:
 ## Files
 
 ```
-asr_benchmark_v2.pdf     the report
+asr_benchmark.pdf     the report
 asr_core.py              the single audio path shared by demo and benchmark
 backends.py              model loading for NeMo, wav2vec2 CTC and Whisper seq2seq
 bench_server.py          serves any checkpoint under the harness's contract

@@ -1,4 +1,4 @@
-"""Render asr_benchmark_v2.pdf from outputs/summary.json.
+"""Render asr_benchmark.pdf from outputs/summary.json.
 
 Unlike the 2026-08-03 report this replaces, every model here was measured in one
 sitting on the same rebuilt 1,322-utterance FLEURS bn_in set, through the same
@@ -550,7 +550,7 @@ def page4(pdf):
 
 
 if __name__ == "__main__":
-    out = "asr_benchmark_v2.pdf"
+    out = "asr_benchmark.pdf"
     with PdfPages(out) as pdf:
         page1(pdf)
         page2(pdf)
