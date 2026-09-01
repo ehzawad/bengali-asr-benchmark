@@ -105,13 +105,31 @@ def stat_tile(fig, x, y, w, h, m):
              size=5.7 if small else 6.3, color=INK_3)
 
 
-def caveat(fig, x, y, w, h, text, size=7.2, edge=WARN_EDGE, bg=WARN_BG):
+FIG_PTS = 11 * 72          # figure height in points, for pt -> figure fraction
+LINESPACING = 1.55
+FOOTER_TOP = 0.050         # a box must not reach down into the footer
+
+
+def caveat(fig, x, y, w, text, size=7.2, edge=WARN_EDGE, bg=WARN_BG):
+    """A callout box that sizes itself to its own text.
+
+    `y` is the intended bottom edge. The height is derived from the line count
+    rather than passed in: hand-tuned heights silently stop matching the moment
+    a line is added or a model changes the wording, which shows up as text
+    spilling out of the box or the border cutting through the page footer.
+    A box anchored too low is lifted clear of the footer instead.
+    """
+    lines = text.count("\n") + 1
+    line_h = size * LINESPACING / FIG_PTS
+    h = 0.016 + lines * line_h + 0.008
+    y = max(y, FOOTER_TOP)
+
     fig.patches.append(FancyBboxPatch(
         (x, y), w, h, boxstyle="round,pad=0.004,rounding_size=0.008",
         transform=fig.transFigure, facecolor=bg, edgecolor=edge,
         linewidth=0.9, zorder=2))
     fig.text(x + 0.014, y + h - 0.018, text, size=size, color=INK_2, va="top",
-             linespacing=1.55)
+             linespacing=LINESPACING)
 
 
 def table(fig, x, y, w, headers, rows, offsets, row_h=0.019, size=6.9,
@@ -202,7 +220,7 @@ def page1(pdf):
               lambda v: f"{v:.2%}", "Character Error Rate (CER)",
               "same formula, at the character level")
 
-    caveat(fig, 0.06, 0.185, 0.88, 0.130,
+    caveat(fig, 0.06, 0.185, 0.88,
            "What is controlled\n\n"
            f"All {N} models ran on the same RTX 5080, through the same server "
            "process, the same audio path and the same unmodified\n"
@@ -282,7 +300,7 @@ def page2(pdf):
         probe_panel([0.30, 0.676, 0.56, 0.028], slow, 1150,
                     "milliseconds per clip — SEPARATE SCALE, ~25× the panel above")
 
-    caveat(fig, 0.06, 0.520, 0.88, 0.100,
+    caveat(fig, 0.06, 0.520, 0.88,
            "Autoregressive decoding costs about 25x, and it is not a serving "
            "artefact.\n\n"
            "Whisper Medium spends 777 ms per clip against 30–36 ms for every CTC "
@@ -322,7 +340,7 @@ def page2(pdf):
         fig.text(0.06, 0.328, f"Off this scale: {names}.", size=7.6,
                  color=INK_2, weight="bold")
 
-    fig.text(0.06, 0.308,
+    fig.text(0.06, 0.316,
              f"The {N_CTC} CTC models land within 14% of each other through the full "
              "serving path, compressing the compute gaps above: per-call\n"
              "overhead (HTTP, base64, file staging, a fixed transcribe() cost) is "
@@ -331,7 +349,7 @@ def page2(pdf):
              "which is why it alone keeps its full disadvantage end-to-end.",
              size=7.4, color=INK_2, va="top", linespacing=1.65)
 
-    table(fig, 0.06, 0.240, 0.88,
+    table(fig, 0.06, 0.258, 0.88,
           ["MODEL", "THROUGHPUT", "MEAN", "p50", "p95", "p99", "PARAMS"],
           [[m["name"], f"{m['throughput']:.2f} req/s", f"{m['lat_mean']:.2f}s",
             f"{m['lat_p50']:.2f}s", f"{m['lat_p95']:.2f}s",
@@ -339,7 +357,7 @@ def page2(pdf):
           [0.0, 0.24, 0.40, 0.50, 0.60, 0.70, 0.82],
           bold_row=NEW_ROW)
 
-    caveat(fig, 0.06, 0.044, 0.88, 0.083,
+    caveat(fig, 0.06, 0.044, 0.88,
            "Wav2Vec2 and Whisper are the two largest models here and the two "
            "slowest.\n\n"
            "At 315.5M and 763.9M parameters they are 2.7x and 6.6x the "
@@ -426,28 +444,25 @@ def page3(pdf):
           [0.0, 0.235, 0.325, 0.415, 0.505, 0.625, 0.715, 0.805, 0.895],
           bold_row=NEW_ROW)
 
-    fig.text(0.06, 0.232,
-             "The two FastConformers fail in opposite ways. The hishab "
-             "checkpoint inserts 3,695 words against 120 deletions — an "
-             "over-eager\nCTC decode that emits far more than it should. The "
-             "ehzawad checkpoint is balanced at 473 insertions against 401 "
-             "deletions,\nand Conformer Large likewise at 564 against 431. "
-             "Insertion-heavy decoding is the single largest component of the "
-             "worst score\nin this table. Wav2Vec2 fails differently again, "
-             "skewing to substitutions — it hears words, but the wrong ones.",
+    fig.text(0.06, 0.235,
+             "The two FastConformers fail in opposite ways: the hishab checkpoint "
+             "inserts 3,695 words against 120 deletions, an\n"
+             "over-eager CTC decode, while the ehzawad checkpoint is balanced at "
+             "473 against 401 and Conformer Large at 564\n"
+             "against 431. Wav2Vec2 fails differently again, skewing to "
+             "substitutions — it hears words, but the wrong ones.",
              size=7.4, color=INK_2, va="top", linespacing=1.65)
 
-    caveat(fig, 0.06, 0.055, 0.88, 0.112,
+    caveat(fig, 0.06, 0.052, 0.88,
            "Method notes\n\n"
-           "WER/CER strip punctuation before alignment — FLEURS references "
-           "carry quotes and the Bengali dari (danda) that no model\n"
-           "transcribes, which would otherwise inflate errors with "
-           "word-boundary artifacts rather than real mistakes.\n\n"
-           f"All {N} runs used the harness unmodified and the same audio path "
-           "(16 kHz mono, librosa/soxr resampling, pause-seeking segmentation\n"
-           "above 25 s), so accuracy differences are attributable to the "
-           "checkpoints. Intervals are 95% percentile bootstrap over 10,000\n"
-           "utterance resamples; one benchmark run per model, so throughput "
+           "WER/CER strip punctuation before alignment — FLEURS references carry "
+           "quotes and the Bengali dari (danda) that no model\n"
+           "transcribes, which would otherwise inflate errors with word-boundary "
+           "artifacts rather than real mistakes.\n"
+           f"All {N} runs used the harness unmodified and the same audio path, so "
+           "accuracy differences are attributable to the\n"
+           "checkpoints. Intervals are 95% percentile bootstrap over 10,000 "
+           "utterance resamples; one run per model, so throughput\n"
            "carries no interval of its own.")
 
     footer(fig, 3)
@@ -504,12 +519,11 @@ def page4(pdf):
                  linespacing=1.7)
         y -= 0.118
 
-    fig.text(0.06, 0.298, "Recommendation", size=11, weight="bold")
-    fig.text(0.06, 0.278,
+    fig.text(0.06, 0.315, "Recommendation", size=11, weight="bold")
+    fig.text(0.06, 0.295,
              f"Default to {BEST['name']} ({BEST['checkpoint']}). Most accurate by 4.6 "
-             "points, at 13% of model compute on this\n"
-             "hardware — a trade the earlier report's numbers argued against and "
-             "these do not.\n"
+             "points, at 13% of model compute on this hardware\n"
+             "— a trade the earlier report's numbers argued against and these do not.\n"
              "Keep the ehzawad checkpoint for genuinely latency-bound paths: it is "
              "the accuracy runner-up at FastConformer speed.\n"
              "Retire the hishab FastConformer, Wav2Vec2 and Whisper Medium for this "
@@ -519,13 +533,12 @@ def page4(pdf):
              "earn its place on long-form or multi-domain audio, which this "
              "benchmark does not test.\n"
              "Then re-measure the two leaders under your real serving stack and on "
-             "in-domain audio before committing — the\nmeasurement this report "
-             "deliberately does not claim to make.",
+             "in-domain audio before committing.",
              size=7.8, color=INK_2, va="top", linespacing=1.7)
 
-    caveat(fig, 0.06, 0.046, 0.88, 0.096,
+    caveat(fig, 0.06, 0.046, 0.88,
            "Reproducing this\n\n"
-           "  $PIPELINE/scripts/download_eval_data.py --data-dir eval_fleurs_bn    # the original downloader\n"
+           "  <pipeline>/scripts/download_eval_data.py --data-dir eval_fleurs_bn    # the original downloader\n"
            f"  ./run_all_benchmarks.sh     # all {N} models, one GPU, one resident at a time\n"
            "  python speed_probe.py       # isolated per-model compute\n"
            "  python collect_results.py && python make_report.py     # summary.json, then this PDF",
