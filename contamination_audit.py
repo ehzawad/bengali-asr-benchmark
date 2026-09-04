@@ -20,7 +20,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from bench_score import norm
 
-CORPUS = Path("/mnt/sdb/arafat/ehz/llm/bengali-asr-pipeline/data2/final_arm_b0_ready.json")
+CORPUS = Path("/mnt/sdb/arafat/ehz/llm/bengali-asr-pipeline/data2/train_corpus_ready.json")
 PRED = Path("outputs_a5000/qwen3_adapter/predictions.json")
 
 

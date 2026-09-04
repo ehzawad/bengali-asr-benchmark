@@ -26,7 +26,7 @@ import numpy as np
 import soundfile as sf
 
 PIPELINE_ROOT = Path("/mnt/sdb/arafat/ehz/llm/bengali-asr-pipeline")
-CORPUS = PIPELINE_ROOT / "data2/final_arm_b0_ready.json"
+CORPUS = PIPELINE_ROOT / "data2/train_corpus_ready.json"
 EVAL_DIR = Path("/mnt/sdb/arafat/ehz/llm/bench_assets/eval_fleurs_bn")
 PRED = Path("outputs_a5000/qwen3_adapter/predictions.json")
 TOL = 0.02
