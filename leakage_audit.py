@@ -97,6 +97,10 @@ def main():
                       f"near={len(near_dup)}", flush=True)
 
     print(f"\ndecoded {done:,} ({missing:,} unreadable)")
+    if missing:
+        print("  NOTE: unreadable clips are IndicVoices -- its audio was deleted")
+        print("  after corpus construction, so that source is covered by the TEXT")
+        print("  audit (zero overlap) but NOT at the audio level. State that limit.")
     print(f"EXACT audio matches with FLEURS test:     {len(exact)}")
     print(f"near-duplicate (duration+RMS) candidates: {len(near_dup)}")
     for a, b in exact[:5]:

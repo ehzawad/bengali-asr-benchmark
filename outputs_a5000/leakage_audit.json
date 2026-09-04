@@ -1,0 +1,8 @@
+{
+ "eval_clips": 920,
+ "training_rows": 310969,
+ "duration_compatible_decoded": 79854,
+ "exact_audio_matches": 0,
+ "near_duplicate_candidates": 55,
+ "speaker_ids_available": false
+}
