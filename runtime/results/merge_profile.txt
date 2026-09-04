@@ -1,0 +1,5 @@
+PEFT-wrapped (as benchmarked)        9555.3 ms/clip    132.2 tok/clip    72.29 ms/token
+merge_and_unload()                   4931.8 ms/clip    132.2 tok/clip    37.31 ms/token
+
+merge speedup: 1.94x
+PROFILE-EXIT 0

@@ -29,6 +29,8 @@ plt.rcParams.update({
 })
 
 S = json.loads(Path("outputs_a5000/summary_a5000.json").read_text())
+R = {f.stem: json.loads(f.read_text())
+     for f in Path("runtime/results").glob("*.json")}
 NEW_KEY = "qwen3_adapter"
 LABELS = {
     "qwen3_adapter": ("Qwen3-ASR + Bengali adapter", "Qwen/Qwen3-ASR-1.7B-hf + LoRA", "2.04B / 38M trained"),
@@ -249,10 +251,82 @@ def page4(pdf):
     pdf.savefig(fig); plt.close(fig)
 
 
+def page5(pdf):
+    """The runtime study: where the adapter's time went, and equal treatment."""
+    fig = plt.figure(figsize=(8.27, 11.69))
+    fig.text(0.06, 0.945, "Why the adapter was slow", size=17, weight="bold")
+    fig.text(0.06, 0.925,
+             "The 120x gap in the table above is not the audio encoder, and not GPU arithmetic.",
+             size=8.6, color=INK_2)
+
+    d = R["decompose"]["summary"]
+    fig.text(0.06, 0.893, "Where a clip's time goes", size=10, weight="bold")
+    y = table(fig, 0.06, 0.873, 0.88,
+              ["component", "value"],
+              [["Autoregressive decode loop", f"{d['decode_share']*100:.1f}% of the clip"],
+               ["Audio tower (encoder)", f"{d['mean_encoder_ms']:.1f} ms"],
+               ["Generated tokens per clip", f"{d['mean_generated_tokens']:.1f}"],
+               ["Measured cost per decode token", f"{d['mean_ms_per_decode_token']:.2f} ms"],
+               ["Memory-bandwidth floor at 768 GB/s",
+                f"{d['theoretical_ms_per_token_at_768GBs']:.2f} ms"]],
+              [0.0, 1.0])
+
+    fig.text(0.06, y - 0.030,
+             "Per-token cost stayed flat as context grew (67.6 / 66.4 / 66.2 ms at 90 / 180 /\n"
+             "113 generated tokens), so the KV cache was working -- a broken cache grows with\n"
+             "position. Prefill likewise did not scale with prompt length. Both point at a fixed\n"
+             "per-forward-pass cost. Profiling 12 decode steps found it: 19,225 kernel launches,\n"
+             "1,602 per generated token, with the GPU busy only 42% of the time. RMSNorm ran as\n"
+             "four separate kernels and the dynamic cache reallocated K and V every layer, every\n"
+             "step. The card was idle, waiting for Python to issue work.",
+             size=8.4, color=INK_2, va="top", linespacing=1.7)
+
+    g, w = R["static_cache_gate"], R["whisper_static_full"]
+    fig.text(0.06, y - 0.175, "Equal treatment, all 1,322 clips", size=10, weight="bold")
+    y2 = table(fig, 0.06, y - 0.195, 0.88,
+               ["model", "default", "+ static cache", "speedup", "WER after"],
+               [["\u25b8 Qwen3-ASR + Bengali adapter", "9,263.1 ms",
+                 f"{g['ms_per_clip_mean']:,.1f} ms", "6.34x", f"{g['wer_static']*100:.2f}%"],
+                ["Whisper Medium", "1,804.0 ms", f"{w['ms_per_clip_mean']:,.1f} ms",
+                 "3.86x", f"{w['wer_static']*100:.2f}%"]],
+               [0.0, 0.60, 0.78, 0.89, 1.0])
+
+    fig.text(0.06, y2 - 0.030,
+             "Merging the 196 LoRA modules into the base weights gave 1.94x; a static KV cache\n"
+             "gave a further 4.1x. Accuracy was not assumed to survive that: changing the cache\n"
+             f"changes bf16 reduction order, so all 1,322 clips were rescored. WER moved\n"
+             f"{g['wer_delta_pp']:+.3f} pp, 95% CI [{g['delta_ci95_pp'][0]:+.3f}, "
+             f"{g['delta_ci95_pp'][1]:+.3f}] -- an interval containing zero, with\n"
+             f"{g['identical_transcripts']} transcripts unchanged.",
+             size=8.4, color=INK_2, va="top", linespacing=1.7)
+
+    caveat(fig, 0.06, y2 - 0.135, 0.88,
+           "Whisper Medium remains 3.12x faster under identical treatment.\n"
+           "Optimising one model and not the other would have reversed the ranking: at\n"
+           "1,461 ms against Whisper's unoptimised 1,804 ms the adapter appears to win, and\n"
+           "that would have been an artefact of unequal effort, not a property of the models.\n"
+           "The residual gap is structural -- a 2.0B model emitting ~130 tokens per clip\n"
+           "against a 769M model emitting ~90 -- and no runtime setting removes it.")
+
+    c = R["paired_cer"]
+    fig.text(0.06, y2 - 0.265, "A claim that did not survive testing", size=10, weight="bold")
+    fig.text(0.06, y2 - 0.285,
+             f"The adapter's CER ({c['cer_a']*100:.3f}%) is nominally below the best model in the\n"
+             f"table ({c['cer_b']*100:.3f}%). Paired over identical utterances and clustered by the\n"
+             f"{c['n_sentence_clusters']} distinct reference sentences, the difference is "
+             f"{c['delta_pp_a_minus_b']:+.3f} pp with a 95%\n"
+             f"CI of [{c['delta_ci95_pp'][0]:+.3f}, {c['delta_ci95_pp'][1]:+.3f}] -- "
+             f"it contains zero. \"Lowest CER of the six\" is not a claim this\n"
+             "benchmark supports; \"indistinguishable from the best model on CER\" is.",
+             size=8.4, color=INK_2, va="top", linespacing=1.7)
+    footer(fig, 5)
+    pdf.savefig(fig); plt.close(fig)
+
+
 def main():
     out = "asr_benchmark_qwen3_adapter_a5000.pdf"
     with PdfPages(out) as pdf:
-        page1(pdf); page2(pdf); page3(pdf); page4(pdf)
+        page1(pdf); page2(pdf); page3(pdf); page4(pdf); page5(pdf)
     print("wrote", out)
 
 

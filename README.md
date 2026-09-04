@@ -91,11 +91,14 @@ the same thing the original harness did.
 
 ### What the sixth model shows
 
-**Best characters, second-best words.** The adapter has the lowest CER in the
-table (4.47% against Conformer Large's 4.55%) while
-sitting second on WER (16.03% against 14.93%). Their
-WER intervals overlap slightly; on this evidence the two are close, and Conformer
-Large is ahead.
+**Character-level parity with the best model, second on words.** The adapter's
+CER (4.47%) is nominally below Conformer Large's (4.55%), but a paired bootstrap
+over identical utterances, clustered by the 499 distinct reference sentences,
+puts the difference at -0.081 pp with a 95% CI of [-0.590, +0.414]. That interval
+contains zero, so this is a tie, not a lead: the defensible statement is
+"indistinguishable from the best model on CER", not "lowest CER". On WER the
+adapter sits second (16.03% against 14.93%) and Conformer Large is ahead. See
+[`runtime/paired_cer.py`](runtime/paired_cer.py).
 
 **It is 121× slower per clip than the CTC models.**
 9,263 ms against 77 ms. A CTC model emits an utterance in one
@@ -104,6 +107,11 @@ Qwen's vocabulary has no Bengali merges, so each Bengali character costs roughly
 three byte-tokens. Batch 1 is the interactive-latency workload and is the least
 favourable setting for autoregressive decoding — batching helps it far more than
 it helps the CTC models, and is not measured here for any model.
+
+Most of that 9,263 ms turned out to be avoidable, and none of it was the audio
+encoder. See [the runtime study](runtime/) — the shipped configuration is now
+**1,461 ms/clip**, a 6.34× speedup at unchanged WER. Whisper Medium, given the
+identical treatment, is still 3.12× faster.
 
 **Adapting an unsupported language works.** Zero-shot, the base model transcribes
 Bengali speech into Devanagari at 77% WER. Training 38M parameters — a rank-32
@@ -142,6 +150,22 @@ python make_report_a5000.py          # -> asr_benchmark_qwen3_adapter_a5000.pdf
 
 Unlike the first report, this one is self-contained: the runner and scorer are
 here, so no external harness is required.
+
+### Runtime study
+
+[`runtime/`](runtime/) investigates the adapter's 120× speed gap and closes most
+of it. Briefly: 99.7% of a clip is the autoregressive loop, the audio tower is
+0.2%, and the per-token cost was 12.4× above the memory-bandwidth floor because
+the decode loop issued **1,602 kernel launches per generated token** and left the
+GPU idle 58% of the time. Merging the LoRA modules into the base weights (1.94×)
+and switching to a static KV cache (a further 4.1×) bring 9,263 ms/clip to
+**1,461 ms/clip**, with WER moving +0.051 pp on a 95% CI of [-0.035, +0.141].
+
+Whisper Medium receives the same treatment (1,804 → 468 ms) because a runtime
+flag applied to one model and not another manufactures the result rather than
+measuring it. It remains 3.12× faster than the adapter; the residual gap is
+structural — 2.0B parameters emitting ~130 tokens per clip against 769M emitting
+~90 — and is not addressable by configuration.
 
 ## What makes the comparison fair
 

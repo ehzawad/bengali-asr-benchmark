@@ -1,0 +1,15 @@
+{
+ "runtime": "merged + static KV cache, sdpa, greedy batch 1",
+ "n": 1322,
+ "wer_static": 0.16081,
+ "wer_shipped": 0.1603,
+ "wer_delta_pp": 0.0514,
+ "delta_ci95_pp": [
+  -0.0354,
+  0.1412
+ ],
+ "identical_transcripts": "1222/1322",
+ "ms_per_clip_mean": 1461.0,
+ "ms_per_clip_p95": 2357.3,
+ "wall_s": 1933.9
+}
