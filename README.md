@@ -112,6 +112,13 @@ re-measured; none of the RTX 5080 numbers are carried across.
 | Wav2Vec2 | `SayedShaun/bangla-wave2vec2-unigram` | 20.64% [19.46–21.89] | 6.02% | 64 | 315.5M |
 | hishab FastConformer | `hishab/titu_stt_bn_fastconformer` | 36.22% [33.88–38.72] | 9.05% | 76 | 115.6M |
 
+> **Why Conformer Large appears as both 14.37% and 14.93%.** They are the same
+> run scored on different sets: **14.37%** is the clean 920-utterance test split
+> (the table above), **14.93%** is test + validation (1,322, folded away below).
+> Every model has two such numbers. Paired deltas are internally consistent with
+> whichever set they were computed on — 16.03 − 1.104 = 14.93 on the 1,322 set,
+> and 16.54 − 2.162 = 14.37 on the test split. Quote the test-split figures.
+
 **920 FLEURS bn_in test utterances**, zero sentence overlap with the training
 corpus, same shared audio path, greedy decoding, batch 1, no external language
 model, zero failed clips for any model. Intervals resample the 349 distinct
