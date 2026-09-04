@@ -9,6 +9,7 @@ same hypotheses.
 
 import json
 import re
+import unicodedata
 from pathlib import Path
 
 import jiwer
@@ -21,7 +22,17 @@ PUNCT = re.compile(r"[\"“”‘’'।,.!?;:()\[\]{}—–\-]")
 
 
 def norm(text: str) -> str:
-    return re.sub(r"\s+", " ", PUNCT.sub(" ", text)).strip()
+    """Punctuation to word boundaries, then Unicode NFC.
+
+    NFC matters here: Bengali writes য় either as U+09DF or as U+09AF + U+09BC
+    (likewise ড় and ঢ়). These are canonically equivalent but differ byte-wise.
+    The references use the decomposed spelling; Whisper and wav2vec2 emit the
+    precomposed one. Without normalising, every such character counts as a
+    substitution, which inflated Whisper medium from 16.22% to 27.87% WER and
+    wav2vec2 from 20.71% to 31.58% in the original run of this report.
+    """
+    return unicodedata.normalize(
+        "NFC", re.sub(r"\s+", " ", PUNCT.sub(" ", text)).strip())
 
 
 # The four compared models, all served locally through one process on one GPU.

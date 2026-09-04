@@ -17,6 +17,8 @@ from collections import defaultdict
 from pathlib import Path
 
 import jiwer
+import unicodedata
+
 import numpy as np
 
 OUT = Path("outputs_a5000")
@@ -25,7 +27,22 @@ PUNCT = re.compile(r"[\"“”‘’'।,.!?;:()\[\]{}—–\-]")
 
 
 def norm(t):
-    return re.sub(r"\s+", " ", PUNCT.sub(" ", t)).strip()
+    """Scoring surface: punctuation to word boundaries, then Unicode NFC.
+
+    NFC is not cosmetic here. Bengali writes several letters two ways -- য়
+    as U+09DF or as U+09AF + U+09BC, and likewise ড় and ঢ় -- which are
+    canonically equivalent but different byte sequences. The FLEURS references
+    and the NeMo/Qwen models use the decomposed form; Whisper and wav2vec2 emit
+    the precomposed one. Without normalising, every such character scores as a
+    substitution and those two models are penalised for an encoding convention
+    rather than for mistranscribing: Whisper medium measured 27.88% WER
+    unnormalised against 16.23% normalised on the FLEURS test split.
+
+    U+09DF is a Unicode composition exclusion, so NFC maps both spellings to
+    the decomposed form; either NFC or NFD would work, NFC is the convention.
+    """
+    return unicodedata.normalize(
+        "NFC", re.sub(r"\s+", " ", PUNCT.sub(" ", t)).strip())
 
 
 def counts(preds):
@@ -121,7 +138,7 @@ def main():
                                "never vendored and was unavailable; those columns "
                                "are absent rather than estimated.",
         },
-        "checkpoints": json.loads(Path("checkpoint_revisions.json").read_text()),
+        "checkpoints": json.loads((OUT / "checkpoint_revisions.json").read_text()),
         "models": rows,
     }
     Path("outputs_a5000/summary_a5000.json").write_text(json.dumps(summary, indent=1))

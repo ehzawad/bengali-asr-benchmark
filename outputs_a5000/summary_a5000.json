@@ -155,7 +155,7 @@
    },
    "n": 1322,
    "wer": 0.36182,
-   "cer": 0.09027,
+   "cer": 0.09029,
    "wer_ci_utterance": [
     0.34777,
     0.37602
@@ -173,7 +173,7 @@
    "multi_piece_clips": 31,
    "forced_cuts": 10,
    "wer_test": 0.3622,
-   "cer_test": 0.09044,
+   "cer_test": 0.09047,
    "n_test": 920,
    "wer_validation": 0.36092,
    "cer_validation": 0.08986,
@@ -256,29 +256,29 @@
     "manifest_sha256": "27e5649cd8577a85b857e3b688e667742c41df99a9f0226732f2cab5ce8bd462"
    },
    "n": 1322,
-   "wer": 0.31585,
-   "cer": 0.09789,
+   "wer": 0.20714,
+   "cer": 0.05951,
    "wer_ci_utterance": [
-    0.30845,
-    0.32338
+    0.20031,
+    0.21426
    ],
    "wer_ci_sentence_clustered": [
-    0.30475,
-    0.32698
+    0.19709,
+    0.21747
    ],
    "word_counts": {
-    "errors": 7984,
+    "errors": 5236,
     "ref_words": 25278
    },
    "failures": 0,
    "empty_hyps": 0,
    "multi_piece_clips": 31,
    "forced_cuts": 10,
-   "wer_test": 0.31597,
-   "cer_test": 0.09868,
+   "wer_test": 0.20641,
+   "cer_test": 0.06021,
    "n_test": 920,
-   "wer_validation": 0.31555,
-   "cer_validation": 0.09603,
+   "wer_validation": 0.20886,
+   "cer_validation": 0.05788,
    "n_validation": 402
   },
   "whisper_medium": {
@@ -308,29 +308,29 @@
     "generation_config_refreshed": false
    },
    "n": 1322,
-   "wer": 0.27886,
-   "cer": 0.08952,
+   "wer": 0.16239,
+   "cer": 0.05049,
    "wer_ci_utterance": [
-    0.27156,
-    0.28634
+    0.1558,
+    0.16911
    ],
    "wer_ci_sentence_clustered": [
-    0.26759,
-    0.29025
+    0.1525,
+    0.1726
    ],
    "word_counts": {
-    "errors": 7049,
+    "errors": 4105,
     "ref_words": 25278
    },
    "failures": 0,
    "empty_hyps": 0,
    "multi_piece_clips": 31,
    "forced_cuts": 10,
-   "wer_test": 0.27876,
-   "cer_test": 0.08984,
+   "wer_test": 0.16227,
+   "cer_test": 0.05088,
    "n_test": 920,
-   "wer_validation": 0.2791,
-   "cer_validation": 0.08878,
+   "wer_validation": 0.1627,
+   "cer_validation": 0.04959,
    "n_validation": 402
   }
  }

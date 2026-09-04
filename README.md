@@ -1,5 +1,25 @@
 # Bengali ASR benchmark
 
+> ### Correction (2026-09-04): Whisper Medium and wav2vec2 were scored wrong
+>
+> Both reports below previously understated two models by roughly 11 WER points.
+> Bengali writes several letters two ways — য় is either U+09DF or U+09AF +
+> U+09BC, and likewise ড় and ঢ় — which are canonically equivalent Unicode but
+> different byte sequences. The FLEURS references and the NeMo/Qwen models use
+> the decomposed spelling; **Whisper and wav2vec2 emit the precomposed one**
+> (3,412 and 3,407 such characters respectively). The scorer compared raw
+> strings, so every one of those counted as a substitution.
+>
+> | model | was | is |
+> |---|---|---|
+> | Whisper Medium | 27.87% | **16.22%** |
+> | wav2vec2 | 31.58% | **20.71%** |
+>
+> The other four models are unaffected — they emit zero precomposed characters.
+> `norm()` now applies NFC in both scorers and every table, PDF and interval
+> below has been regenerated. This changes the ranking: Whisper Medium is the
+> second-most-accurate model here, not the fourth.
+
 A controlled comparison of five Bengali speech-to-text models on the FLEURS
 Bengali evaluation set, plus the web demo used to try one of them interactively.
 
@@ -16,9 +36,9 @@ Full report: [`asr_benchmark.pdf`](asr_benchmark.pdf)
 | Model | Checkpoint | WER (95% CI) | CER | ms/clip | Params |
 |---|---|---|---|---|---|
 | Conformer Large | `hishab/titu_stt_bn_conformer_large` | **14.92%** [14.18-15.66] | 4.55% | 34.3 | 121.5M |
+| Whisper Medium | `SayedShaun/bengali-whisper-medium` | 16.22% [15.55-16.88] | 5.05% | 777.2 | 763.9M |
 | ehzawad FastConformer | `ehzawad/stt_bn_fastconformer` | 19.48% [18.77-20.16] | 5.68% | 31.7 | 115.6M |
-| Whisper Medium | `SayedShaun/bengali-whisper-medium` | 27.87% [27.14-28.62] | 8.96% | 777.2 | 763.9M |
-| Wav2Vec2 | `SayedShaun/bangla-wave2vec2-unigram` | 31.58% [30.83-32.30] | 9.79% | 36.4 | 315.5M |
+| Wav2Vec2 | `SayedShaun/bangla-wave2vec2-unigram` | 20.71% [20.01-21.40] | 5.95% | 36.4 | 315.5M |
 | hishab FastConformer | `hishab/titu_stt_bn_fastconformer` | 36.18% [34.74-37.67] | 9.03% | 30.5 | 115.6M |
 
 Corpus-level WER/CER over 1,322 utterances, greedy decoding, no language model,
@@ -26,8 +46,12 @@ zero failed requests for any model. Intervals are 95% percentile bootstrap over
 10,000 utterance resamples. `ms/clip` is isolated model compute from
 `speed_probe.py`, not end-to-end request latency.
 
-No two confidence intervals overlap, so the accuracy ordering is a real ranking
-rather than an artefact of which utterances landed in the set.
+One pair of confidence intervals overlaps — Conformer Large [14.18-15.66] and
+Whisper Medium [15.55-16.88] — so those two are not separated by this evidence.
+Every other pair is disjoint, and that part of the ordering is a real ranking
+rather than an artefact of which utterances landed in the set. (Before the
+Unicode correction above, no pair overlapped; the correction moved Whisper from
+fourth place into a statistical tie for first.)
 
 ## Findings
 
@@ -58,8 +82,8 @@ at 473 insertions against 401 deletions.
 **A model can be misrepresented by its deployment.** Reached over the network as
 a pre-existing Triton service, the wav2vec2 weights previously recorded 34.73%
 WER at 0.55 req/s with 16 failed requests. The same weights loaded locally give
-31.58% at 26.26 req/s with zero failures - 48x the throughput. Over the network
-today that service returns 31.52% at 13.53 req/s, so the residual gap is
+20.71% at 26.26 req/s with zero failures - 48x the throughput. Over the network
+today that service returns 20.65% at 13.53 req/s, so the residual gap is
 transport rather than the model.
 
 ## Second report: adding an LLM-decoder model (RTX A5000)
@@ -82,11 +106,11 @@ re-measured; none of the RTX 5080 numbers are carried across.
 | Model | Checkpoint | WER (95% CI) | CER | ms/clip | Params |
 |---|---|---|---|---|---|
 | Conformer Large | `hishab/titu_stt_bn_conformer_large` | **14.37%** [13.11–15.73] | 4.48% | 78 | 121.5M |
+| Whisper Medium | `SayedShaun/bengali-whisper-medium` | 16.23% [15.05–17.45] | 5.09% | 1,820 | 763.9M |
 | **Qwen3-ASR + Bengali adapter** | `ehzawad/stt_bn_qwen3_asr` on `Qwen/Qwen3-ASR-1.7B-hf` | 16.54% [15.43–17.68] | 4.68% | 9,258 | 2.04B / 38M trained |
 | ehzawad FastConformer | `ehzawad/stt_bn_fastconformer` | 19.67% [18.50–20.88] | 5.79% | 78 | 115.6M |
-| Whisper Medium | `SayedShaun/bengali-whisper-medium` | 27.88% [26.55–29.27] | 8.98% | 1,820 | 763.9M |
-| Wav2Vec2 | `SayedShaun/bangla-wave2vec2-unigram` | 31.60% [30.29–32.95] | 9.87% | 64 | 315.5M |
-| hishab FastConformer | `hishab/titu_stt_bn_fastconformer` | 36.22% [33.88–38.72] | 9.04% | 76 | 115.6M |
+| Wav2Vec2 | `SayedShaun/bangla-wave2vec2-unigram` | 20.64% [19.46–21.89] | 6.02% | 64 | 315.5M |
+| hishab FastConformer | `hishab/titu_stt_bn_fastconformer` | 36.22% [33.88–38.72] | 9.05% | 76 | 115.6M |
 
 **920 FLEURS bn_in test utterances**, zero sentence overlap with the training
 corpus, same shared audio path, greedy decoding, batch 1, no external language
@@ -107,29 +131,40 @@ closeness was contamination.
 |---|---|---|---|
 | Conformer Large | 14.93% [13.81–16.06] | 4.55% | 77 |
 | Qwen3-ASR + Bengali adapter | 16.03% [15.10–16.99] | 4.47% | 9,263 |
+| Whisper Medium | 16.24% [15.25–17.26] | 5.05% | 1,804 |
 | ehzawad FastConformer | 19.50% [18.49–20.49] | 5.68% | 77 |
-| Whisper Medium | 27.89% [26.76–29.03] | 8.95% | 1,804 |
-| Wav2Vec2 | 31.59% [30.48–32.70] | 9.79% | 64 |
+| Wav2Vec2 | 20.71% [19.71–21.75] | 5.95% | 64 |
 | hishab FastConformer | 36.18% [34.10–38.29] | 9.03% | 76 |
 
 </details>
 
 **The five previously published models reproduce to within 0.02 WER points**
-(19.48→19.50, 14.92→14.93, 36.18→36.18, 31.58→31.59, 27.87→27.89), which is the
+(19.48→19.50, 14.92→14.93, 36.18→36.18, 20.71→20.71, 16.22→16.24), which is the
 evidence that the rebuilt evaluation set and the re-implemented runner measure
 the same thing the original harness did.
 
+Worth stating plainly: this check originally passed against the *uncorrected*
+numbers too (27.87→27.89, 31.58→31.59). A reproduction check confirms that two
+implementations agree, not that either is right — both scorers shared the same
+missing Unicode normalisation, so both were wrong in the same way and the
+agreement looked like validation. The Unicode bug was caught by reading a
+per-word error display, not by this check.
+
 ### What the sixth model shows
 
-**Second on words, level on characters.** On the clean test split, paired over
-identical utterances and clustered by the 349 distinct reference sentences:
+**Third on words, best-but-one on characters.** On the clean test split, paired
+over identical utterances and clustered by the 349 distinct reference sentences:
 
 ```
-WER  +2.162 pp   95% CI [+1.140, +3.171]   excludes zero -- Conformer Large is ahead
-CER  +0.201 pp   95% CI [-0.374, +0.735]   contains zero  -- neither is demonstrably ahead
+vs Conformer Large   WER +2.162 pp   95% CI [+1.140, +3.171]   excludes zero -- behind
+                     CER +0.201 pp   95% CI [-0.374, +0.735]   contains zero -- level
+vs Whisper Medium    WER +0.310 pp   95% CI [-0.559, +1.176]   contains zero -- TIED
 ```
 
-Conformer Large is genuinely better on words; the two are level on characters.
+So the adapter is genuinely behind Conformer Large on words, level with it on
+characters, and **statistically tied with Whisper Medium** — which is also about
+3x faster per clip. Before the Unicode correction the adapter appeared to beat
+Whisper Medium by 11 WER points; it does not.
 An earlier draft claimed the adapter had "the lowest CER in the table" on the
 contaminated set (4.47% vs 4.55%). On clean data it is nominally *behind*
 (4.68% vs 4.48%) and the paired interval still contains zero, so neither a CER

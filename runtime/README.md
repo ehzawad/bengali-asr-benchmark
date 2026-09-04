@@ -125,10 +125,12 @@ Both autoregressive models, all 1,322 clips, same audio path, same card:
 | model | default runtime | + static KV cache | speedup | WER before -> after |
 |---|---|---|---|---|
 | Qwen3-ASR Bengali adapter | 9,263.1 ms | **1,461.0 ms** | 6.34x | 16.030% -> 16.081% |
-| Whisper medium (Bengali FT) | 1,804.0 ms | **467.6 ms** | 3.86x | 27.886% -> 27.886% |
+| Whisper medium (Bengali FT) | 1,804.0 ms | **467.6 ms** | 3.86x | 16.235% -> 16.235% |
 
 **Whisper medium remains 3.12x faster than the adapter under identical
-treatment.** The adapter gains more from the change only because it started
+treatment**, and after the Unicode-normalisation correction it is also level with
+it on accuracy (16.23% against 16.54%, paired difference +0.310 pp, 95% CI
+[-0.559, +1.176]). The adapter gains more from the change only because it started
 further from the hardware floor. Optimising one model and not the other would
 have reversed the apparent ranking -- at 1,461 ms against Whisper's *unoptimised*
 1,804 ms the adapter appears to win, and that comparison would have been an
