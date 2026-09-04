@@ -1,5 +1,25 @@
 # Bengali ASR benchmark
 
+> ### Correction (2026-09-04): Whisper Medium and wav2vec2 were scored wrong
+>
+> The table below previously understated two models by roughly 11 WER points.
+> Bengali writes several letters two ways — য় is either U+09DF or U+09AF +
+> U+09BC, and likewise ড় and ঢ় — canonically equivalent Unicode, different
+> byte sequences. The references and the NeMo models use the decomposed
+> spelling; **Whisper and wav2vec2 emit the precomposed one** (3,413 and 3,407
+> such characters). The scorer compared raw strings, so each counted as a
+> substitution.
+>
+> | model | was | is |
+> |---|---|---|
+> | Whisper Medium | 27.87% | **16.22%** |
+> | wav2vec2 | 31.58% | **20.71%** |
+>
+> The other three models are unaffected — they emit zero precomposed
+> characters. `norm()` in `collect_results.py` now applies NFC, and the table,
+> intervals and PDF are regenerated. Whisper Medium is the second-most-accurate
+> model here, not the fourth.
+
 A controlled comparison of five Bengali speech-to-text models on the FLEURS
 Bengali evaluation set, plus the web demo used to try one of them interactively.
 
@@ -16,9 +36,9 @@ Full report: [`asr_benchmark.pdf`](asr_benchmark.pdf)
 | Model | Checkpoint | WER (95% CI) | CER | ms/clip | Params |
 |---|---|---|---|---|---|
 | Conformer Large | `hishab/titu_stt_bn_conformer_large` | **14.92%** [14.18-15.66] | 4.55% | 34.3 | 121.5M |
+| Whisper Medium | `SayedShaun/bengali-whisper-medium` | 16.22% [15.55-16.88] | 5.05% | 777.2 | 763.9M |
 | ehzawad FastConformer | `ehzawad/stt_bn_fastconformer` | 19.48% [18.77-20.16] | 5.68% | 31.7 | 115.6M |
-| Whisper Medium | `SayedShaun/bengali-whisper-medium` | 27.87% [27.14-28.62] | 8.96% | 777.2 | 763.9M |
-| Wav2Vec2 | `SayedShaun/bangla-wave2vec2-unigram` | 31.58% [30.83-32.30] | 9.79% | 36.4 | 315.5M |
+| Wav2Vec2 | `SayedShaun/bangla-wave2vec2-unigram` | 20.71% [20.01-21.40] | 5.95% | 36.4 | 315.5M |
 | hishab FastConformer | `hishab/titu_stt_bn_fastconformer` | 36.18% [34.74-37.67] | 9.03% | 30.5 | 115.6M |
 
 Corpus-level WER/CER over 1,322 utterances, greedy decoding, no language model,
@@ -26,8 +46,10 @@ zero failed requests for any model. Intervals are 95% percentile bootstrap over
 10,000 utterance resamples. `ms/clip` is isolated model compute from
 `speed_probe.py`, not end-to-end request latency.
 
-No two confidence intervals overlap, so the accuracy ordering is a real ranking
-rather than an artefact of which utterances landed in the set.
+One pair of confidence intervals overlaps — Conformer Large [14.18-15.66] and
+Whisper Medium [15.55-16.88] — so those two are not separated by this evidence.
+Every other pair is disjoint. (Before the Unicode correction above no pair
+overlapped, because the bug pushed Whisper into fourth place.)
 
 ## Findings
 
@@ -58,8 +80,8 @@ at 473 insertions against 401 deletions.
 **A model can be misrepresented by its deployment.** Reached over the network as
 a pre-existing Triton service, the wav2vec2 weights previously recorded 34.73%
 WER at 0.55 req/s with 16 failed requests. The same weights loaded locally give
-31.58% at 26.26 req/s with zero failures - 48x the throughput. Over the network
-today that service returns 31.52% at 13.53 req/s, so the residual gap is
+20.71% at 26.26 req/s with zero failures - 48x the throughput. Over the network
+today that service returns 20.65% at 13.53 req/s, so the residual gap is
 transport rather than the model.
 
 ## What makes the comparison fair
