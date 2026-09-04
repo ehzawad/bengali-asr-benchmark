@@ -1,0 +1,116 @@
+{
+ "split": "FLEURS test only (920 utterances); zero sentence overlap with the 984 h training corpus, verified by contamination_audit.py",
+ "excluded": "FLEURS validation (402 utterances): 88 of its 150 distinct sentences appear verbatim in the training corpus via fleurs_train, which advantages the two models trained on it",
+ "models": {
+  "hishab_conformer_large": {
+   "n": 920,
+   "wer": 0.14374,
+   "wer_ci95": [
+    0.13109,
+    0.15733
+   ],
+   "cer": 0.04477,
+   "ours": false
+  },
+  "qwen3_adapter": {
+   "n": 920,
+   "wer": 0.16536,
+   "wer_ci95": [
+    0.15431,
+    0.17683
+   ],
+   "cer": 0.04678,
+   "ours": true
+  },
+  "ehzawad_fastconformer": {
+   "n": 920,
+   "wer": 0.19672,
+   "wer_ci95": [
+    0.18498,
+    0.20876
+   ],
+   "cer": 0.05791,
+   "ours": true
+  },
+  "whisper_medium": {
+   "n": 920,
+   "wer": 0.27876,
+   "wer_ci95": [
+    0.2655,
+    0.29265
+   ],
+   "cer": 0.08984,
+   "ours": false
+  },
+  "wav2vec2": {
+   "n": 920,
+   "wer": 0.31597,
+   "wer_ci95": [
+    0.30287,
+    0.32951
+   ],
+   "cer": 0.09868,
+   "ours": false
+  },
+  "hishab_fastconformer": {
+   "n": 920,
+   "wer": 0.3622,
+   "wer_ci95": [
+    0.33882,
+    0.38719
+   ],
+   "cer": 0.09044,
+   "ours": false
+  }
+ },
+ "paired_vs_best": {
+  "wer_delta_pp": 2.162,
+  "wer_ci95_pp": [
+   1.1402,
+   3.1706
+  ],
+  "cer_delta_pp": 0.2009,
+  "cer_ci95_pp": [
+   -0.3743,
+   0.7351
+  ]
+ },
+ "speed_default_runtime": {
+  "hishab_conformer_large": {
+   "ms_per_clip_mean": 77.8,
+   "ms_per_clip_median": 74.9,
+   "ms_per_clip_p95": 92.4,
+   "n": 920
+  },
+  "qwen3_adapter": {
+   "ms_per_clip_mean": 9257.6,
+   "ms_per_clip_median": 8678.9,
+   "ms_per_clip_p95": 15081.8,
+   "n": 920
+  },
+  "ehzawad_fastconformer": {
+   "ms_per_clip_mean": 78.4,
+   "ms_per_clip_median": 74.2,
+   "ms_per_clip_p95": 97.6,
+   "n": 920
+  },
+  "whisper_medium": {
+   "ms_per_clip_mean": 1819.5,
+   "ms_per_clip_median": 1689.9,
+   "ms_per_clip_p95": 3074.8,
+   "n": 920
+  },
+  "wav2vec2": {
+   "ms_per_clip_mean": 64.3,
+   "ms_per_clip_median": 60.3,
+   "ms_per_clip_p95": 108.4,
+   "n": 920
+  },
+  "hishab_fastconformer": {
+   "ms_per_clip_mean": 75.7,
+   "ms_per_clip_median": 70.5,
+   "ms_per_clip_p95": 94.3,
+   "n": 920
+  }
+ }
+}

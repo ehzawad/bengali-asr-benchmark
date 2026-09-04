@@ -71,18 +71,48 @@ A sixth model joins the comparison: a Bengali LoRA adapter on
 does not include Bengali. Because the GPU changed, **every** model was
 re-measured; none of the RTX 5080 numbers are carried across.
 
+> **Evaluate on the test split only.** The 1322-utterance set (test + validation)
+> used for the reproduction check below is **contaminated** for the two models
+> trained on our corpus: 88 of the validation split's 150 distinct sentences
+> appear verbatim in the training data via `fleurs_train`. It flatters
+> `qwen3_adapter` and `ehzawad_fastconformer` and not the third-party
+> checkpoints. Reproduce with `contamination_audit.py`. The primary table is
+> therefore the clean 920-utterance test split.
+
 | Model | Checkpoint | WER (95% CI) | CER | ms/clip | Params |
 |---|---|---|---|---|---|
-| Conformer Large | `hishab/titu_stt_bn_conformer_large` | 14.93% [13.81–16.06] | 4.55% | 77 | 121.5M |
-| **Qwen3-ASR + Bengali adapter** | `ehzawad/stt_bn_qwen3_asr` on `Qwen/Qwen3-ASR-1.7B-hf` | **16.03%** [15.10–16.99] | 4.47% | 9,263 | 2.04B / 38M trained |
-| ehzawad FastConformer | `ehzawad/stt_bn_fastconformer` | 19.50% [18.49–20.49] | 5.68% | 77 | 115.6M |
-| Whisper Medium | `SayedShaun/bengali-whisper-medium` | 27.89% [26.76–29.03] | 8.95% | 1,804 | 763.9M |
-| Wav2Vec2 | `SayedShaun/bangla-wave2vec2-unigram` | 31.59% [30.48–32.70] | 9.79% | 64 | 315.5M |
-| hishab FastConformer | `hishab/titu_stt_bn_fastconformer` | 36.18% [34.10–38.29] | 9.03% | 76 | 115.6M |
+| Conformer Large | `hishab/titu_stt_bn_conformer_large` | **14.37%** [13.11–15.73] | 4.48% | 78 | 121.5M |
+| **Qwen3-ASR + Bengali adapter** | `ehzawad/stt_bn_qwen3_asr` on `Qwen/Qwen3-ASR-1.7B-hf` | 16.54% [15.43–17.68] | 4.68% | 9,258 | 2.04B / 38M trained |
+| ehzawad FastConformer | `ehzawad/stt_bn_fastconformer` | 19.67% [18.50–20.88] | 5.79% | 78 | 115.6M |
+| Whisper Medium | `SayedShaun/bengali-whisper-medium` | 27.88% [26.55–29.27] | 8.98% | 1,820 | 763.9M |
+| Wav2Vec2 | `SayedShaun/bangla-wave2vec2-unigram` | 31.60% [30.29–32.95] | 9.87% | 64 | 315.5M |
+| hishab FastConformer | `hishab/titu_stt_bn_fastconformer` | 36.22% [33.88–38.72] | 9.04% | 76 | 115.6M |
 
-Same 1322 FLEURS bn_in utterances (test + validation), same shared
-audio path, greedy decoding, batch 1, no external language model, zero failed
-clips for any model.
+**920 FLEURS bn_in test utterances**, zero sentence overlap with the training
+corpus, same shared audio path, greedy decoding, batch 1, no external language
+model, zero failed clips for any model. Intervals resample the 349 distinct
+sentences. Speeds are the default runtime; see [`runtime/`](runtime/) for the
+optimised figures.
+
+Contamination changes the margin, not the order, but it changes what can be
+claimed: on the contaminated 1322-utterance set the adapter reads 16.03% against
+Conformer Large's 14.93% (1.10 pp); on the clean test split it reads 16.54%
+against 14.37% (**2.16 pp**, 95% CI [1.14, 3.17]). About half the apparent
+closeness was contamination.
+
+<details>
+<summary>The 1322-utterance table (test + validation), retained for the reproduction check</summary>
+
+| Model | WER (95% CI) | CER | ms/clip |
+|---|---|---|---|
+| Conformer Large | 14.93% [13.81–16.06] | 4.55% | 77 |
+| Qwen3-ASR + Bengali adapter | 16.03% [15.10–16.99] | 4.47% | 9,263 |
+| ehzawad FastConformer | 19.50% [18.49–20.49] | 5.68% | 77 |
+| Whisper Medium | 27.89% [26.76–29.03] | 8.95% | 1,804 |
+| Wav2Vec2 | 31.59% [30.48–32.70] | 9.79% | 64 |
+| hishab FastConformer | 36.18% [34.10–38.29] | 9.03% | 76 |
+
+</details>
 
 **The five previously published models reproduce to within 0.02 WER points**
 (19.48→19.50, 14.92→14.93, 36.18→36.18, 31.58→31.59, 27.87→27.89), which is the
@@ -91,14 +121,21 @@ the same thing the original harness did.
 
 ### What the sixth model shows
 
-**Character-level parity with the best model, second on words.** The adapter's
-CER (4.47%) is nominally below Conformer Large's (4.55%), but a paired bootstrap
-over identical utterances, clustered by the 499 distinct reference sentences,
-puts the difference at -0.081 pp with a 95% CI of [-0.590, +0.414]. That interval
-contains zero, so this is a tie, not a lead: the defensible statement is
-"indistinguishable from the best model on CER", not "lowest CER". On WER the
-adapter sits second (16.03% against 14.93%) and Conformer Large is ahead. See
-[`runtime/paired_cer.py`](runtime/paired_cer.py).
+**Second on words, level on characters.** On the clean test split, paired over
+identical utterances and clustered by the 349 distinct reference sentences:
+
+```
+WER  +2.162 pp   95% CI [+1.140, +3.171]   excludes zero -- Conformer Large is ahead
+CER  +0.201 pp   95% CI [-0.374, +0.735]   contains zero  -- neither is demonstrably ahead
+```
+
+Conformer Large is genuinely better on words; the two are level on characters.
+An earlier draft claimed the adapter had "the lowest CER in the table" on the
+contaminated set (4.47% vs 4.55%). On clean data it is nominally *behind*
+(4.68% vs 4.48%) and the paired interval still contains zero, so neither a CER
+lead nor "lowest CER" is supportable. See
+[`runtime/paired_cer.py`](runtime/paired_cer.py) and
+[`clean_split_table.py`](clean_split_table.py).
 
 **It is 121× slower per clip than the CTC models.**
 9,263 ms against 77 ms. A CTC model emits an utterance in one

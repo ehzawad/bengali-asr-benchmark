@@ -31,6 +31,7 @@ plt.rcParams.update({
 S = json.loads(Path("outputs_a5000/summary_a5000.json").read_text())
 R = {f.stem: json.loads(f.read_text())
      for f in Path("runtime/results").glob("*.json")}
+CLEAN = json.loads(Path("outputs_a5000/clean_test_table.json").read_text())
 NEW_KEY = "qwen3_adapter"
 LABELS = {
     "qwen3_adapter": ("Qwen3-ASR + Bengali adapter", "Qwen/Qwen3-ASR-1.7B-hf + LoRA", "2.04B / 38M trained"),
@@ -55,7 +56,7 @@ def color(k): return ACCENT if k == NEW_KEY else BASE
 
 def footer(fig, page):
     fig.text(0.06, 0.028, "Bengali ASR benchmark  ·  six models, one A5000, "
-             f"{S['eval']['n']} FLEURS utterances", size=6.6, color=INK_3)
+             "FLEURS bn_in", size=6.6, color=INK_3)
     fig.text(0.94, 0.028, f"{page}", size=6.6, color=INK_3, ha="right")
 
 
@@ -108,6 +109,11 @@ def page1(pdf):
                ["Model", "WER", "95% CI (clustered)", "CER", "ms/clip",
                 "× real time", "Params"],
                rows, [0.0, 0.44, 0.62, 0.70, 0.79, 0.88, 1.0])
+    caveat(fig, 0.06, yy - 0.022, 0.88,
+           "This table covers test + validation. The validation half is\n"
+           "contaminated for the two models trained on our corpus: 88 of its 150\n"
+           "distinct sentences are in the training data verbatim. The corrected\n"
+           "920-utterance table is on the last page and is the one to cite.")
 
     fig.text(0.06, yy - 0.028, "Reading this table", size=11, weight="bold")
     spread = M[-1][1]["wer"] / BEST["wer"]
@@ -323,10 +329,75 @@ def page5(pdf):
     pdf.savefig(fig); plt.close(fig)
 
 
+def page6(pdf):
+    """Evaluation-set contamination, found after the first five pages were written."""
+    fig = plt.figure(figsize=(8.27, 11.69))
+    fig.text(0.06, 0.945, "Evaluation-set contamination", size=17, weight="bold")
+    fig.text(0.06, 0.925,
+             "Found while preparing the model card. It changes the margin, not the order.",
+             size=8.6, color=INK_2)
+
+    fig.text(0.06, 0.893,
+             "FLEURS ships train / validation / test. The 984-hour training corpus draws on\n"
+             "FLEURS train, and this benchmark evaluated on test + validation. FLEURS reuses\n"
+             "sentences across its splits, so:",
+             size=8.4, color=INK_2, va="top", linespacing=1.7)
+
+    y = table(fig, 0.06, 0.828, 0.88,
+              ["split", "recordings", "distinct sentences", "also in training"],
+              [["FLEURS test", "920", "349", "0  (0.0%)"],
+               ["FLEURS validation", "402", "150", "88  (58.7%)"]],
+              [0.0, 0.55, 0.80, 1.0])
+
+    fig.text(0.06, y - 0.030,
+             "The contaminated half flatters the two models trained on that corpus -- this\n"
+             "adapter and our FastConformer -- and not the third-party checkpoints. The\n"
+             "per-split numbers show it directly: the adapter improves on the contaminated\n"
+             "half (16.54% test to 14.83% validation) while Conformer Large degrades on it\n"
+             "(14.37% to 16.23%), which is the signature of having seen the text.",
+             size=8.4, color=INK_2, va="top", linespacing=1.7)
+
+    fig.text(0.06, y - 0.135, "Corrected table: FLEURS test only, 920 utterances",
+             size=10, weight="bold")
+    rows = []
+    for k, v in sorted(CLEAN["models"].items(), key=lambda kv: kv[1]["wer"]):
+        lo, hi = v["wer_ci95"]
+        sp = CLEAN["speed_default_runtime"].get(k, {})
+        rows.append([("▸ " if k == NEW_KEY else "  ") + name(k),
+                     f"{v['wer']*100:.2f}%", f"[{lo*100:.2f}–{hi*100:.2f}]",
+                     f"{v['cer']*100:.2f}%",
+                     f"{sp.get('ms_per_clip_mean', 0):,.0f}"])
+    y2 = table(fig, 0.06, y - 0.155, 0.88,
+               ["Model", "WER", "95% CI (clustered)", "CER", "ms/clip"],
+               rows, [0.0, 0.52, 0.72, 0.82, 1.0])
+
+    pv = CLEAN["paired_vs_best"]
+    fig.text(0.06, y2 - 0.030,
+             "Paired against Conformer Large on identical utterances, clustered by the 349\n"
+             "distinct sentences:\n\n"
+             f"    WER  {pv['wer_delta_pp']:+.3f} pp   95% CI "
+             f"[{pv['wer_ci95_pp'][0]:+.3f}, {pv['wer_ci95_pp'][1]:+.3f}]   "
+             "excludes zero\n"
+             f"    CER  {pv['cer_delta_pp']:+.3f} pp   95% CI "
+             f"[{pv['cer_ci95_pp'][0]:+.3f}, {pv['cer_ci95_pp'][1]:+.3f}]   "
+             "contains zero",
+             size=8.4, color=INK_2, va="top", linespacing=1.7, family="monospace")
+
+    caveat(fig, 0.06, y2 - 0.165, 0.88,
+           "What this withdraws\n"
+           "On the contaminated set the adapter's CER (4.47%) read as the lowest in the\n"
+           "table, against Conformer Large's 4.55%. On clean data it is nominally BEHIND,\n"
+           "4.68% against 4.48%, and the paired interval still contains zero. Neither a CER\n"
+           "lead nor \"lowest CER\" is supportable. The WER gap roughly doubles, from\n"
+           "1.10 pp to 2.16 pp. Reproduce with contamination_audit.py.")
+    footer(fig, 6)
+    pdf.savefig(fig); plt.close(fig)
+
+
 def main():
     out = "asr_benchmark_qwen3_adapter_a5000.pdf"
     with PdfPages(out) as pdf:
-        page1(pdf); page2(pdf); page3(pdf); page4(pdf); page5(pdf)
+        page1(pdf); page2(pdf); page3(pdf); page4(pdf); page5(pdf); page6(pdf)
     print("wrote", out)
 
 
