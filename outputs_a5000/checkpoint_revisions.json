@@ -1,0 +1,7 @@
+{
+ "SayedShaun/bengali-whisper-medium": "5a602253bb554e7508cb1a723888c8505d2e5b2f",
+ "SayedShaun/bangla-wave2vec2-unigram": "abfa2b6370535959304e6e1506b1a6e08e603409",
+ "hishab/titu_stt_bn_conformer_large": "42041012a7cdb9df071eac4cef33b8a6182eb687",
+ "hishab/titu_stt_bn_fastconformer": "993316b17c3db56a42bf0140b8ad524f35b4677b",
+ "ehzawad/stt_bn_fastconformer": "96dc7b835257525a70618bb5a267afd9d987012d"
+}

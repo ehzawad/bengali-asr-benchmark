@@ -62,6 +62,87 @@ WER at 0.55 req/s with 16 failed requests. The same weights loaded locally give
 today that service returns 31.52% at 13.53 req/s, so the residual gap is
 transport rather than the model.
 
+## Second report: adding an LLM-decoder model (RTX A5000)
+
+[`asr_benchmark_qwen3_adapter_a5000.pdf`](asr_benchmark_qwen3_adapter_a5000.pdf)
+
+A sixth model joins the comparison: a Bengali LoRA adapter on
+`Qwen/Qwen3-ASR-1.7B-hf`, an LLM-decoder ASR model whose supported-language list
+does not include Bengali. Because the GPU changed, **every** model was
+re-measured; none of the RTX 5080 numbers are carried across.
+
+| Model | Checkpoint | WER (95% CI) | CER | ms/clip | Params |
+|---|---|---|---|---|---|
+| Conformer Large | `hishab/titu_stt_bn_conformer_large` | 14.93% [13.81–16.06] | 4.55% | 77 | 121.5M |
+| **Qwen3-ASR + Bengali adapter** | `ehzawad/stt_bn_qwen3_asr` on `Qwen/Qwen3-ASR-1.7B-hf` | **16.03%** [15.10–16.99] | 4.47% | 9,263 | 2.04B / 38M trained |
+| ehzawad FastConformer | `ehzawad/stt_bn_fastconformer` | 19.50% [18.49–20.49] | 5.68% | 77 | 115.6M |
+| Whisper Medium | `SayedShaun/bengali-whisper-medium` | 27.89% [26.76–29.03] | 8.95% | 1,804 | 763.9M |
+| Wav2Vec2 | `SayedShaun/bangla-wave2vec2-unigram` | 31.59% [30.48–32.70] | 9.79% | 64 | 315.5M |
+| hishab FastConformer | `hishab/titu_stt_bn_fastconformer` | 36.18% [34.10–38.29] | 9.03% | 76 | 115.6M |
+
+Same 1322 FLEURS bn_in utterances (test + validation), same shared
+audio path, greedy decoding, batch 1, no external language model, zero failed
+clips for any model.
+
+**The five previously published models reproduce to within 0.02 WER points**
+(19.48→19.50, 14.92→14.93, 36.18→36.18, 31.58→31.59, 27.87→27.89), which is the
+evidence that the rebuilt evaluation set and the re-implemented runner measure
+the same thing the original harness did.
+
+### What the sixth model shows
+
+**Best characters, second-best words.** The adapter has the lowest CER in the
+table (4.47% against Conformer Large's 4.55%) while
+sitting second on WER (16.03% against 14.93%). Their
+WER intervals overlap slightly; on this evidence the two are close, and Conformer
+Large is ahead.
+
+**It is 121× slower per clip than the CTC models.**
+9,263 ms against 77 ms. A CTC model emits an utterance in one
+forward pass; this one generates it token by token through a 1.7B decoder, and
+Qwen's vocabulary has no Bengali merges, so each Bengali character costs roughly
+three byte-tokens. Batch 1 is the interactive-latency workload and is the least
+favourable setting for autoregressive decoding — batching helps it far more than
+it helps the CTC models, and is not measured here for any model.
+
+**Adapting an unsupported language works.** Zero-shot, the base model transcribes
+Bengali speech into Devanagari at 77% WER. Training 38M parameters — a rank-32
+LoRA on the decoder plus the audio projector, encoder frozen — on 984 hours takes
+it to 16.03%.
+
+### Differences from the first report
+
+- **RTX A5000, exclusively**, rather than the shared card, so no co-tenant can
+  perturb timings. Every model re-measured; nothing carried over.
+- **End-to-end throughput, queueing latency and failed-request counts are
+  absent.** The harness that produced them was never vendored and was
+  unavailable. They are omitted, not estimated.
+- **Intervals resample the 499 distinct sentences**, not the 1322
+  recordings. Several speakers read the same sentence, so recordings are not
+  independent and the per-utterance interval is optimistic. Both are in the
+  summary; the clustered one is quoted above.
+- **The three NeMo models are speed-tied here** (77–77 ms) where the
+  RTX 5080 separated them by 12%. At this speed tier the shared path's WAV
+  staging is a large share of the measurement, which is why the metric is called
+  warmed in-process batch-1 inference time rather than model compute.
+- **Checkpoints are pinned to commit hashes** in `outputs_a5000/checkpoint_revisions.json`.
+- The two interpreters (NeMo needs one transformers version, the adapter another)
+  were shown to stage **byte-identical audio**: `prove_audio_path.py` hashes every
+  staged chunk under both, including clips long enough to be segmented.
+
+### Reproducing the second report
+
+```bash
+python build_eval.py                 # rebuild the 1,322-utterance set
+python prove_audio_path.py           # run under BOTH interpreters, diff the hashes
+BENCH_GPU=<uuid> ./run_all.sh        # six models, one at a time
+python bench_score.py                # both bootstraps -> outputs_a5000/summary_a5000.json
+python make_report_a5000.py          # -> asr_benchmark_qwen3_adapter_a5000.pdf
+```
+
+Unlike the first report, this one is self-contained: the runner and scorer are
+here, so no external harness is required.
+
 ## What makes the comparison fair
 
 These are the choices that keep the differences attributable to the models

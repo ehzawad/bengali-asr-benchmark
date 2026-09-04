@@ -7,3 +7,7 @@ bench_*.log
 __pycache__/
 *.pyc
 .w2v_path
+eval_fleurs_bn/
+bench_assets/
+logs_*.txt
+run_all.log

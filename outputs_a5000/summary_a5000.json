@@ -1,0 +1,337 @@
+{
+ "eval": {
+  "dataset": "google/fleurs",
+  "config": "bn_in",
+  "splits": [
+   "test",
+   "validation"
+  ],
+  "n": 1322,
+  "distinct_references": 499
+ },
+ "protocol": {
+  "gpu": "NVIDIA RTX A5000",
+  "one_model_resident_at_a_time": true,
+  "audio_path": "vendored asr_core.py, proven byte-identical across both interpreters (SHA-256 over staged chunks)",
+  "decoding": "greedy, batch 1, no external LM or rescoring",
+  "speed_metric": "warmed in-process batch-1 inference time; includes asr_core's temp-WAV staging, as in the original probe",
+  "end_to_end_serving": null,
+  "end_to_end_note": "The original harness that produced throughput, queueing latency and failed-request counts was never vendored and was unavailable; those columns are absent rather than estimated."
+ },
+ "checkpoints": {
+  "SayedShaun/bengali-whisper-medium": "5a602253bb554e7508cb1a723888c8505d2e5b2f",
+  "SayedShaun/bangla-wave2vec2-unigram": "abfa2b6370535959304e6e1506b1a6e08e603409",
+  "hishab/titu_stt_bn_conformer_large": "42041012a7cdb9df071eac4cef33b8a6182eb687",
+  "hishab/titu_stt_bn_fastconformer": "993316b17c3db56a42bf0140b8ad524f35b4677b",
+  "ehzawad/stt_bn_fastconformer": "96dc7b835257525a70618bb5a267afd9d987012d"
+ },
+ "models": {
+  "ehzawad_fastconformer": {
+   "meta": {
+    "label": "ehzawad_fastconformer",
+    "kind": "nemo",
+    "model": "/mnt/sdb/arafat/ehz/llm/bengali-asr-pipeline/experiments/fastconformer_ctc_bn_1kh/final.nemo",
+    "adapter": null,
+    "revision": null,
+    "n": 1322,
+    "failures": 0,
+    "audio_seconds": 17574.4,
+    "ms_per_clip_mean": 76.61,
+    "ms_per_clip_median": 71.69,
+    "ms_per_clip_p95": 95.45,
+    "inference_wall_s": 101.3,
+    "loop_wall_s": 101.3,
+    "audio_s_per_wall_s": 173.5,
+    "rtf": 0.00576,
+    "batch_size": 1,
+    "decoding": "greedy, no external LM or rescoring",
+    "gpu_before": "NVIDIA RTX A5000, 1278 MiB, 2 %, 1695 MHz, 56\nNVIDIA RTX A6000, 279 MiB, 0 %, 210 MHz, 56",
+    "gpu_after": "NVIDIA RTX A5000, 1300 MiB, 11 %, 1695 MHz, 61\nNVIDIA RTX A6000, 279 MiB, 0 %, 210 MHz, 52",
+    "torch": "2.11.0+cu128",
+    "python": "3.12.13",
+    "manifest_sha256": "27e5649cd8577a85b857e3b688e667742c41df99a9f0226732f2cab5ce8bd462"
+   },
+   "n": 1322,
+   "wer": 0.19495,
+   "cer": 0.05679,
+   "wer_ci_utterance": [
+    0.18825,
+    0.20193
+   ],
+   "wer_ci_sentence_clustered": [
+    0.18492,
+    0.20493
+   ],
+   "word_counts": {
+    "errors": 4928,
+    "ref_words": 25278
+   },
+   "failures": 0,
+   "empty_hyps": 0,
+   "multi_piece_clips": 31,
+   "forced_cuts": 10,
+   "wer_test": 0.19672,
+   "cer_test": 0.05791,
+   "n_test": 920,
+   "wer_validation": 0.19077,
+   "cer_validation": 0.05415,
+   "n_validation": 402
+  },
+  "hishab_conformer_large": {
+   "meta": {
+    "label": "hishab_conformer_large",
+    "kind": "nemo",
+    "model": "hishab/titu_stt_bn_conformer_large",
+    "adapter": null,
+    "revision": null,
+    "n": 1322,
+    "failures": 0,
+    "audio_seconds": 17574.4,
+    "ms_per_clip_mean": 77.06,
+    "ms_per_clip_median": 73.97,
+    "ms_per_clip_p95": 91.76,
+    "inference_wall_s": 101.9,
+    "loop_wall_s": 101.9,
+    "audio_s_per_wall_s": 172.5,
+    "rtf": 0.0058,
+    "batch_size": 1,
+    "decoding": "greedy, no external LM or rescoring",
+    "gpu_before": "NVIDIA RTX A5000, 1378 MiB, 0 %, 1695 MHz, 57\nNVIDIA RTX A6000, 279 MiB, 0 %, 210 MHz, 51",
+    "gpu_after": "NVIDIA RTX A5000, 1600 MiB, 20 %, 1695 MHz, 66\nNVIDIA RTX A6000, 279 MiB, 0 %, 210 MHz, 49",
+    "torch": "2.11.0+cu128",
+    "python": "3.12.13",
+    "manifest_sha256": "27e5649cd8577a85b857e3b688e667742c41df99a9f0226732f2cab5ce8bd462"
+   },
+   "n": 1322,
+   "wer": 0.14926,
+   "cer": 0.04555,
+   "wer_ci_utterance": [
+    0.14196,
+    0.15663
+   ],
+   "wer_ci_sentence_clustered": [
+    0.13815,
+    0.16059
+   ],
+   "word_counts": {
+    "errors": 3773,
+    "ref_words": 25278
+   },
+   "failures": 0,
+   "empty_hyps": 0,
+   "multi_piece_clips": 31,
+   "forced_cuts": 10,
+   "wer_test": 0.14374,
+   "cer_test": 0.04477,
+   "n_test": 920,
+   "wer_validation": 0.1623,
+   "cer_validation": 0.04739,
+   "n_validation": 402
+  },
+  "hishab_fastconformer": {
+   "meta": {
+    "label": "hishab_fastconformer",
+    "kind": "nemo",
+    "model": "hishab/titu_stt_bn_fastconformer",
+    "adapter": null,
+    "revision": null,
+    "n": 1322,
+    "failures": 0,
+    "audio_seconds": 17574.4,
+    "ms_per_clip_mean": 76.46,
+    "ms_per_clip_median": 74.37,
+    "ms_per_clip_p95": 92.36,
+    "inference_wall_s": 101.1,
+    "loop_wall_s": 101.1,
+    "audio_s_per_wall_s": 173.9,
+    "rtf": 0.00575,
+    "batch_size": 1,
+    "decoding": "greedy, no external LM or rescoring",
+    "gpu_before": "NVIDIA RTX A5000, 1278 MiB, 2 %, 1695 MHz, 60\nNVIDIA RTX A6000, 279 MiB, 0 %, 210 MHz, 49",
+    "gpu_after": "NVIDIA RTX A5000, 1300 MiB, 16 %, 1695 MHz, 61\nNVIDIA RTX A6000, 279 MiB, 0 %, 210 MHz, 48",
+    "torch": "2.11.0+cu128",
+    "python": "3.12.13",
+    "manifest_sha256": "27e5649cd8577a85b857e3b688e667742c41df99a9f0226732f2cab5ce8bd462"
+   },
+   "n": 1322,
+   "wer": 0.36182,
+   "cer": 0.09027,
+   "wer_ci_utterance": [
+    0.34777,
+    0.37602
+   ],
+   "wer_ci_sentence_clustered": [
+    0.34098,
+    0.3829
+   ],
+   "word_counts": {
+    "errors": 9146,
+    "ref_words": 25278
+   },
+   "failures": 0,
+   "empty_hyps": 0,
+   "multi_piece_clips": 31,
+   "forced_cuts": 10,
+   "wer_test": 0.3622,
+   "cer_test": 0.09044,
+   "n_test": 920,
+   "wer_validation": 0.36092,
+   "cer_validation": 0.08986,
+   "n_validation": 402
+  },
+  "qwen3_adapter": {
+   "meta": {
+    "label": "qwen3_adapter",
+    "kind": "qwen",
+    "model": "Qwen/Qwen3-ASR-1.7B-hf",
+    "adapter": "/mnt/sdb/arafat/ehz/llm/bengali-asr-pipeline/experiments/qwen_final/candidates/step_17280",
+    "revision": "bcd2b5b7f32b480ab5790554cfa8347f246a14f3",
+    "n": 1322,
+    "failures": 0,
+    "audio_seconds": 17574.4,
+    "ms_per_clip_mean": 9263.12,
+    "ms_per_clip_median": 8696.94,
+    "ms_per_clip_p95": 15608.23,
+    "inference_wall_s": 12245.8,
+    "loop_wall_s": 12245.9,
+    "audio_s_per_wall_s": 1.4,
+    "rtf": 0.6968,
+    "batch_size": 1,
+    "decoding": "greedy, no external LM or rescoring",
+    "gpu_before": "NVIDIA RTX A5000, 4548 MiB, 19 %, 1695 MHz, 62\nNVIDIA RTX A6000, 279 MiB, 0 %, 210 MHz, 45",
+    "gpu_after": "NVIDIA RTX A5000, 4958 MiB, 24 %, 1695 MHz, 62\nNVIDIA RTX A6000, 44916 MiB, 100 %, 1740 MHz, 86",
+    "torch": "2.13.0+cu130",
+    "python": "3.12.13",
+    "manifest_sha256": "27e5649cd8577a85b857e3b688e667742c41df99a9f0226732f2cab5ce8bd462"
+   },
+   "n": 1322,
+   "wer": 0.1603,
+   "cer": 0.04475,
+   "wer_ci_utterance": [
+    0.15392,
+    0.16675
+   ],
+   "wer_ci_sentence_clustered": [
+    0.15096,
+    0.16991
+   ],
+   "word_counts": {
+    "errors": 4052,
+    "ref_words": 25278
+   },
+   "failures": 0,
+   "empty_hyps": 0,
+   "multi_piece_clips": 31,
+   "forced_cuts": 10,
+   "wer_test": 0.16536,
+   "cer_test": 0.04678,
+   "n_test": 920,
+   "wer_validation": 0.14833,
+   "cer_validation": 0.03999,
+   "n_validation": 402
+  },
+  "wav2vec2": {
+   "meta": {
+    "label": "wav2vec2",
+    "kind": "wav2vec2",
+    "model": "SayedShaun/bangla-wave2vec2-unigram",
+    "adapter": null,
+    "revision": "abfa2b6370535959304e6e1506b1a6e08e603409",
+    "n": 1322,
+    "failures": 0,
+    "audio_seconds": 17574.4,
+    "ms_per_clip_mean": 63.52,
+    "ms_per_clip_median": 59.65,
+    "ms_per_clip_p95": 108.27,
+    "inference_wall_s": 84.0,
+    "loop_wall_s": 84.0,
+    "audio_s_per_wall_s": 209.3,
+    "rtf": 0.00478,
+    "batch_size": 1,
+    "decoding": "greedy, no external LM or rescoring",
+    "gpu_before": "NVIDIA RTX A5000, 1886 MiB, 6 %, 1695 MHz, 60\nNVIDIA RTX A6000, 279 MiB, 0 %, 210 MHz, 44",
+    "gpu_after": "NVIDIA RTX A5000, 4704 MiB, 78 %, 1395 MHz, 79\nNVIDIA RTX A6000, 279 MiB, 0 %, 210 MHz, 45",
+    "torch": "2.11.0+cu128",
+    "python": "3.12.13",
+    "manifest_sha256": "27e5649cd8577a85b857e3b688e667742c41df99a9f0226732f2cab5ce8bd462"
+   },
+   "n": 1322,
+   "wer": 0.31585,
+   "cer": 0.09789,
+   "wer_ci_utterance": [
+    0.30845,
+    0.32338
+   ],
+   "wer_ci_sentence_clustered": [
+    0.30475,
+    0.32698
+   ],
+   "word_counts": {
+    "errors": 7984,
+    "ref_words": 25278
+   },
+   "failures": 0,
+   "empty_hyps": 0,
+   "multi_piece_clips": 31,
+   "forced_cuts": 10,
+   "wer_test": 0.31597,
+   "cer_test": 0.09868,
+   "n_test": 920,
+   "wer_validation": 0.31555,
+   "cer_validation": 0.09603,
+   "n_validation": 402
+  },
+  "whisper_medium": {
+   "meta": {
+    "label": "whisper_medium",
+    "kind": "whisper",
+    "model": "SayedShaun/bengali-whisper-medium",
+    "adapter": null,
+    "revision": "5a602253bb554e7508cb1a723888c8505d2e5b2f",
+    "n": 1322,
+    "failures": 0,
+    "audio_seconds": 17574.4,
+    "ms_per_clip_mean": 1804.02,
+    "ms_per_clip_median": 1681.57,
+    "ms_per_clip_p95": 3116.63,
+    "inference_wall_s": 2384.9,
+    "loop_wall_s": 2385.0,
+    "audio_s_per_wall_s": 7.4,
+    "rtf": 0.1357,
+    "batch_size": 1,
+    "decoding": "greedy, no external LM or rescoring",
+    "gpu_before": "NVIDIA RTX A5000, 1934 MiB, 16 %, 1695 MHz, 58\nNVIDIA RTX A6000, 279 MiB, 0 %, 210 MHz, 47",
+    "gpu_after": "NVIDIA RTX A5000, 1952 MiB, 20 %, 1695 MHz, 62\nNVIDIA RTX A6000, 279 MiB, 0 %, 210 MHz, 45",
+    "torch": "2.11.0+cu128",
+    "python": "3.12.13",
+    "manifest_sha256": "27e5649cd8577a85b857e3b688e667742c41df99a9f0226732f2cab5ce8bd462",
+    "generation_config_refreshed": false
+   },
+   "n": 1322,
+   "wer": 0.27886,
+   "cer": 0.08952,
+   "wer_ci_utterance": [
+    0.27156,
+    0.28634
+   ],
+   "wer_ci_sentence_clustered": [
+    0.26759,
+    0.29025
+   ],
+   "word_counts": {
+    "errors": 7049,
+    "ref_words": 25278
+   },
+   "failures": 0,
+   "empty_hyps": 0,
+   "multi_piece_clips": 31,
+   "forced_cuts": 10,
+   "wer_test": 0.27876,
+   "cer_test": 0.08984,
+   "n_test": 920,
+   "wer_validation": 0.2791,
+   "cer_validation": 0.08878,
+   "n_validation": 402
+  }
+ }
+}
