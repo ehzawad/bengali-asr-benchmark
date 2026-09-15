@@ -98,7 +98,7 @@ def page1(pdf):
     yy = table(fig, 0.06, 0.885, 0.88, ["Model", "WER", "95% CI (clustered)", "CER", "ms/clip", "Params"],
                rows, [0.0, 0.50, 0.66, 0.74, 0.84, 1.0])
     y = caveat(fig, 0.06, yy - 0.022, 0.88,
-               "Test split only. The two ehzawad models were trained on corpora that include the FLEURS train split,\n"
+               "Test split only. The two ehzawad models (the FastConformer-CTC and the Qwen3 adapter) trained on corpora that include the FLEURS train split,\n"
                "and 88 of the 150 validation-split sentences also occur there; the 402 validation recordings are\n"
                "therefore excluded for every model and the table is the 920-utterance test split.")
     fig.text(0.06, y - 0.03, "Reading this table", size=11, weight="bold")
@@ -112,8 +112,9 @@ def page1(pdf):
         f"   vs Qwen3 adapter         {pd('fastconformer_ctc_vs_qwen3_adapter')}\n"
         f"   vs Whisper Medium        {pd('fastconformer_ctc_vs_whisper_medium')}\n"
         f"   vs Conformer Large       {pd('fastconformer_ctc_vs_hishab_conformer_large')}\n\n"
-        "Not distinguishable from the Qwen3 adapter at 120x its speed; under a point behind Whisper Medium at 22x "
-        "its speed; 2.7 points behind Conformer Large."
+        "Statistically tied with the Qwen3 adapter at 117x its speed; under a point behind Whisper Medium at 22x "
+        "its speed; 2.7 points behind Conformer Large. The highlighted model had also been evaluated on FLEURS test during "
+        "its own development, so read its FLEURS row as a like-for-like re-measurement."
     )
     fig.text(0.06, y - 0.048, body, size=8.2, color=INK_2, va="top", wrap=True, linespacing=1.55)
     footer(fig, 1, "six models, FLEURS bn_in test")
@@ -144,7 +145,7 @@ def page2(pdf):
     for i, v in enumerate(sp):
         ax2.text(v * 1.15, i, f"{v:,.0f}", va="center", size=7, color=INK_2)
     fig.text(0.06, 0.16, "The two orderings are not the same ordering. The three NeMo CTC models sit within 10% of each "
-             "other in speed; Whisper Medium costs ~22x and the Qwen3 adapter ~120x per clip at batch 1 for their accuracy.",
+             "other in speed; Whisper Medium costs ~22x and the Qwen3 adapter ~117x per clip at batch 1 for their accuracy.",
              size=8.2, color=INK_2, va="top", wrap=True, linespacing=1.5)
     footer(fig, 2, "six models, FLEURS bn_in test")
     pdf.savefig(fig); plt.close(fig)
@@ -180,10 +181,10 @@ def page3(pdf):
     fig.text(0.06, y - 0.03, "What the table says", size=11, weight="bold")
     body = (
         "On the two corpora nobody trained on, the FLEURS ranking does not hold. Conformer Large - the FLEURS "
-        "leader at 14.4% - is last on Vaani (33.1%) and fourth on SPRING; its training list is Bangladesh-centric "
-        "and these are Indian-district (Vaani) and IIT-Madras conversational (SPRING) recordings. "
+        "leader at 14.4% - is last on Vaani (33.1%) and third on both SPRING sets; its model card lists read and broadcast corpora "
+        "and neither Vaani nor SPRING-INX. "
         "ehzawad/stt_bn_fastconformer_ctc leads Vaani and both SPRING sets; Whisper Medium is second on all three "
-        "at ~15x the latency.\n\n"
+        "at 13-20x the latency of the NeMo CTC models.\n\n"
         "On Kathbath the order flips back: Conformer Large (9.3 / 8.8%) and Whisper (9.7 / 9.8%) lead and the "
         "highlighted model is third (13.4 / 13.4%). Conformer Large trained on Kathbath validation as well as train, "
         "Whisper's provenance for Kathbath is unknown (a U cell can hide training overlap), and the highlighted model "
