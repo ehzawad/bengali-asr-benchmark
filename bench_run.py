@@ -104,48 +104,6 @@ class Wav2Vec2Backend:
         return out
 
 
-class QwenAdapterBackend:
-    """Qwen3-ASR + Bengali LoRA/projector adapter.
-
-    Bengali is absent from the base model's supported-language list, so
-    apply_transcription_request() REJECTS it; the assistant turn must be
-    prefilled by hand with "language Bengali<asr_text>" and that prefill
-    stripped from the decoded text. Greedy, no rescoring.
-    """
-    PREFILL = "language Bengali<asr_text>"
-
-    def __init__(self, model, adapter=None, revision=None, **kw):
-        from peft import PeftModel
-        from transformers import (AutoProcessor,
-                                  Qwen3ASRForConditionalGeneration)
-        self.proc = AutoProcessor.from_pretrained(model, revision=revision)
-        base = Qwen3ASRForConditionalGeneration.from_pretrained(
-            model, revision=revision, dtype=torch.bfloat16)
-        self.m = PeftModel.from_pretrained(base, adapter).to("cuda").eval()
-
-    def transcribe(self, paths, batch_size=1, verbose=False):
-        return [SimpleNamespace(text=self._one(_read_staged(p))) for p in paths]
-
-    def _one(self, wav):
-        conv = [{"role": "user", "content": [{"type": "audio", "audio": wav}]},
-                {"role": "assistant",
-                 "content": [{"type": "text", "text": self.PREFILL}]}]
-        inputs = self.proc.apply_chat_template(
-            [conv], tokenize=True, return_dict=True, continue_final_message=True)
-        inputs = {k: (v.to("cuda", dtype=self.m.dtype)
-                      if hasattr(v, "to") and v.is_floating_point()
-                      else v.to("cuda") if hasattr(v, "to") else v)
-                  for k, v in inputs.items()}
-        with torch.inference_mode():
-            out = self.m.generate(**inputs, max_new_tokens=512,
-                                  do_sample=False, num_beams=1, use_cache=True)
-        txt = self.proc.batch_decode(out[:, inputs["input_ids"].shape[1]:],
-                                     skip_special_tokens=True)[0]
-        if "<asr_text>" in txt:
-            txt = txt.split("<asr_text>")[-1]
-        return txt.strip()
-
-
 def _read_staged(path):
     """Read a chunk staged by asr_core.decode. Asserts the staged format so a
     future change cannot silently route a model through different audio."""
@@ -156,8 +114,7 @@ def _read_staged(path):
     return wav
 
 
-KINDS = {"nemo": NeMoBackend, "whisper": WhisperBackend,
-         "wav2vec2": Wav2Vec2Backend, "qwen": QwenAdapterBackend}
+KINDS = {"nemo": NeMoBackend, "whisper": WhisperBackend, "wav2vec2": Wav2Vec2Backend}
 
 
 def gpu_state():

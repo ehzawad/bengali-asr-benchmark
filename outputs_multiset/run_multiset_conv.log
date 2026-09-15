@@ -1,0 +1,13 @@
+2026-09-15T21:19:44Z PROSPECTIVE: IndicVoices official validation, Conversation+Extempore, frozen 1,000-utt subset (seed 20260915), all six models incl. the Qwen3 adapter (last)
+2026-09-15T21:19:44Z === indicvoices_conv__fastconformer_ctc (nemo) ===
+2026-09-15T21:21:15Z indicvoices_conv__fastconformer_ctc rc=0 [indicvoices_conv__fastconformer_ctc] complete: 73.77 ms/clip  failures=0  n=1000
+2026-09-15T21:21:15Z === indicvoices_conv__hishab_conformer_large (nemo) ===
+2026-09-15T21:22:45Z indicvoices_conv__hishab_conformer_large rc=0 [indicvoices_conv__hishab_conformer_large] complete: 75.08 ms/clip  failures=0  n=1000
+2026-09-15T21:22:45Z === indicvoices_conv__hishab_fastconformer (nemo) ===
+2026-09-15T21:24:13Z indicvoices_conv__hishab_fastconformer rc=0 [indicvoices_conv__hishab_fastconformer] complete: 72.83 ms/clip  failures=0  n=1000
+2026-09-15T21:24:13Z === indicvoices_conv__wav2vec2 (wav2vec2) ===
+2026-09-15T21:25:03Z indicvoices_conv__wav2vec2 rc=0 [indicvoices_conv__wav2vec2] complete: 39.22 ms/clip  failures=0  n=1000
+2026-09-15T21:25:03Z === indicvoices_conv__whisper_medium (whisper) ===
+2026-09-15T21:42:29Z indicvoices_conv__whisper_medium rc=0 [indicvoices_conv__whisper_medium] complete: 1034.36 ms/clip  failures=0  n=1000
+2026-09-15T21:42:30Z === indicvoices_conv__qwen3_adapter (qwen) ===
+2026-09-15T22:08:57Z OWNER: Qwen adapter removed from the comparison; its conversational decode stopped by pid

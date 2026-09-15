@@ -20,7 +20,6 @@ set -u
 cd "$(dirname "$0")"
 P=${PIPELINE_ROOT:-/mnt/sdb/arafat/ehz/llm/bengali-asr-pipeline}
 FASTCONFORMER_NEMO=${FASTCONFORMER_NEMO:-model/stt_bn_fastconformer_ctc.nemo}
-QWEN_ADAPTER=${QWEN_ADAPTER:-$P/experiments/qwen_final/candidates/step_17280}
 GPU="${BENCH_GPU:?set BENCH_GPU to a GPU UUID}"
 export CUDA_VISIBLE_DEVICES="$GPU"
 OUT=outputs_multiset
@@ -55,7 +54,6 @@ run() { # set label kind model [extra...]
   local tag="${set}__${label}"
   if [ -f "$OUT/$tag/run_meta.json" ]; then say "skip $tag (done)"; return 0; fi
   local py=${BENCH_PY:-$P/.venv/bin/python}
-  [ "$kind" = "qwen" ] && py=${BENCH_PY_QWEN:-$P/.venv-qwen/bin/python}
   while [ -n "$(foreign)" ]; do say "waiting: foreign process on the card: $(foreign | tr '\n' ' ')"; sleep 60; done
   rm -f "$STOP"
   say "=== $tag ($kind) ==="
@@ -80,8 +78,6 @@ for set in vaani_test spring_r1_test spring_r2_test; do
   run $set whisper_medium         whisper  "SayedShaun/bengali-whisper-medium"   --revision "$(rev SayedShaun/bengali-whisper-medium)"
 done
 for set in vaani_test spring_r1_test spring_r2_test; do
-  run $set qwen3_adapter          qwen     "Qwen/Qwen3-ASR-1.7B-hf" \
-      --revision bcd2b5b7f32b480ab5790554cfa8347f246a14f3 \
       --adapter "$QWEN_ADAPTER"
 done
 say "ALL-RUNS-DONE"

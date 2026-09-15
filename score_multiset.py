@@ -19,7 +19,7 @@ from bench_score import norm, boot   # noqa: E402  (the published scorer, unchan
 A = Path(__file__).resolve().parent
 OUT = A / "outputs_multiset"
 SETS = ["vaani_test", "spring_r1_test", "spring_r2_test", "kathbath_test_known", "kathbath_test_unknown", "indicvoices_conv"]
-MODELS = ["fastconformer_ctc", "qwen3_adapter", "hishab_conformer_large",
+MODELS = ["fastconformer_ctc", "hishab_conformer_large",
           "whisper_medium", "wav2vec2", "hishab_fastconformer"]
 LATIN = re.compile(r"[A-Za-z]")
 

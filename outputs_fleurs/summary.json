@@ -24,9 +24,7 @@
   "hishab/titu_stt_bn_conformer_large": "42041012a7cdb9df071eac4cef33b8a6182eb687",
   "hishab/titu_stt_bn_fastconformer": "993316b17c3db56a42bf0140b8ad524f35b4677b",
   "ehzawad/stt_bn_fastconformer_ctc": "6b0d1aa869560bb22ef35d9e2c589d682daa87d4",
-  "_note": "fastconformer_ctc decoded from the local sealed export (sha256 bea300ce4f1f1df1fa4707562ddaa7c64db6f01121ef3d64a6333635f3626572), byte-identical to the LFS object at the revision above",
-  "Qwen/Qwen3-ASR-1.7B-hf": "bcd2b5b7f32b480ab5790554cfa8347f246a14f3",
-  "ehzawad/stt_bn_qwen3_asr": "local adapter directory experiments/qwen_final/candidates/step_17280 at run time; published as huggingface.co/ehzawad/stt_bn_qwen3_asr"
+  "_note": "fastconformer_ctc decoded from the local sealed export (sha256 bea300ce4f1f1df1fa4707562ddaa7c64db6f01121ef3d64a6333635f3626572), byte-identical to the LFS object at the revision above"
  },
  "models": {
   "fastconformer_ctc": {
@@ -180,57 +178,6 @@
    "n_test": 920,
    "wer_validation": 0.36092,
    "cer_validation": 0.08986,
-   "n_validation": 402
-  },
-  "qwen3_adapter": {
-   "meta": {
-    "label": "qwen3_adapter",
-    "kind": "qwen",
-    "model": "Qwen/Qwen3-ASR-1.7B-hf",
-    "adapter": "/mnt/sdb/arafat/ehz/llm/bengali-asr-pipeline/experiments/qwen_final/candidates/step_17280",
-    "revision": "bcd2b5b7f32b480ab5790554cfa8347f246a14f3",
-    "n": 1322,
-    "failures": 0,
-    "audio_seconds": 17574.4,
-    "ms_per_clip_mean": 9665.73,
-    "ms_per_clip_median": 9028.08,
-    "ms_per_clip_p95": 16666.72,
-    "inference_wall_s": 12778.1,
-    "loop_wall_s": 12778.2,
-    "audio_s_per_wall_s": 1.4,
-    "rtf": 0.72709,
-    "batch_size": 1,
-    "decoding": "greedy, no external LM or rescoring",
-    "gpu_before": "NVIDIA RTX A5000, 4557 MiB, 24 %, 1695 MHz, 57\nNVIDIA RTX A6000, 33094 MiB, 0 %, 210 MHz, 44",
-    "gpu_after": "NVIDIA RTX A5000, 4967 MiB, 19 %, 1695 MHz, 61\nNVIDIA RTX A6000, 33480 MiB, 5 %, 1800 MHz, 66",
-    "torch": "2.13.0+cu130",
-    "python": "3.12.13",
-    "manifest_sha256": "27e5649cd8577a85b857e3b688e667742c41df99a9f0226732f2cab5ce8bd462"
-   },
-   "n": 1322,
-   "wer": 0.1603,
-   "cer": 0.04475,
-   "wer_ci_utterance": [
-    0.15392,
-    0.16675
-   ],
-   "wer_ci_sentence_clustered": [
-    0.15096,
-    0.16991
-   ],
-   "word_counts": {
-    "errors": 4052,
-    "ref_words": 25278
-   },
-   "failures": 0,
-   "empty_hyps": 0,
-   "multi_piece_clips": 31,
-   "forced_cuts": 10,
-   "wer_test": 0.16536,
-   "cer_test": 0.04678,
-   "n_test": 920,
-   "wer_validation": 0.14833,
-   "cer_validation": 0.03999,
    "n_validation": 402
   },
   "wav2vec2": {

@@ -2,9 +2,9 @@
 """Rescore every model on the CONTAMINATION-FREE FLEURS test split only.
 
 88 of the 150 distinct sentences in the FLEURS validation split appear verbatim
-in the training corpora of our own models (via fleurs_train). The 402 validation
-recordings must therefore be dropped from any comparison involving them: they
-inflate ours and not the third-party checkpoints. The 920-utterance test split
+in the ehzawad model's training corpus (via fleurs_train). The 402 validation
+recordings must therefore be dropped from any comparison involving it: they
+inflate it and not the third-party checkpoints. The 920-utterance test split
 is the honest comparison surface.
 """
 import json, os
@@ -16,9 +16,8 @@ import numpy as np
 from bench_score import norm
 
 OUT = os.environ.get("BENCH_OUT", "outputs_fleurs")
-MODELS = ["fastconformer_ctc", "hishab_conformer_large", "qwen3_adapter",
-          "whisper_medium", "wav2vec2", "hishab_fastconformer"]
-OURS = {"qwen3_adapter", "fastconformer_ctc"}   # trained on corpora that contain fleurs_train
+MODELS = ["fastconformer_ctc", "hishab_conformer_large", "whisper_medium", "wav2vec2", "hishab_fastconformer"]
+OURS = {"fastconformer_ctc"}   # trained on a corpus that contains fleurs_train
 
 
 def counts(ref, hyp, char=False):
@@ -69,8 +68,7 @@ for m, v in sorted(res.items(), key=lambda kv: kv[1]["wer"]):
     ci = f"[{v['wer_ci95'][0]*100:.2f}-{v['wer_ci95'][1]*100:.2f}]"
     print(f"{m:<26}{v['wer']*100:8.2f}{ci:>18}{v['cer']*100:8.2f}")
 
-# paired: ours vs the best third-party model, and fastconformer_ctc vs the
-# adapter, Conformer Large and Whisper Medium
+# paired: fastconformer_ctc vs Conformer Large and vs Whisper Medium
 def paired_delta(A, B):
     ea, na, ca, nca, ka = store[A]
     eb, nb, cb, ncb, kb = store[B]
@@ -92,11 +90,11 @@ def paired_delta(A, B):
         "cer_delta_pp": round(float((ca.sum() - cb.sum()) / nca.sum() * 100), 4),
         "cer_ci95_pp": [round(float(dc[250] * 100), 4), round(float(dc[9750] * 100), 4)]}
 
-paired = paired_delta("qwen3_adapter", "hishab_conformer_large")
+paired = paired_delta("fastconformer_ctc", "hishab_conformer_large")
 print("\npaired vs hishab_conformer_large (test-only):")
 print(json.dumps(paired, indent=1))
 paired_extra = {}
-for b in ("qwen3_adapter", "hishab_conformer_large", "whisper_medium"):
+for b in ("hishab_conformer_large", "whisper_medium"):
     paired_extra[f"fastconformer_ctc_vs_{b}"] = paired_delta("fastconformer_ctc", b)
     print(f"fastconformer_ctc vs {b}: {json.dumps(paired_extra[f'fastconformer_ctc_vs_{b}'])}")
 
@@ -121,7 +119,7 @@ out = json.loads(Path("outputs_static/clean_test_table.json").read_text()) \
     if Path("outputs_static/clean_test_table.json").exists() else {}
 out["speed_default_runtime"] = speeds
 Path(f"{OUT}/clean_test_table.json").write_text(json.dumps(
-    {"split": "FLEURS test only (920 utterances); the FLEURS validation split overlaps the training data of the two ehzawad models and is excluded for every model",
+    {"split": "FLEURS test only (920 utterances); the FLEURS validation split overlaps the ehzawad model's training data and is excluded for every model",
      "excluded": "FLEURS validation (402 utterances): 88 of its 150 distinct "
                  "sentences appear verbatim in the training corpus via fleurs_train, "
                  "which advantages the two models trained on it",

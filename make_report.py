@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 """Render the benchmark report (asr_benchmark.pdf) from the committed summaries:
 
-  * outputs_fleurs/{summary,clean_test_table}.json  — six models on FLEURS bn_in
-  * outputs_multiset/summary_multiset.json          — five models on the official
-    test splits of Vaani, SPRING-INX R1/R2 and Kathbath (known/unknown speakers)
+  * outputs_fleurs/{summary,clean_test_table}.json  — five models on FLEURS bn_in
+  * outputs_multiset/summary_multiset.json          — the same five on the official
+    test splits of Vaani, SPRING-INX R1/R2, Kathbath (known/unknown speakers) and
+    IndicVoices conversational
 
 Every number is read from those files so the PDF cannot drift from the runs.
 """
@@ -31,16 +32,16 @@ MS = json.loads(Path("outputs_multiset/summary_multiset.json").read_text())
 OURS_KEY = "fastconformer_ctc"
 LABELS = {
     "fastconformer_ctc": ("ehzawad FastConformer-CTC", "ehzawad/stt_bn_fastconformer_ctc", "115.6M"),
-    "qwen3_adapter": ("Qwen3-ASR + Bengali adapter", "Qwen/Qwen3-ASR-1.7B-hf + LoRA", "2.04B (38M adapter)"),
     "hishab_conformer_large": ("Conformer Large (hishab)", "hishab/titu_stt_bn_conformer_large", "121.5M"),
     "whisper_medium": ("Whisper Medium", "SayedShaun/bengali-whisper-medium", "763.9M"),
     "wav2vec2": ("Wav2Vec2", "SayedShaun/bangla-wave2vec2-unigram", "315.5M"),
     "hishab_fastconformer": ("hishab FastConformer", "hishab/titu_stt_bn_fastconformer", "115.6M"),
 }
 SETS = [("vaani_test", "Vaani test"), ("spring_r1_test", "SPRING-INX R1"), ("spring_r2_test", "SPRING-INX R2"),
-        ("kathbath_test_known", "Kathbath known"), ("kathbath_test_unknown", "Kathbath unknown")]
-FLAGS = {"fastconformer_ctc": "N N N S S", "hishab_conformer_large": "N N N S S", "whisper_medium": "U U U U U",
-         "hishab_fastconformer": "U U U U U", "wav2vec2": "U U U U U"}
+        ("kathbath_test_known", "Kathbath known"), ("kathbath_test_unknown", "Kathbath unknown"),
+        ("indicvoices_conv", "IndicVoices conv.")]
+FLAGS = {"fastconformer_ctc": "N N N S S S", "hishab_conformer_large": "N N N S S N", "whisper_medium": "U U U U U U",
+         "hishab_fastconformer": "U U U U U U", "wav2vec2": "U U U U U U"}
 CM = sorted(CLEAN["models"].items(), key=lambda kv: kv[1]["wer"])
 MM = [k for k in ["fastconformer_ctc", "whisper_medium", "hishab_conformer_large", "hishab_fastconformer", "wav2vec2"]
       if k in MS["models"]]
@@ -87,9 +88,9 @@ def pd(key):
 
 def page1(pdf):
     fig = plt.figure(figsize=(8.27, 11.69))
-    fig.text(0.06, 0.945, "Bengali ASR: six models on FLEURS, one GPU", size=20, weight="bold")
+    fig.text(0.06, 0.945, "Bengali ASR: five models on FLEURS, one GPU", size=20, weight="bold")
     fig.text(0.06, 0.922, "920 FLEURS bn_in TEST utterances · RTX A5000 · greedy, batch 1, no external LM · "
-             "all six measured in one sitting", size=8.0, color=INK_2)
+             "all five measured in one sitting", size=8.0, color=INK_2)
     rows = []
     for k, m in CM:
         lo, hi = m["wer_ci95"]; sp = CLEAN["speed_default_runtime"][k]["ms_per_clip_mean"]
@@ -98,26 +99,24 @@ def page1(pdf):
     yy = table(fig, 0.06, 0.885, 0.88, ["Model", "WER", "95% CI (clustered)", "CER", "ms/clip", "Params"],
                rows, [0.0, 0.50, 0.66, 0.74, 0.84, 1.0])
     y = caveat(fig, 0.06, yy - 0.022, 0.88,
-               "Test split only. The two ehzawad models (the FastConformer-CTC and the Qwen3 adapter) trained on corpora that include the FLEURS train split,\n"
-               "and 88 of the 150 validation-split sentences also occur there; the 402 validation recordings are\n"
-               "therefore excluded for every model and the table is the 920-utterance test split.")
+               "Test split only. The ehzawad model trained on a corpus that includes the FLEURS train split, and 88 of\n"
+               "the 150 validation-split sentences also occur there; the 402 validation recordings are therefore\n"
+               "excluded for every model and the table is the 920-utterance test split.")
     fig.text(0.06, y - 0.03, "Reading this table", size=11, weight="bold")
     body = (
         "ehzawad/stt_bn_fastconformer_ctc is a FastConformer-CTC large (115.6M parameters, 8x subsampling, "
         "1,024-piece Bengali BPE) trained on 1,692 hours of human-supervised Bengali, CC-BY-SA-4.0. The other "
-        "five models are public checkpoints from hishab, SayedShaun (mirrors of tugstugi's Whisper and qdv206's "
-        "wav2vec2 competition models) and ehzawad (a Bengali LoRA adapter on Qwen3-ASR-1.7B: 2.04B parameters, "
-        "of which 38M were trained).\n\n"
+        "four models are public checkpoints from hishab and SayedShaun (mirrors of tugstugi's Whisper and qdv206's "
+        "wav2vec2 competition models).\n\n"
         "Paired sentence-clustered deltas for the highlighted model (10,000 draws):\n"
-        f"   vs Qwen3 adapter         {pd('fastconformer_ctc_vs_qwen3_adapter')}\n"
         f"   vs Whisper Medium        {pd('fastconformer_ctc_vs_whisper_medium')}\n"
         f"   vs Conformer Large       {pd('fastconformer_ctc_vs_hishab_conformer_large')}\n\n"
-        "Statistically tied with the Qwen3 adapter at 117x its speed; under a point behind Whisper Medium at 22x "
-        "its speed; 2.7 points behind Conformer Large. The highlighted model had also been evaluated on FLEURS test during "
-        "its own development, so read its FLEURS row as a like-for-like re-measurement."
+        "Under a point behind Whisper Medium at 22x its speed; 2.7 points behind Conformer Large. The highlighted "
+        "model had also been evaluated on FLEURS test during its own development, so read its FLEURS row as a "
+        "like-for-like re-measurement and the other corpora as the fresh evidence."
     )
     fig.text(0.06, y - 0.048, body, size=8.2, color=INK_2, va="top", wrap=True, linespacing=1.55)
-    footer(fig, 1, "six models, FLEURS bn_in test")
+    footer(fig, 1, "five models, FLEURS bn_in test")
     pdf.savefig(fig); plt.close(fig)
 
 
@@ -145,20 +144,21 @@ def page2(pdf):
     for i, v in enumerate(sp):
         ax2.text(v * 1.15, i, f"{v:,.0f}", va="center", size=7, color=INK_2)
     fig.text(0.06, 0.16, "The two orderings are not the same ordering. The three NeMo CTC models sit within 10% of each "
-             "other in speed; Whisper Medium costs ~22x and the Qwen3 adapter ~117x per clip at batch 1 for their accuracy.",
+             "other in speed; Whisper Medium costs ~22x per clip at batch 1 for its accuracy.",
              size=8.2, color=INK_2, va="top", wrap=True, linespacing=1.5)
-    footer(fig, 2, "six models, FLEURS bn_in test")
+    footer(fig, 2, "five models, FLEURS bn_in test")
     pdf.savefig(fig); plt.close(fig)
 
 
 def page3(pdf):
     fig = plt.figure(figsize=(8.27, 11.69))
-    fig.text(0.06, 0.945, "Beyond FLEURS: official test splits of four other corpora", size=17, weight="bold")
+    fig.text(0.06, 0.945, "Beyond FLEURS: five more official test sets", size=17, weight="bold")
     fig.text(0.06, 0.922, "Frozen seeded 1,000-utterance subsets of the OFFICIAL test splits · one model at a time · "
              "same backends and scorer", size=8.0, color=INK_2)
     rows = []
     strat = {"vaani_test": "29 state/district strata", "spring_r1_test": "Latin / no-Latin reference",
-             "spring_r2_test": "Latin / no-Latin reference", "kathbath_test_known": "speaker gender", "kathbath_test_unknown": "speaker gender"}
+             "spring_r2_test": "Latin / no-Latin reference", "kathbath_test_known": "speaker gender", "kathbath_test_unknown": "speaker gender",
+             "indicvoices_conv": "scenario (conversation / extempore)"}
     for st, n in SETS:
         s = MS["sets"][st]
         rows.append([f"  {n}", f"{s['source_rows']:,}", f"{s['n']:,}", f"{s['hours']:.2f} h", f"{s['ref_words']:,}", strat[st]])
@@ -168,16 +168,17 @@ def page3(pdf):
     for k in MM:
         cells = [f"{MS['models'][k][st]['wer']*100:.2f}" if st in MS["models"][k] else "—" for st, _ in SETS]
         rows.append([f"{'▸ ' if k == OURS_KEY else '  '}{name(k)}"] + cells + [FLAGS[k]])
-    yy = table(fig, 0.06, yy - 0.035, 0.88, ["Model  (WER %)", "Vaani", "SPRING R1", "SPRING R2", "Kathbath kn", "Kathbath unk", "flags"],
-               rows, [0.0, 0.42, 0.53, 0.64, 0.76, 0.88, 1.0], size=7.0)
+    yy = table(fig, 0.06, yy - 0.035, 0.88, ["Model  (WER %)", "Vaani", "SPR R1", "SPR R2", "Kb known", "Kb unk", "IV conv", "flags"],
+               rows, [0.0, 0.36, 0.46, 0.56, 0.66, 0.76, 0.86, 1.0], size=6.8)
     y = caveat(fig, 0.06, yy - 0.02, 0.88,
                "flags, per set in the column order: N = corpus not in the model's declared training data;\n"
                "S = trained on a sibling split of the same corpus (Kathbath train; Conformer Large also its\n"
                "validation split); U = training provenance not documented. None of these means \"verified clean\".\n"
                "The highlighted model's Vaani and SPRING hypotheses come from its earlier evaluation of the full\n"
                "official splits (same greedy decoding, batched), scored here on exactly these utterances; they are\n"
-               "not re-timed. Its Kathbath rows are batch-1 decodes here. The Qwen3 adapter is not in this\n"
-               "comparison (~10 s per clip at batch 1).")
+               "not re-timed. Its Kathbath and IndicVoices rows are batch-1 decodes here. IndicVoices conversational is\n"
+               "NOT a clean head-to-head for it: it trained on the IndicVoices train split (same collection, prompts and\n"
+               "transcription conventions, different speakers), which is a large part of its 12.6% there.")
     fig.text(0.06, y - 0.03, "What the table says", size=11, weight="bold")
     body = (
         "On the two corpora nobody trained on, the FLEURS ranking does not hold. Conformer Large - the FLEURS "
@@ -189,10 +190,12 @@ def page3(pdf):
         "highlighted model is third (13.4 / 13.4%). Conformer Large trained on Kathbath validation as well as train, "
         "Whisper's provenance for Kathbath is unknown (a U cell can hide training overlap), and the highlighted model "
         "saw only the train split. Known- vs unknown-speaker Kathbath differ by under a point for every model except "
-        "hishab FastConformer. Sentence-clustered 95% intervals for every cell are in the README and summary."
+        "hishab FastConformer. On IndicVoices conversational the four models that never saw the collection read "
+        "25-33%, Conformer Large (the one N cell) 29.7% with 7 empty hypotheses, hishab FastConformer 21 and Wav2Vec2 "
+        "33 empties. Sentence-clustered 95% intervals for every cell are in the README and summary."
     )
     fig.text(0.06, y - 0.048, body, size=8.2, color=INK_2, va="top", wrap=True, linespacing=1.55)
-    footer(fig, 3, "official test splits, five models")
+    footer(fig, 3, "five more official test sets, five models")
     pdf.savefig(fig); plt.close(fig)
 
 
@@ -213,8 +216,8 @@ def page4(pdf):
         rows.append([f"{'▸ ' if k == OURS_KEY else '  '}{name(k)}"] + cells)
     fig.text(0.06, yy - 0.105, "ms per clip, batch 1, warmed, default runtime (N/A = stored hypotheses, not timed here)",
              size=8.0, color=INK_2)
-    yy2 = table(fig, 0.06, yy - 0.125, 0.88, ["Model", "Vaani", "SPRING R1", "SPRING R2", "Kathbath kn", "Kathbath unk"],
-                rows, [0.0, 0.45, 0.58, 0.71, 0.85, 1.0])
+    yy2 = table(fig, 0.06, yy - 0.125, 0.88, ["Model", "Vaani", "SPR R1", "SPR R2", "Kb known", "Kb unk", "IV conv"],
+                rows, [0.0, 0.40, 0.52, 0.64, 0.76, 0.88, 1.0])
     y = caveat(fig, 0.06, yy2 - 0.03, 0.88,
                "Protocol. Every set is a frozen subset (seed 20260915; proportional stratification; per-file SHA-256\n"
                "verified before decoding). One model resident at a time on the A5000; no other process used the card\n"
@@ -222,11 +225,11 @@ def page4(pdf):
                "harness bench_run_set.py (bench_run.py's backends unchanged); scorer score_multiset.py.\n"
                "Reproduce the scoring from the committed predictions.")
     fig.text(0.06, y - 0.03, "Evaluation data: FLEURS (Google, CC-BY-4.0); Vaani transcription part (ARTPARK-IISc, CC-BY-4.0); "
-             "SPRING-INX R1/R2 (SPRING Lab, IIT Madras, CC-BY-4.0); Kathbath (AI4Bharat IndicSUPERB, CC0). "
-             "Models: hishab (Conformer Large, FastConformer); SayedShaun (Whisper Medium mirror of tugstugi's "
-             "competition model; wav2vec2 mirror of qdv206's); ehzawad (FastConformer-CTC, Qwen3 adapter). "
+             "SPRING-INX R1/R2 (SPRING Lab, IIT Madras, CC-BY-4.0); Kathbath (AI4Bharat IndicSUPERB, CC0); IndicVoices "
+             "(AI4Bharat, CC-BY-4.0). Models: hishab (Conformer Large, FastConformer); SayedShaun (Whisper Medium mirror of "
+             "tugstugi's competition model; wav2vec2 mirror of qdv206's); ehzawad (FastConformer-CTC). "
              "Author of this benchmark: Emrul Zawad.", size=7.4, color=INK_3, va="top", wrap=True, linespacing=1.5)
-    footer(fig, 4, "official test splits, five models")
+    footer(fig, 4, "five more official test sets, five models")
     pdf.savefig(fig); plt.close(fig)
 
 

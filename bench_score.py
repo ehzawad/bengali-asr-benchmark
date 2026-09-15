@@ -33,7 +33,7 @@ def norm(t):
     NFC is not cosmetic here. Bengali writes several letters two ways -- য়
     as U+09DF or as U+09AF + U+09BC, and likewise ড় and ঢ় -- which are
     canonically equivalent but different byte sequences. The FLEURS references
-    and the NeMo/Qwen models use the decomposed form; Whisper and wav2vec2 emit
+    and the NeMo models use the decomposed form; Whisper and wav2vec2 emit
     the precomposed one. Without normalising, every such character scores as a
     substitution and those two models are penalised for an encoding convention
     rather than for mistranscribing: Whisper medium measured 27.88% WER

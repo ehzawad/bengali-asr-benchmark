@@ -2,6 +2,7 @@
  "sets": {
   "vaani_test": {
    "dataset": "vaani_test",
+   "source": null,
    "n": 1000,
    "hours": 1.26,
    "ref_words": 10082,
@@ -126,10 +127,12 @@
     }
    },
    "source_rows": 12695,
-   "source_manifest_sha256": "a2bb5029b1e5d564f17fe381e2cad9344619a793e405967367dca67b85531efa"
+   "source_manifest_sha256": "a2bb5029b1e5d564f17fe381e2cad9344619a793e405967367dca67b85531efa",
+   "speakers": null
   },
   "spring_r1_test": {
    "dataset": "spring_r1_test",
+   "source": null,
    "n": 1000,
    "hours": 2.545,
    "ref_words": 19706,
@@ -146,10 +149,12 @@
     }
    },
    "source_rows": 1879,
-   "source_manifest_sha256": "e6b6b2184975741e73a0bacba77c5026adbd66dbdc6a472ba3bca2e89ed9c0a4"
+   "source_manifest_sha256": "e6b6b2184975741e73a0bacba77c5026adbd66dbdc6a472ba3bca2e89ed9c0a4",
+   "speakers": null
   },
   "spring_r2_test": {
    "dataset": "spring_r2_test",
+   "source": null,
    "n": 1000,
    "hours": 2.607,
    "ref_words": 20353,
@@ -166,10 +171,12 @@
     }
    },
    "source_rows": 1872,
-   "source_manifest_sha256": "a8fc116581298c6b204f9b03df67af0f687899da3878fa4c68d24f19de984ddd"
+   "source_manifest_sha256": "a8fc116581298c6b204f9b03df67af0f687899da3878fa4c68d24f19de984ddd",
+   "speakers": null
   },
   "kathbath_test_known": {
    "dataset": "kathbath_test_known",
+   "source": "AI4Bharat IndicSUPERB Kathbath, clean, bengali/test_known (official split; CC0 per the IndicSUPERB page), m4a -> 16 kHz mono PCM16 via ffmpeg",
    "n": 1000,
    "hours": 1.791,
    "ref_words": 10801,
@@ -186,10 +193,12 @@
     }
    },
    "source_rows": 2806,
-   "source_manifest_sha256": "de5566d790ea41444c044add230f35ee1dcae22ce55813e6d3d21e86db7d07a6"
+   "source_manifest_sha256": "de5566d790ea41444c044add230f35ee1dcae22ce55813e6d3d21e86db7d07a6",
+   "speakers": null
   },
   "kathbath_test_unknown": {
    "dataset": "kathbath_test_unknown",
+   "source": "AI4Bharat IndicSUPERB Kathbath, clean, bengali/test (official split; CC0 per the IndicSUPERB page), m4a -> 16 kHz mono PCM16 via ffmpeg",
    "n": 1000,
    "hours": 1.809,
    "ref_words": 10887,
@@ -206,7 +215,30 @@
     }
    },
    "source_rows": 1783,
-   "source_manifest_sha256": "52a77ec54354488dda67d42c9d13f5fadd5d12f191c39e956be926808812214b"
+   "source_manifest_sha256": "52a77ec54354488dda67d42c9d13f5fadd5d12f191c39e956be926808812214b",
+   "speakers": null
+  },
+  "indicvoices_conv": {
+   "dataset": "indicvoices_conv",
+   "source": "ai4bharat/IndicVoices, bengali/valid-00000-of-00001.parquet (official validation split; CC-BY-4.0); scenarios Conversation + Extempore, human-verified 'excellent', no annotation tag",
+   "n": 1000,
+   "hours": 1.569,
+   "ref_words": 12918,
+   "seed": 20260915,
+   "sampling": "proportional stratified by scenario, largest-remainder allocation, seeded shuffle within stratum",
+   "strata": {
+    "Extempore": {
+     "source": 1462,
+     "sampled": 406
+    },
+    "Conversation": {
+     "source": 2141,
+     "sampled": 594
+    }
+   },
+   "source_rows": 3603,
+   "source_manifest_sha256": null,
+   "speakers": 277
   }
  },
  "models": {
@@ -372,6 +404,26 @@
     ],
     "ref_words": 10869,
     "errors": 1460
+   },
+   "indicvoices_conv": {
+    "status": "complete",
+    "ms_per_clip_mean": 73.77,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.1261,
+    "cer": 0.04089,
+    "wer_ci_utterance": [
+     0.11797,
+     0.13466
+    ],
+    "wer_ci_reference_clustered": [
+     0.11647,
+     0.13654
+    ],
+    "ref_words": 12918,
+    "errors": 1629
    }
   },
   "hishab_conformer_large": {
@@ -536,6 +588,26 @@
     ],
     "ref_words": 10869,
     "errors": 955
+   },
+   "indicvoices_conv": {
+    "status": "complete",
+    "ms_per_clip_mean": 75.08,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 7,
+    "n": 1000,
+    "wer": 0.2968,
+    "cer": 0.11514,
+    "wer_ci_utterance": [
+     0.28293,
+     0.31102
+    ],
+    "wer_ci_reference_clustered": [
+     0.28258,
+     0.31197
+    ],
+    "ref_words": 12918,
+    "errors": 3834
    }
   },
   "whisper_medium": {
@@ -700,6 +772,26 @@
     ],
     "ref_words": 10869,
     "errors": 1064
+   },
+   "indicvoices_conv": {
+    "status": "complete",
+    "ms_per_clip_mean": 1034.36,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.25027,
+    "cer": 0.11707,
+    "wer_ci_utterance": [
+     0.23767,
+     0.26308
+    ],
+    "wer_ci_reference_clustered": [
+     0.23721,
+     0.26459
+    ],
+    "ref_words": 12918,
+    "errors": 3233
    }
   },
   "wav2vec2": {
@@ -864,6 +956,26 @@
     ],
     "ref_words": 10869,
     "errors": 2043
+   },
+   "indicvoices_conv": {
+    "status": "complete",
+    "ms_per_clip_mean": 39.22,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 33,
+    "n": 1000,
+    "wer": 0.33008,
+    "cer": 0.11661,
+    "wer_ci_utterance": [
+     0.31602,
+     0.34458
+    ],
+    "wer_ci_reference_clustered": [
+     0.31559,
+     0.34546
+    ],
+    "ref_words": 12918,
+    "errors": 4264
    }
   },
   "hishab_fastconformer": {
@@ -1028,8 +1140,28 @@
     ],
     "ref_words": 10869,
     "errors": 3246
+   },
+   "indicvoices_conv": {
+    "status": "complete",
+    "ms_per_clip_mean": 72.83,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 21,
+    "n": 1000,
+    "wer": 0.30136,
+    "cer": 0.14554,
+    "wer_ci_utterance": [
+     0.28796,
+     0.3149
+    ],
+    "wer_ci_reference_clustered": [
+     0.28724,
+     0.31651
+    ],
+    "ref_words": 12918,
+    "errors": 3893
    }
   }
  },
- "note": "Score the multi-dataset comparison : every outputs_multiset/<set>__<model>\nrun, plus fastconformer_ctc's STORED one-shot hypotheses on Vaani/SPRING (re-scored,\nnever re-decoded), with the benchmark's own scorer (bench_score.norm: punctuation to\nword boundaries, NFC) and two 95% bootstraps (utterance; distinct-reference clusters).\nSPRING sets also get a \"no Latin-script reference characters\" diagnostic for every\nmodel. Writes outputs_multiset/summary_multiset.json and prints the table.\n"
+ "note": "Score the multi-dataset comparison : every outputs_multiset/<set>__<model>\nrun, plus fastconformer_ctc's stored hypotheses on Vaani/SPRING from its earlier\nfull-split evaluation (re-scored, not re-decoded), with the benchmark's own scorer (bench_score.norm: punctuation to\nword boundaries, NFC) and two 95% bootstraps (utterance; distinct-reference clusters).\nSPRING sets also get a \"no Latin-script reference characters\" diagnostic for every\nmodel. Writes outputs_multiset/summary_multiset.json and prints the table.\n"
 }
