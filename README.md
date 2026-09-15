@@ -103,10 +103,10 @@ of the 1,000 hypotheses contain any Latin script at all:
 | hishab FastConformer | 47.32% / 45.90% | 43.66% / 46.26% | 0 / 0 |
 | Wav2Vec2 | 43.99% / 49.51% | 44.39% / 49.76% | 0 / 0 |
 
-The NeMo models' Bengali-only vocabularies cannot emit a Latin word, so every such reference word
-is a guaranteed error for them; Whisper can, and still loses to Phase 4 on the Latin half. On the
-Latin-free half the gap between Phase 4 (35.4 / 35.1 %) and Whisper (35.9 / 36.7 %) is within the
-intervals.
+The NeMo models' Bengali-only vocabularies cannot emit a Latin word; Whisper and wav2vec2 could in
+principle, but none of the six produced a single Latin-script hypothesis in 2,000 utterances (last
+column), so every Latin reference word is an error for every model. On the Latin-free half the gap
+between Phase 4 (35.4 / 35.1 %) and Whisper (35.9 / 36.7 %) is within the intervals.
 
 <details>
 <summary>ms/clip per set (batch 1, warmed, default runtime)</summary>
@@ -125,7 +125,8 @@ intervals.
 Co-tenant control: each run refused to start while any foreign process held the A5000 and a
 watcher polled the card every 15 s, ready to stop the run cooperatively; no foreign process
 appeared during any of the 27 runs (`outputs_multiset/cotenant_*.log` — none written).
-Reproduce the scoring: `python score_multiset.py` over the committed predictions.
+Reproduce the scoring: `python score_multiset.py` over the committed predictions. PDF of the third
+and fourth reports: [`asr_benchmark_phase4_a5000.pdf`](asr_benchmark_phase4_a5000.pdf) (`make_report_p4.py`).
 
 ## Third report: the Phase-4 FastConformer replaces Phase 1 — seven models on the RTX A5000 (2026-09-15)
 
@@ -542,6 +543,7 @@ run_all_benchmarks.sh    benchmarks every checkpoint, one at a time
 speed_probe.py           isolated per-model compute, warm-up discarded
 collect_results.py       raw predictions -> outputs/summary.json, with intervals
 make_report.py           outputs/summary.json -> the PDF
+make_report_p4.py        third + fourth reports -> asr_benchmark_phase4_a5000.pdf
 app.py, run.sh           the interactive web demo
 outputs/                 per-model report.txt and predictions.json, plus summary
 outputs_a5000/           second report (six models, RTX A5000)
