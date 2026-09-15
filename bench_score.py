@@ -21,9 +21,8 @@ import unicodedata
 
 import numpy as np
 
-# BENCH_OUT selects the run to score (default: the published A5000 run). The
-# 2026-09-15 seven-model reproducibility run lives in outputs_p4_repro/.
-OUT = Path(os.environ.get("BENCH_OUT", "outputs_a5000"))
+# BENCH_OUT selects the run to score (default: the FLEURS run in outputs_fleurs/).
+OUT = Path(os.environ.get("BENCH_OUT", "outputs_fleurs"))
 B = 10000
 PUNCT = re.compile(r"[\"“”‘’'।,.!?;:()\[\]{}—–\-]")
 
@@ -143,7 +142,7 @@ def main():
         "checkpoints": json.loads((OUT / "checkpoint_revisions.json").read_text()),
         "models": rows,
     }
-    summary_path = OUT / ("summary_a5000.json" if OUT.name == "outputs_a5000" else "summary.json")
+    summary_path = OUT / "summary.json"
     summary_path.write_text(json.dumps(summary, indent=1))
     print(f"\nwrote {summary_path}")
 

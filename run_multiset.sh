@@ -3,8 +3,8 @@
 # Sets: frozen seeded 1,000-utterance subsets of Vaani official test and
 # SPRING-INX R1/R2 official eval (multiset/<set>/eval_manifest.json, per-file
 # sha256), later Kathbath official test. One model resident at a time on the
-# A5000 (by UUID). The Phase-4 model is NOT decoded on Vaani/SPRING here: its
-# one-shot hypotheses already exist and are re-scored (SPEC 8w.21) — decoding
+# A5000 (by UUID). fastconformer_ctc is NOT decoded on Vaani/SPRING here: its
+# one-shot hypotheses already exist and are re-scored  — decoding
 # it again would be a repeat of a one-shot panel.
 #
 # Co-tenant control (owner's instruction): a run refuses to start while a
@@ -70,9 +70,8 @@ run() { # set label kind model [extra...]
 rev() { python3 -c "
 import json; print(json.load(open('checkpoint_revisions.json'))['$1'])"; }
 
-say "PROSPECTIVE: comparison on official test splits, frozen subsets (seed 20260915); Phase 4 re-scored from stored one-shot hypotheses, not re-decoded; one model at a time; foreign process on the card = cooperative stop"
+say "PROSPECTIVE: comparison on official test splits, frozen subsets (seed 20260915); fastconformer_ctc re-scored from stored one-shot hypotheses, not re-decoded; one model at a time; foreign process on the card = cooperative stop"
 for set in vaani_test spring_r1_test spring_r2_test; do
-  run $set ehzawad_fastconformer  nemo     "$P/experiments/fastconformer_ctc_bn_1kh/final.nemo"
   run $set hishab_conformer_large nemo     "hishab/titu_stt_bn_conformer_large"
   run $set hishab_fastconformer   nemo     "hishab/titu_stt_bn_fastconformer"
   run $set wav2vec2               wav2vec2 "SayedShaun/bangla-wave2vec2-unigram" --revision "$(rev SayedShaun/bangla-wave2vec2-unigram)"

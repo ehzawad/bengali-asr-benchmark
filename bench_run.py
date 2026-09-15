@@ -11,7 +11,7 @@ to CTC and autoregressive models alike.
 A model that raises on a clip yields an EMPTY hypothesis that stays in the
 denominator; failures are never dropped.
 
-  bench_run.py --kind nemo --model /path/to.nemo --label ehzawad_fastconformer
+  bench_run.py --kind nemo --model /path/to.nemo --label fastconformer_ctc
 """
 import argparse, hashlib, json, os, platform, subprocess, sys, time
 from pathlib import Path

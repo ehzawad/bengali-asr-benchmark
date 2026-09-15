@@ -2,10 +2,10 @@
 """Rescore every model on the CONTAMINATION-FREE FLEURS test split only.
 
 88 of the 150 distinct sentences in the FLEURS validation split appear verbatim
-in our training corpus (via fleurs_train). The 402 validation recordings must
-therefore be dropped from any comparison involving our own models: they inflate
-ours and not the third-party checkpoints. The 920-utterance test split has zero
-overlap with the training corpus and is the honest comparison surface.
+in the training corpora of our own models (via fleurs_train). The 402 validation
+recordings must therefore be dropped from any comparison involving them: they
+inflate ours and not the third-party checkpoints. The 920-utterance test split
+is the honest comparison surface.
 """
 import json, os
 from collections import defaultdict
@@ -15,15 +15,10 @@ import jiwer
 import numpy as np
 from bench_score import norm
 
-# BENCH_OUT selects the run (default: the published second-report A5000 run).
-# The 2026-09-15 seven-model run (outputs_p4_repro) adds phase4_fastconformer_ctc,
-# trained on the 1,692 h corpus, which also contains fleurs_train.
-OUT = os.environ.get("BENCH_OUT", "outputs_a5000")
-MODELS = ["hishab_conformer_large", "qwen3_adapter", "ehzawad_fastconformer",
+OUT = os.environ.get("BENCH_OUT", "outputs_fleurs")
+MODELS = ["fastconformer_ctc", "hishab_conformer_large", "qwen3_adapter",
           "whisper_medium", "wav2vec2", "hishab_fastconformer"]
-if OUT != "outputs_a5000":
-    MODELS = ["phase4_fastconformer_ctc"] + MODELS
-OURS = {"qwen3_adapter", "ehzawad_fastconformer", "phase4_fastconformer_ctc"}
+OURS = {"qwen3_adapter", "fastconformer_ctc"}   # trained on corpora that contain fleurs_train
 
 
 def counts(ref, hyp, char=False):
@@ -74,8 +69,8 @@ for m, v in sorted(res.items(), key=lambda kv: kv[1]["wer"]):
     ci = f"[{v['wer_ci95'][0]*100:.2f}-{v['wer_ci95'][1]*100:.2f}]"
     print(f"{m:<26}{v['wer']*100:8.2f}{ci:>18}{v['cer']*100:8.2f}")
 
-# paired: ours vs the best third-party model (and, in the seven-model run,
-# Phase 4 vs its predecessor and vs the adapter and vs Conformer Large)
+# paired: ours vs the best third-party model, and fastconformer_ctc vs the
+# adapter, Conformer Large and Whisper Medium
 def paired_delta(A, B):
     ea, na, ca, nca, ka = store[A]
     eb, nb, cb, ncb, kb = store[B]
@@ -101,10 +96,9 @@ paired = paired_delta("qwen3_adapter", "hishab_conformer_large")
 print("\npaired vs hishab_conformer_large (test-only):")
 print(json.dumps(paired, indent=1))
 paired_extra = {}
-if "phase4_fastconformer_ctc" in store:
-    for b in ("ehzawad_fastconformer", "qwen3_adapter", "hishab_conformer_large", "whisper_medium"):
-        paired_extra[f"phase4_fastconformer_ctc_vs_{b}"] = paired_delta("phase4_fastconformer_ctc", b)
-        print(f"phase4 vs {b}: {json.dumps(paired_extra[f'phase4_fastconformer_ctc_vs_{b}'])}")
+for b in ("qwen3_adapter", "hishab_conformer_large", "whisper_medium"):
+    paired_extra[f"fastconformer_ctc_vs_{b}"] = paired_delta("fastconformer_ctc", b)
+    print(f"fastconformer_ctc vs {b}: {json.dumps(paired_extra[f'fastconformer_ctc_vs_{b}'])}")
 
 
 # Speed on the same clean split, from the per-clip wall clock already recorded.
@@ -127,13 +121,11 @@ out = json.loads(Path("outputs_static/clean_test_table.json").read_text()) \
     if Path("outputs_static/clean_test_table.json").exists() else {}
 out["speed_default_runtime"] = speeds
 Path(f"{OUT}/clean_test_table.json").write_text(json.dumps(
-    {"split": "FLEURS test only (920 utterances); zero sentence overlap with the "
-              "984 h training corpus, verified by contamination_audit.py"
-              + ("; the 1,692 h Phase-4 corpus passed the pipeline's registered "
-                 "FLEURS-test overlap checks (SPEC 3)" if OUT != "outputs_a5000" else ""),
+    {"split": "FLEURS test only (920 utterances); the fastconformer_ctc training corpus passed "
+              "its pipeline's registered FLEURS-test overlap checks (text key and audio fingerprint)",
      "excluded": "FLEURS validation (402 utterances): 88 of its 150 distinct "
                  "sentences appear verbatim in the training corpus via fleurs_train, "
                  "which advantages the two models trained on it",
-     "models": res, "paired_vs_best": paired, "paired_phase4": paired_extra,
+     "models": res, "paired_vs_best": paired, "paired_fastconformer_ctc": paired_extra,
      "speed_default_runtime": speeds}, indent=1))
 print(f"\nwrote {OUT}/clean_test_table.json")

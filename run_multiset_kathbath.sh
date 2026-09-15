@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Kathbath official test (known / unknown speakers), frozen 1,000-utterance
-# subsets, SIX models (Qwen dropped by the owner) including Phase 4 (never decoded on Kathbath test;
+# subsets, the models (Qwen dropped by the owner) including fastconformer_ctc (never decoded on Kathbath test;
 # not a SPEC 2 one-shot panel — recorded as an exposure in SPEC 8w.21).
 # Same guards as run_multiset.sh. Waits for run_multiset.sh (pid in $WAIT_PID)
 # to exit before touching the card, so our own two runs never overlap.
@@ -34,10 +34,9 @@ run() { local set=$1 label=$2 kind=$3 model=$4; shift 4; local tag="${set}__${la
   say "$tag rc=$rc $(tail -1 "$OUT/logs_$tag.txt" | head -c 140)"; return $rc; }
 rev() { python3 -c "
 import json; print(json.load(open('checkpoint_revisions.json'))['$1'])"; }
-say "PROSPECTIVE: Kathbath official test known/unknown, frozen subsets (seed 20260915), seven models incl. Phase 4 (first Kathbath-test decode of its lineage)"
+say "PROSPECTIVE: Kathbath official test known/unknown, frozen subsets (seed 20260915), incl. fastconformer_ctc (first Kathbath-test decode of its lineage)"
 for set in kathbath_test_known kathbath_test_unknown; do
-  run $set phase4_fastconformer_ctc nemo "$P/experiments/p4/runs/N_O+macro_filtered_H120k/export/step_116000.nemo"
-  run $set ehzawad_fastconformer  nemo     "$P/experiments/fastconformer_ctc_bn_1kh/final.nemo"
+  run $set fastconformer_ctc nemo "$P/experiments/p4/runs/N_O+macro_filtered_H120k/export/step_116000.nemo"
   run $set hishab_conformer_large nemo     "hishab/titu_stt_bn_conformer_large"
   run $set hishab_fastconformer   nemo     "hishab/titu_stt_bn_fastconformer"
   run $set wav2vec2               wav2vec2 "SayedShaun/bangla-wave2vec2-unigram" --revision "$(rev SayedShaun/bangla-wave2vec2-unigram)"
