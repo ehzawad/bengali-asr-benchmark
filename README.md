@@ -20,9 +20,10 @@
 > below has been regenerated. This changes the ranking: Whisper Medium is the
 > second-most-accurate model here, not the fourth.
 
-A controlled comparison of Bengali speech-to-text models on the FLEURS Bengali
-evaluation set — seven models in the current (third) report below, five in the
-original — plus the web demo used to try one of them interactively.
+A controlled comparison of Bengali speech-to-text models: on the FLEURS Bengali
+evaluation set (seven models in the third report, five in the original) and, in the
+fourth report, on the official test splits of Vaani, SPRING-INX and Kathbath — plus
+the web demo used to try one of them interactively.
 
 Every model was measured in one sitting on one GPU (RTX 5080), loaded one at a
 time, over the same 1,322 utterances, through the same evaluation harness and the
@@ -31,6 +32,100 @@ across the whole table, which was not true of the earlier benchmark this
 replaces.
 
 Full report: [`asr_benchmark.pdf`](asr_benchmark.pdf)
+
+## Fourth report: official Bengali test splits beyond FLEURS (RTX A5000, 2026-09-15)
+
+FLEURS is one read-speech test set that several of these models trained near (its train split).
+This report compares the models on the **official test splits of four other public Bengali
+corpora** that, per every model card, none of them trained on — Vaani (ARTPARK-IISc, spontaneous
+image-description speech from Indian districts), SPRING-INX R1 and R2 (IIT Madras, conversational,
+about half the utterances contain Latin-script words) — plus **Kathbath** (AI4Bharat IndicSUPERB,
+read speech; known- and unknown-speaker test splits), which our models and Conformer Large trained
+*near* (Kathbath train, and for Conformer Large its validation split too). Every set is a **frozen,
+seeded 1,000-utterance subset** of the official split (seed 20260915, proportional stratification —
+Vaani by state/district, SPRING by Latin/no-Latin reference, Kathbath by speaker gender), decoded
+one model at a time on the A5000 through the unchanged `bench_run.py` backends
+([`bench_run_set.py`](bench_run_set.py)), scored with [`bench_score.py`](bench_score.py)'s
+normaliser, sentence-clustered 95 % intervals. Manifests with per-file SHA-256 are under
+[`multiset/`](multiset/); raw predictions and per-run GPU state under [`outputs_multiset/`](outputs_multiset/).
+The Qwen3 adapter was dropped from this report by the author (≈10 s/clip at batch 1; a Vaani run was
+started and discarded, see `outputs_multiset/run_multiset.log`).
+
+| Set | official rows | sampled | audio | ref. words | strata (first three) |
+|---|---:|---:|---:|---:|---|
+| Vaani test | 12,695 | 1,000 | 1.26 h | 10,082 | ('WestBengal', 'Purulia'): 44; ('Manipur', 'ImphalWest'): 4; ('Assam', 'Hailakandi'): 117 … |
+| SPRING-INX R1 eval | 1,879 | 1,000 | 2.54 h | 19,706 | latin: 501; no_latin: 499 |
+| SPRING-INX R2 eval | 1,872 | 1,000 | 2.61 h | 20,353 | latin: 458; no_latin: 542 |
+| Kathbath test (known spk) | 2,806 | 1,000 | 1.79 h | 10,801 | f: 509; m: 491 |
+| Kathbath test (unknown spk) | 1,783 | 1,000 | 1.81 h | 10,887 | f: 493; m: 507 |
+
+**WER on the 1,000-utterance official-test subsets** (best per column in bold; flag: **N** = no
+declared source training, **S** = trained on a sibling split of the same corpus, **U** = training
+provenance insufficient to say — none means "verified clean"):
+
+| Model | Vaani test | SPRING-INX R1 eval | SPRING-INX R2 eval | Kathbath test (known spk) | Kathbath test (unknown spk) |
+|---|---:|---:|---:|---:|---:|
+| **ehzawad FastConformer-CTC** (Phase 4) | **24.66%** [23.5–25.9] <sub>N</sub> | **39.24%** [38.0–40.5] <sub>N</sub> | **38.41%** [37.2–39.7] <sub>N</sub> | 13.38% [12.6–14.2] <sub>S</sub> | 13.43% [12.6–14.3] <sub>S</sub> |
+| Whisper Medium | 26.25% [25.0–27.5] <sub>U</sub> | 39.96% [38.8–41.2] <sub>U</sub> | 39.70% [38.5–40.9] <sub>U</sub> | 9.69% [9.0–10.4] <sub>U</sub> | 9.79% [9.1–10.5] <sub>U</sub> |
+| ehzawad FastConformer (Phase 1) | 26.56% [25.3–27.8] <sub>N</sub> | 41.30% [40.0–42.6] <sub>N</sub> | 40.57% [39.3–41.9] <sub>N</sub> | 17.14% [16.2–18.1] <sub>S</sub> | 16.96% [16.0–17.9] <sub>S</sub> |
+| Conformer Large (hishab) | 33.10% [31.8–34.5] <sub>N</sub> | 42.46% [41.2–43.8] <sub>N</sub> | 42.24% [40.9–43.6] <sub>N</sub> | **9.33%** [8.6–10.1] <sub>S</sub> | **8.79%** [8.1–9.5] <sub>S</sub> |
+| hishab FastConformer | 28.71% [27.4–30.0] <sub>U</sub> | 46.47% [44.8–48.2] <sub>U</sub> | 45.08% [43.5–46.7] <sub>U</sub> | 25.81% [24.1–27.6] <sub>U</sub> | 29.87% [27.5–32.4] <sub>U</sub> |
+| Wav2Vec2 | 31.26% [29.9–32.7] <sub>U</sub> | 47.28% [46.0–48.6] <sub>U</sub> | 47.33% [46.1–48.6] <sub>U</sub> | 19.08% [18.1–20.1] <sub>U</sub> | 18.80% [17.9–19.7] <sub>U</sub> |
+
+Two protocol notes that matter for reading the Phase-4 row. Its Vaani and SPRING entries are its
+**stored one-shot hypotheses** from the Phase-4 evaluation (decoded once on 2026-09-15 08:26 UTC,
+greedy, batch 32 in that pipeline's tool) re-scored on exactly these utterances — it was not decoded
+again, because those splits are one-shot panels in its registered protocol; that is why its ms/clip
+is N/A there. Its Kathbath entries are fresh decodes through this harness (its first contact with
+Kathbath test). Every other cell is a fresh batch-1 decode here.
+
+What the table says: on the two corpora nobody trained on, the FLEURS ranking does not hold.
+Conformer Large — the FLEURS leader at 14.4 % — is **last on Vaani** (33.1 %) and fifth on SPRING;
+its training list is Bangladesh-centric and these are Indian-district and IIT-Madras recordings.
+Phase 4 leads Vaani and both SPRING sets, Whisper Medium is second on all three at ~15× the
+latency, and the Phase 1 → Phase 4 gain holds on every set (−1.9, −2.1, −2.2 pp). On Kathbath the
+order flips back: Conformer Large (9.3 / 8.8 %) and Whisper (9.7 / 9.8 %) lead, Phase 4 is third
+(13.4 / 13.4 %) — Conformer Large trained on Kathbath validation as well as train, Whisper's
+provenance for Kathbath is unknown, and Phase 4 saw only the train split; a **U** cell can hide
+training overlap, so Whisper's Kathbath numbers should be read with that in mind. Known- vs
+unknown-speaker Kathbath differ by under a point for every model except hishab FastConformer.
+
+SPRING code-switching, per model — WER on utterances whose reference has no Latin-script
+character / has Latin-script characters (R1: 499 / 501 utterances; R2: 542 / 458), and how many
+of the 1,000 hypotheses contain any Latin script at all:
+
+| Model | R1 no-Latin / Latin | R2 no-Latin / Latin | hyps with Latin (R1 / R2) |
+|---|---|---|---|
+| ehzawad FastConformer-CTC (Phase 4) | 35.39% / 41.85% | 35.14% / 41.12% | 0 / 0 |
+| Whisper Medium | 35.92% / 42.71% | 36.67% / 42.22% | 0 / 0 |
+| ehzawad FastConformer (Phase 1) | 37.94% / 43.58% | 38.08% / 42.63% | 0 / 0 |
+| Conformer Large (hishab) | 40.03% / 44.11% | 39.53% / 44.49% | 0 / 0 |
+| hishab FastConformer | 47.32% / 45.90% | 43.66% / 46.26% | 0 / 0 |
+| Wav2Vec2 | 43.99% / 49.51% | 44.39% / 49.76% | 0 / 0 |
+
+The NeMo models' Bengali-only vocabularies cannot emit a Latin word, so every such reference word
+is a guaranteed error for them; Whisper can, and still loses to Phase 4 on the Latin half. On the
+Latin-free half the gap between Phase 4 (35.4 / 35.1 %) and Whisper (35.9 / 36.7 %) is within the
+intervals.
+
+<details>
+<summary>ms/clip per set (batch 1, warmed, default runtime)</summary>
+
+| Model | Vaani test | SPRING-INX R1 eval | SPRING-INX R2 eval | Kathbath test (known spk) | Kathbath test (unknown spk) |
+|---|---:|---:|---:|---:|---:|
+| ehzawad FastConformer-CTC (Phase 4) | N/A | N/A | N/A | 72 | 70 |
+| Whisper Medium | 919 | 1,454 | 1,494 | 1,014 | 1,041 |
+| ehzawad FastConformer (Phase 1) | 73 | 75 | 73 | 70 | 70 |
+| Conformer Large (hishab) | 74 | 75 | 76 | 70 | 71 |
+| hishab FastConformer | 72 | 74 | 73 | 70 | 71 |
+| Wav2Vec2 | 33 | 49 | 51 | 35 | 35 |
+
+</details>
+
+Co-tenant control: each run refused to start while any foreign process held the A5000 and a
+watcher polled the card every 15 s, ready to stop the run cooperatively; no foreign process
+appeared during any of the 27 runs (`outputs_multiset/cotenant_*.log` — none written).
+Reproduce the scoring: `python score_multiset.py` over the committed predictions.
 
 ## Third report: the Phase-4 FastConformer replaces Phase 1 — seven models on the RTX A5000 (2026-09-15)
 
@@ -451,6 +546,8 @@ app.py, run.sh           the interactive web demo
 outputs/                 per-model report.txt and predictions.json, plus summary
 outputs_a5000/           second report (six models, RTX A5000)
 outputs_p4_repro/        third report (seven models, RTX A5000, 2026-09-15)
+outputs_multiset/, multiset/   fourth report: official-test subsets, predictions, manifests
+bench_run_set.py, run_multiset*.sh, score_multiset.py   the fourth report's harness, runners, scorer
 requirements.txt         pinned, verified on an RTX 5080 (sm_120, cu128 wheels)
 ```
 
@@ -459,7 +556,10 @@ Not included: model checkpoints, the built evaluation set, and the virtualenv.
 ## Attribution and licences
 
 - Evaluation data: [FLEURS](https://huggingface.co/datasets/google/fleurs)
-  (Google), CC-BY-4.0. `outputs/*/predictions.json` contains FLEURS reference
+  (Google), CC-BY-4.0; Vaani transcription part (ARTPARK-IISc, CC-BY-4.0);
+  SPRING-INX R1/R2 (SPRING Lab, IIT Madras, CC-BY-4.0); Kathbath (AI4Bharat
+  IndicSUPERB, CC0). `multiset/*/eval_manifest.json` and `outputs_multiset/*/predictions.json`
+  carry their reference transcripts alongside each hypothesis. `outputs/*/predictions.json` contains FLEURS reference
   transcripts alongside each model's hypothesis.
 - `hishab/titu_stt_bn_conformer_large`, `hishab/titu_stt_bn_fastconformer` -
   Hishab.
