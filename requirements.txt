@@ -1,4 +1,4 @@
-# Exact versions verified working on this box (RTX 5080 / sm_120, CUDA 13.2 driver).
+# Pinned; the committed results were produced with these on an RTX A5000 (CUDA 12.8 wheels).
 # cu128 wheels are required: Blackwell is not supported by older CUDA builds.
 --extra-index-url https://download.pytorch.org/whl/cu128
 

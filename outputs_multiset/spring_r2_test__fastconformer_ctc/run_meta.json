@@ -8,7 +8,7 @@
  "n": 1000,
  "n_manifest": 1000,
  "failures": 0,
- "source": "stored hypotheses from the model's registered one-shot evaluation of the full official split (2026-09-15 08:26 UTC, greedy CTC, batch 32, the model's own evaluation tool), matched to this subset by file; not decoded through bench_run_set.py, so there is no timing",
+ "source": "hypotheses from this model's earlier evaluation of the full official split (greedy CTC, batch 32, its own evaluation tool), matched to this subset by file; not decoded through bench_run_set.py, so there is no timing",
  "ms_per_clip_mean": null,
  "decoding": "greedy, no external LM or rescoring"
 }

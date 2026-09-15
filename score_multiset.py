@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Score the multi-dataset comparison : every outputs_multiset/<set>__<model>
-run, plus fastconformer_ctc's STORED one-shot hypotheses on Vaani/SPRING (re-scored,
-never re-decoded), with the benchmark's own scorer (bench_score.norm: punctuation to
+run, plus fastconformer_ctc's stored hypotheses on Vaani/SPRING from its earlier
+full-split evaluation (re-scored, not re-decoded), with the benchmark's own scorer (bench_score.norm: punctuation to
 word boundaries, NFC) and two 95% bootstraps (utterance; distinct-reference clusters).
 SPRING sets also get a "no Latin-script reference characters" diagnostic for every
 model. Writes outputs_multiset/summary_multiset.json and prints the table.
@@ -18,9 +18,7 @@ from bench_score import norm, boot   # noqa: E402  (the published scorer, unchan
 
 A = Path(__file__).resolve().parent
 OUT = A / "outputs_multiset"
-P4_HYPS = Path("/mnt/sdb/arafat/ehz/llm/bengali-asr-pipeline/experiments/p4/eval/oneshot_panels_step116000_hyps.json")
-P4_PANEL = {"vaani_test": "vaani_test", "spring_r1_test": "spring_r1_test", "spring_r2_test": "spring_r2_test"}
-SETS = ["vaani_test", "spring_r1_test", "spring_r2_test", "kathbath_test_known", "kathbath_test_unknown"]
+SETS = ["vaani_test", "spring_r1_test", "spring_r2_test", "kathbath_test_known", "kathbath_test_unknown", "indicvoices_conv"]
 MODELS = ["fastconformer_ctc", "qwen3_adapter", "hishab_conformer_large",
           "whisper_medium", "wav2vec2", "hishab_fastconformer"]
 LATIN = re.compile(r"[A-Za-z]")
@@ -54,24 +52,6 @@ def load_run(set_, model):
     return {"status": "complete", "meta": meta, "preds": preds}
 
 
-def p4_stored(set_, manifest):
-    """fastconformer_ctc hypotheses from the gated one-shot decode, matched to the subset by path."""
-    if set_ not in P4_PANEL or not P4_HYPS.exists():
-        return None
-    h = json.loads(P4_HYPS.read_text())["panels"].get(P4_PANEL[set_], {})
-    by_name = {Path(k).name: v for k, v in h.items()}
-    preds, missing = [], 0
-    for r in manifest["rows"]:
-        hyp = by_name.get(Path(r["file"]).name)
-        if hyp is None:
-            missing += 1; hyp = ""
-        preds.append({"file": r["file"], "utt_id": r.get("utt_id"), "stratum": r.get("stratum"),
-                      "raw_reference": r["raw_reference"], "transcript": hyp, "ok": hyp != ""})
-    return {"status": "complete (stored one-shot hypotheses, 2026-09-15 08:26 UTC, p4_panel_eval.py batch 32)",
-            "meta": {"label": f"{set_}__fastconformer_ctc", "kind": "nemo", "source": "stored one-shot hypotheses",
-                     "ms_per_clip_mean": None, "failures": 0, "missing_in_store": missing}, "preds": preds}
-
-
 def main():
     table, summary = [], {"sets": {}, "models": {}, "note": __doc__}
     for set_ in SETS:
@@ -79,11 +59,9 @@ def main():
         if not mf.exists():
             continue
         man = json.loads(mf.read_text())
-        summary["sets"][set_] = {k: man[k] for k in ("dataset", "n", "hours", "ref_words", "seed", "sampling", "strata", "source_rows", "source_manifest_sha256")}
+        summary["sets"][set_] = {k: man.get(k) for k in ("dataset", "source", "n", "hours", "ref_words", "seed", "sampling", "strata", "source_rows", "source_manifest_sha256", "speakers")}
         for model in MODELS:
             run = load_run(set_, model)
-            if run is None and model == "fastconformer_ctc":
-                run = p4_stored(set_, man)
             if run is None:
                 continue
             preds = run["preds"]

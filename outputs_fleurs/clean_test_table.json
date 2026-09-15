@@ -1,5 +1,5 @@
 {
- "split": "FLEURS test only (920 utterances); the fastconformer_ctc training corpus passed its pipeline's registered FLEURS-test overlap checks (text key and audio fingerprint)",
+ "split": "FLEURS test only (920 utterances); the FLEURS validation split overlaps the training data of the two ehzawad models and is excluded for every model",
  "excluded": "FLEURS validation (402 utterances): 88 of its 150 distinct sentences appear verbatim in the training corpus via fleurs_train, which advantages the two models trained on it",
  "models": {
   "fastconformer_ctc": {

@@ -1,7 +1,7 @@
 {
  "label": "kathbath_test_known__fastconformer_ctc",
  "kind": "nemo",
- "model": "/mnt/sdb/arafat/ehz/llm/bengali-asr-pipeline/experiments/p4/runs/N_O+macro_filtered_H120k/export/step_116000.nemo",
+ "model": "ehzawad/stt_bn_fastconformer_ctc (local sealed export, sha256 bea300ce4f1f1df1fa4707562ddaa7c64db6f01121ef3d64a6333635f3626572)",
  "adapter": null,
  "revision": null,
  "dataset": "kathbath_test_known",

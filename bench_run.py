@@ -12,6 +12,9 @@ A model that raises on a clip yields an EMPTY hypothesis that stays in the
 denominator; failures are never dropped.
 
   bench_run.py --kind nemo --model /path/to.nemo --label fastconformer_ctc
+
+BENCH_ASSETS (default .) holds eval_manifest.json and eval_fleurs_bn/;
+BENCH_OUT_ROOT (default outputs_fleurs) receives <label>/predictions.json + run_meta.json.
 """
 import argparse, hashlib, json, os, platform, subprocess, sys, time
 from pathlib import Path
@@ -178,7 +181,7 @@ def main():
 
     man = json.loads(MANIFEST.read_text())
     rows = man["rows"][:a.limit] if a.limit else man["rows"]
-    out_dir = ASSETS / "outputs" / a.label
+    out_dir = OUT_ROOT / a.label
     out_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"[{a.label}] loading {a.kind}: {a.model}", flush=True)

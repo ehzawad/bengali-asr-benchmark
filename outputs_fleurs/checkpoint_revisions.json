@@ -4,5 +4,7 @@
  "hishab/titu_stt_bn_conformer_large": "42041012a7cdb9df071eac4cef33b8a6182eb687",
  "hishab/titu_stt_bn_fastconformer": "993316b17c3db56a42bf0140b8ad524f35b4677b",
  "ehzawad/stt_bn_fastconformer_ctc": "6b0d1aa869560bb22ef35d9e2c589d682daa87d4",
- "_note": "fastconformer_ctc decoded from the local sealed export (sha256 bea300ce4f1f1df1fa4707562ddaa7c64db6f01121ef3d64a6333635f3626572), byte-identical to the LFS object at the revision above"
+ "_note": "fastconformer_ctc decoded from the local sealed export (sha256 bea300ce4f1f1df1fa4707562ddaa7c64db6f01121ef3d64a6333635f3626572), byte-identical to the LFS object at the revision above",
+ "Qwen/Qwen3-ASR-1.7B-hf": "bcd2b5b7f32b480ab5790554cfa8347f246a14f3",
+ "ehzawad/stt_bn_qwen3_asr": "local adapter directory experiments/qwen_final/candidates/step_17280 at run time; published as huggingface.co/ehzawad/stt_bn_qwen3_asr"
 }
