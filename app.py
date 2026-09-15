@@ -1,10 +1,10 @@
 """Bengali speech-to-text web service.
 
-Serves ehzawad/stt_bn_fastconformer (FastConformer-CTC large, 1024-piece Bengali
+Serves ehzawad/stt_bn_fastconformer_ctc (FastConformer-CTC large, 1024-piece Bengali
 BPE) behind a Gradio UI on port 8017: record from the browser mic or upload a
 file, get Bengali text back.
 
-The model is a local .nemo checkpoint (model/stt_bn_fastconformer.nemo), so this
+The model is a local .nemo checkpoint (model/stt_bn_fastconformer_ctc.nemo), so this
 process never needs a Hugging Face token.
 
 Audio is coerced to what the model was trained on -- 16 kHz mono -- rather than
@@ -37,7 +37,7 @@ import asr_core
 import torch
 
 REPO_ROOT = Path(__file__).parent
-MODEL_PATH = REPO_ROOT / "model" / "stt_bn_fastconformer.nemo"
+MODEL_PATH = REPO_ROOT / "model" / "stt_bn_fastconformer_ctc.nemo"
 TARGET_SR = 16000
 
 CHUNK_SECONDS = 25.0        # under the 30 s training cap
@@ -148,7 +148,7 @@ with gr.Blocks(
 ) as demo:
     gr.Markdown(
         "# বাংলা Speech-to-Text\n"
-        "`ehzawad/stt_bn_fastconformer` — FastConformer-CTC large, greedy decode, "
+        "`ehzawad/stt_bn_fastconformer_ctc` — FastConformer-CTC large, greedy decode, "
         "no language model. Record or upload; audio is converted to 16 kHz mono "
         "automatically. Clips over 25 s are segmented at pauses before decoding."
     )

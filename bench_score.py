@@ -12,7 +12,7 @@ Two intervals are reported, deliberately:
     recordings are not independent and the per-utterance interval is optimistic.
 Comparison claims must use the clustered interval on PAIRED differences.
 """
-import json, re
+import json, os, re
 from collections import defaultdict
 from pathlib import Path
 
@@ -21,7 +21,9 @@ import unicodedata
 
 import numpy as np
 
-OUT = Path("outputs_a5000")
+# BENCH_OUT selects the run to score (default: the published A5000 run). The
+# 2026-09-15 seven-model reproducibility run lives in outputs_p4_repro/.
+OUT = Path(os.environ.get("BENCH_OUT", "outputs_a5000"))
 B = 10000
 PUNCT = re.compile(r"[\"“”‘’'।,.!?;:()\[\]{}—–\-]")
 
@@ -141,8 +143,9 @@ def main():
         "checkpoints": json.loads((OUT / "checkpoint_revisions.json").read_text()),
         "models": rows,
     }
-    Path("outputs_a5000/summary_a5000.json").write_text(json.dumps(summary, indent=1))
-    print("\nwrote outputs_a5000/summary_a5000.json")
+    summary_path = OUT / ("summary_a5000.json" if OUT.name == "outputs_a5000" else "summary.json")
+    summary_path.write_text(json.dumps(summary, indent=1))
+    print(f"\nwrote {summary_path}")
 
 
 if __name__ == "__main__":

@@ -6,10 +6,10 @@
 #   ./run.sh --daemon     start detached, log to service.log
 #   ./run.sh --stop       stop a running instance
 #
-# Fetching the model needs a Hugging Face token with read access to the private
-# repo, supplied via the environment -- never committed here:
+# The checkpoint is public; an HF token is only needed for a private mirror and
+# is supplied via the environment, never committed here:
 #   HF_TOKEN=hf_xxx ./run.sh
-# Once model/stt_bn_fastconformer.nemo exists the token is not needed again.
+# Once model/stt_bn_fastconformer_ctc.nemo exists the token is not needed again.
 set -euo pipefail
 
 cd "$(dirname "$0")"
@@ -18,8 +18,8 @@ VENV=venv
 # Absolute, so the pkill pattern below matches the running command line exactly
 # and cannot collide with an unrelated app.py elsewhere on the box.
 PYTHON="$PWD/$VENV/bin/python"
-MODEL=model/stt_bn_fastconformer.nemo
-HF_REPO=ehzawad/stt_bn_fastconformer
+MODEL=model/stt_bn_fastconformer_ctc.nemo
+HF_REPO=ehzawad/stt_bn_fastconformer_ctc
 PORT=8017
 
 stop_service() {
@@ -68,7 +68,7 @@ if [[ ! -f "$MODEL" ]]; then
 	# transfer cannot leave a truncated file that looks complete next run.
 	curl -fL --retry 3 -H "Authorization: Bearer $HF_TOKEN" \
 		-o "$MODEL.part" \
-		"https://huggingface.co/$HF_REPO/resolve/main/stt_bn_fastconformer.nemo"
+		"https://huggingface.co/$HF_REPO/resolve/main/stt_bn_fastconformer_ctc.nemo"
 	mv "$MODEL.part" "$MODEL"
 fi
 

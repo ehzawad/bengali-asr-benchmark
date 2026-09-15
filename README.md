@@ -20,8 +20,9 @@
 > below has been regenerated. This changes the ranking: Whisper Medium is the
 > second-most-accurate model here, not the fourth.
 
-A controlled comparison of five Bengali speech-to-text models on the FLEURS
-Bengali evaluation set, plus the web demo used to try one of them interactively.
+A controlled comparison of Bengali speech-to-text models on the FLEURS Bengali
+evaluation set — seven models in the current (third) report below, five in the
+original — plus the web demo used to try one of them interactively.
 
 Every model was measured in one sitting on one GPU (RTX 5080), loaded one at a
 time, over the same 1,322 utterances, through the same evaluation harness and the
@@ -30,6 +31,77 @@ across the whole table, which was not true of the earlier benchmark this
 replaces.
 
 Full report: [`asr_benchmark.pdf`](asr_benchmark.pdf)
+
+## Third report: the Phase-4 FastConformer replaces Phase 1 — seven models on the RTX A5000 (2026-09-15)
+
+The successor to `ehzawad/stt_bn_fastconformer` is
+[`ehzawad/stt_bn_fastconformer_ctc`](https://huggingface.co/ehzawad/stt_bn_fastconformer_ctc):
+the same FastConformer-CTC large architecture retrained on 1,692 hours of human-supervised
+Bengali (Phase 1 used 984), CC-BY-SA-4.0. It takes Phase 1's place in the comparison; Phase 1
+is kept as a labelled predecessor row because the two are still both public and the
+improvement between them is itself a result. **Every model was re-measured** in one sitting on
+the A5000, one model resident at a time, through the unchanged harness (`bench_run.py`,
+`bench_score.py`); the six previously published models reproduce their second-report numbers
+**to the digit** on the test split (19.67, 14.37, 36.22, 16.23, 20.64, 16.54).
+
+> **Read this before quoting the new row.** (1) This is the **third** time the Phase-4 lineage
+> has decoded FLEURS test — an owner-authorised interim look at update 88,000 (17.54%) and the
+> registered final evaluation of the selected checkpoint (17.1162%, its pipeline's frozen
+> scorer) came first; the number below is a post-release reproduction under this benchmark's
+> scorer, which agrees at displayed precision. It is not a fresh held-out measurement.
+> (2) The validation-split contamination described in the second report applies to Phase 4
+> too (its corpus contains `fleurs_train`), so the headline is the 920-utterance **test** split
+> and the 1,322-utterance figures are folded away below. (3) The 1,692 h corpus passed the
+> Phase-4 pipeline's registered FLEURS-test overlap checks (text-key and audio fingerprint;
+> zero matches retained); the audit in `leakage_audit.py` covers the Phase-1 corpus only.
+> (4) "Clean" here means no detected training overlap, not no prior exposure.
+
+| Model | Checkpoint | WER (95% CI) | CER | ms/clip | Params |
+|---|---|---|---|---|---|
+| Conformer Large | `hishab/titu_stt_bn_conformer_large` | **14.37%** [13.11–15.73] | 4.48% | 77 | 121.5M |
+| Whisper Medium | `SayedShaun/bengali-whisper-medium` | 16.23% [15.05–17.45] | 5.09% | 1,866 | 763.9M |
+| Qwen3-ASR + Bengali adapter | `ehzawad/stt_bn_qwen3_asr` on `Qwen/Qwen3-ASR-1.7B-hf` | 16.54% [15.43–17.68] | 4.68% | 9,728 | 2.04B / 38M trained |
+| **ehzawad FastConformer-CTC** (Phase 4) | `ehzawad/stt_bn_fastconformer_ctc` | 17.12% [15.95–18.34] | 5.12% | 83 | 115.6M |
+| ehzawad FastConformer (Phase 1, predecessor) | `ehzawad/stt_bn_fastconformer` | 19.67% [18.50–20.88] | 5.79% | 76 | 115.6M |
+| Wav2Vec2 | `SayedShaun/bangla-wave2vec2-unigram` | 20.64% [19.46–21.89] | 6.02% | 64 | 315.5M |
+| hishab FastConformer | `hishab/titu_stt_bn_fastconformer` | 36.22% [33.88–38.72] | 9.05% | 79 | 115.6M |
+
+**920 FLEURS bn_in test utterances**, same shared audio path, greedy decoding, batch 1, no
+external language model, zero failed clips and zero empty hypotheses for any model. Intervals
+resample the 349 distinct sentences. Paired sentence-clustered deltas for the new model:
+vs Phase 1 **-2.56 pp, 95% CI [-3.12, -2.01]**;
+vs the Qwen3 adapter +0.58 pp, 95% CI [-0.24, +1.40];
+vs Whisper Medium +0.89 pp, 95% CI [+0.27, +1.50];
+vs Conformer Large +2.74 pp, 95% CI [+2.01, +3.46].
+So: a clear 2.6-point improvement over its predecessor at the same size and speed; not
+distinguishable from the Qwen3 adapter (which it was registered to beat and did not); behind
+Whisper Medium by under a point at 22× its speed; and 2.7 points behind Conformer Large.
+Phase 4 was trained on a **1,692 h** corpus that includes the Bengali.AI competition data
+(726 h); Conformer Large's card lists ~3,900 h including Common Voice `validated` and the
+Kathbath and Bengali.AI validation splits — none of which touches FLEURS test.
+
+Timing caveat: a co-tenant's 425 MiB idle process was resident on the A5000 for the first
+~110 s of the Phase-4 run (it left at 10:40:52 UTC; every later model ran on an otherwise empty
+card), so the 83 ms/clip is an upper bound; accuracy is unaffected. Full per-run GPU state is in
+`outputs_p4_repro/*/run_meta.json`; the runner is `outputs_p4_repro/run_all_p4_repro.log`.
+
+<details>
+<summary>The 1,322-utterance table (test + validation), retained for the reproduction check</summary>
+
+| Model | WER (95% CI) | CER | ms/clip |
+|---|---|---|---|
+| Conformer Large | 14.93% [13.81–16.06] | 4.55% | 77 |
+| Qwen3-ASR + Bengali adapter | 16.03% [15.10–16.99] | 4.47% | 9,666 |
+| Whisper Medium | 16.24% [15.25–17.26] | 5.05% | 1,813 |
+| ehzawad FastConformer-CTC (Phase 4) | 17.15% [16.15–18.17] | 5.06% | 82 |
+| ehzawad FastConformer (Phase 1, predecessor) | 19.50% [18.49–20.49] | 5.68% | 75 |
+| Wav2Vec2 | 20.71% [19.71–21.75] | 5.95% | 64 |
+| hishab FastConformer | 36.18% [34.10–38.29] | 9.03% | 77 |
+
+</details>
+
+Reproduce: `BENCH_OUT=outputs_p4_repro python bench_score.py` and
+`BENCH_OUT=outputs_p4_repro python clean_split_table.py` over the committed predictions.
 
 ## Results
 
@@ -342,7 +414,7 @@ in by hand, so a number in the report cannot drift from the run that produced it
 
 ## The web demo
 
-`app.py` serves `ehzawad/stt_bn_fastconformer` behind a Gradio UI for
+`app.py` serves `ehzawad/stt_bn_fastconformer_ctc` (the Phase-4 model) behind a Gradio UI for
 interactive use: record from the microphone or upload a file, get Bengali text
 back. It shares `asr_core.py` with the benchmark, so the demo and the measured
 numbers use the same audio handling.
@@ -377,6 +449,8 @@ collect_results.py       raw predictions -> outputs/summary.json, with intervals
 make_report.py           outputs/summary.json -> the PDF
 app.py, run.sh           the interactive web demo
 outputs/                 per-model report.txt and predictions.json, plus summary
+outputs_a5000/           second report (six models, RTX A5000)
+outputs_p4_repro/        third report (seven models, RTX A5000, 2026-09-15)
 requirements.txt         pinned, verified on an RTX 5080 (sm_120, cu128 wheels)
 ```
 
@@ -390,8 +464,9 @@ Not included: model checkpoints, the built evaluation set, and the virtualenv.
 - `hishab/titu_stt_bn_conformer_large`, `hishab/titu_stt_bn_fastconformer` -
   Hishab.
 - `SayedShaun/bangla-wave2vec2-unigram`, `SayedShaun/bengali-whisper-medium`.
-- `ehzawad/stt_bn_fastconformer` - FastConformer-CTC large fine-tuned on 984
-  hours of human-supervised Bengali, 1,024-piece Bengali BPE. Base model
+- `ehzawad/stt_bn_fastconformer_ctc` - FastConformer-CTC large trained on 1,692
+  hours of human-supervised Bengali (CC-BY-SA-4.0); `ehzawad/stt_bn_fastconformer`
+  - its predecessor, 984 hours. Both 1,024-piece Bengali BPE on base model
   `nvidia/stt_en_fastconformer_ctc_large`, NVIDIA, CC-BY-4.0.
 
 Model licences are those of their respective publishers. Check each model card
