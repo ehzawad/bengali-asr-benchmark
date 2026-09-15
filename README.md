@@ -104,23 +104,10 @@ training overlap), and the ehzawad FastConformer saw only the train split. Known
 unknown-speaker Kathbath differ by under a point for every model except hishab
 FastConformer.
 
-SPRING code-switching, per model — WER on utterances whose reference has no
-Latin-script character / has Latin-script characters (R1: 499 / 501 utterances;
-R2: 542 / 458), and how many of the 1,000 hypotheses contain any Latin script:
-
-| Model | R1 no-Latin / Latin | R2 no-Latin / Latin | hyps with Latin (R1 / R2) |
-|---|---|---|---|
-| ehzawad FastConformer-CTC | 35.39% / 41.85% | 35.14% / 41.12% | 0 / 0 |
-| Whisper Medium | 35.92% / 42.71% | 36.67% / 42.22% | 0 / 0 |
-| Conformer Large (hishab) | 40.03% / 44.11% | 39.53% / 44.49% | 0 / 0 |
-| hishab FastConformer | 47.32% / 45.90% | 43.66% / 46.26% | 0 / 0 |
-| Wav2Vec2 | 43.99% / 49.51% | 44.39% / 49.76% | 0 / 0 |
-
-The NeMo models' Bengali-only vocabularies cannot emit a Latin word; Whisper and
-wav2vec2 could in principle, but none of the five produced a single Latin-script
-hypothesis in 2,000 utterances, so every Latin reference word is an error for every
-model. On the Latin-free half the gap between the ehzawad FastConformer
-(35.4 / 35.1%) and Whisper (35.9 / 36.7%) is within the intervals.
+A note on SPRING: about half of its reference utterances contain English words in Latin script, and
+none of the five models emitted a single Latin-script word, so those words are errors for every model
+alike; on the Latin-free half the ehzawad FastConformer and Whisper Medium are within each other's
+intervals (details in `outputs_multiset/summary_multiset.json`).
 
 <details>
 <summary>ms/clip per set (batch 1, warmed, default runtime)</summary>

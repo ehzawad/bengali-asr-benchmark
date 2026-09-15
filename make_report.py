@@ -197,24 +197,12 @@ def page3(pdf):
 
 def page4(pdf):
     fig = plt.figure(figsize=(8.27, 11.69))
-    fig.text(0.06, 0.945, "Code-switching, latency, and how the runs were controlled", size=16, weight="bold")
-    fig.text(0.06, 0.905, "SPRING-INX: WER on utterances whose reference has no Latin-script character / has Latin-script "
-             "characters (R1: 499 / 501; R2: 542 / 458), and hypotheses containing any Latin script (of 1,000)",
-             size=8.0, color=INK_2, wrap=True)
-    rows = []
-    for k in MM:
-        r1, r2 = MS["models"][k]["spring_r1_test"], MS["models"][k]["spring_r2_test"]
-        rows.append([f"{'▸ ' if k == OURS_KEY else '  '}{name(k)}",
-                     f"{r1['no_latin_ref']['wer']*100:.2f} / {r1['latin_ref']['wer']*100:.2f}",
-                     f"{r2['no_latin_ref']['wer']*100:.2f} / {r2['latin_ref']['wer']*100:.2f}",
-                     f"{r1['hyps_with_latin']} / {r2['hyps_with_latin']}"])
-    yy = table(fig, 0.06, 0.865, 0.88, ["Model", "R1  no-Latin / Latin", "R2  no-Latin / Latin", "hyps with Latin R1 / R2"],
-               rows, [0.0, 0.52, 0.76, 1.0])
-    fig.text(0.06, yy - 0.025, "The NeMo models' Bengali-only vocabularies cannot emit a Latin word; Whisper and wav2vec2 could "
-             "in principle, but none of the five produced a single Latin-script hypothesis in 2,000 utterances, so every "
-             "Latin reference word is an error for every model and the Latin half separates the models less than the "
-             "Latin-free half does. There the highlighted model (35.4 / 35.1%) and Whisper (35.9 / 36.7%) are within "
-             "each other's intervals.", size=8.2, color=INK_2, va="top", wrap=True, linespacing=1.5)
+    fig.text(0.06, 0.945, "Latency per set, and how the runs were controlled", size=16, weight="bold")
+    fig.text(0.06, 0.905, "SPRING note: about half of its reference utterances contain English words in Latin script; none of "
+             "the five models emitted a single Latin-script word, so those words are errors for every model alike. On the "
+             "Latin-free half the highlighted model (35.4 / 35.1%) and Whisper Medium (35.9 / 36.7%) are within each other's "
+             "intervals (per-model split in outputs_multiset/summary_multiset.json).", size=8.0, color=INK_2, va="top", wrap=True, linespacing=1.5)
+    yy = 0.83
     rows = []
     for k in MM:
         cells = []
