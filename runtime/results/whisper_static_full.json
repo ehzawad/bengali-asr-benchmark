@@ -1,0 +1,10 @@
+{
+ "model": "whisper_medium",
+ "runtime": "static KV cache, greedy batch 1",
+ "n": 1322,
+ "wer_static": 0.27886,
+ "wer_shipped": 0.27886,
+ "identical_transcripts": "1313/1322",
+ "ms_per_clip_mean": 467.6,
+ "ms_per_clip_p95": 734.4
+}

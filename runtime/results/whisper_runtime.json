@@ -1,0 +1,17 @@
+{
+ "eager_baseline": {
+  "ms_per_clip": 1838.3,
+  "tok_per_clip": 89.6,
+  "ms_per_token": 20.51,
+  "exact_match_vs_eager": "8/8"
+ },
+ "static_cache": {
+  "ms_per_clip": 476.4,
+  "tok_per_clip": 89.6,
+  "ms_per_token": 5.32,
+  "exact_match_vs_eager": "8/8"
+ },
+ "compile_reduce_overhead": {
+  "error": "RuntimeError: Error: accessing tensor output of CUDAGraphs that has been overwritten by a subsequent run. Stack trace: File \"/mnt/sdb/arafat/ehz/llm/bengali-asr-pipeline/.venv-qwen/lib/python3.12/site-packages/transformers/utils/generic.py\", line 939, in wrapper\n    output = func(self, *args, **kwargs)\n          "
+ }
+}

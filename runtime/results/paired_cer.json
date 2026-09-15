@@ -1,0 +1,15 @@
+{
+ "a": "qwen3_adapter",
+ "b": "hishab_conformer_large",
+ "n_utterances": 1322,
+ "n_sentence_clusters": 499,
+ "cer_a": 0.04475,
+ "cer_b": 0.04555,
+ "delta_pp_a_minus_b": -0.0805,
+ "delta_ci95_pp": [
+  -0.5904,
+  0.4143
+ ],
+ "p_a_better": 0.6155,
+ "significant_at_95": false
+}

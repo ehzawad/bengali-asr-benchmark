@@ -29,7 +29,7 @@ from pathlib import Path
 W2V = Path(".w2v_path").read_text().strip() if Path(".w2v_path").exists() else None
 
 MODELS = [
-    ("ehzawad fastconformer", "model/stt_bn_fastconformer.nemo"),
+    ("ehzawad fastconformer ctc", "model/stt_bn_fastconformer_ctc.nemo"),
     ("hishab fastconformer", "model/titu_stt_bn_fastconformer.nemo"),
     ("hishab conformer_large", "model/titu_stt_bn_conformer_large.nemo"),
     ("whisper medium", "model/bengali_whisper_medium"),

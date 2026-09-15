@@ -1,0 +1,28 @@
+{
+ "attribution": {
+  "self_cpu_ms": 616.0,
+  "self_cuda_ms": 259.2,
+  "gpu_busy_fraction": 0.4207
+ },
+ "eager_attn": {
+  "ms_per_clip": 6677.6,
+  "tok_per_clip": 130.5,
+  "ms_per_token": 51.17,
+  "exact_match": true
+ },
+ "sdpa": {
+  "ms_per_clip": 5774.7,
+  "tok_per_clip": 130.5,
+  "ms_per_token": 44.25,
+  "exact_match": true
+ },
+ "static_cache": {
+  "ms_per_clip": 1420.2,
+  "tok_per_clip": 130.5,
+  "ms_per_token": 10.88,
+  "exact_match": "5/8"
+ },
+ "compile_reduce_overhead": {
+  "error": "RuntimeError: Error: accessing tensor output of CUDAGraphs that has been overwritten by a subsequent run. Stack trace: File \"/mnt/sdb/arafat/ehz/llm/bengali-asr-pipeline/.venv-qwen/lib/python3.12/site-packages/transformers/models/qwen3_asr/modeling_qwen3_asr.py\", line 560, in torch_dynamo_resume_in_forward_at_553"
+ }
+}

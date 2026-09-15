@@ -39,7 +39,7 @@ from pydantic import BaseModel
 import asr_core
 import backends
 
-MODEL_PATH = os.environ.get("STT_MODEL", "model/stt_bn_fastconformer.nemo")
+MODEL_PATH = os.environ.get("STT_MODEL", "model/stt_bn_fastconformer_ctc.nemo")
 DEVICE = backends.DEVICE
 
 print(f"[bench] loading {MODEL_PATH} on {DEVICE}", flush=True)

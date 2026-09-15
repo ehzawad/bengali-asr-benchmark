@@ -1,0 +1,16 @@
+2026-09-15T10:39:02Z PROSPECTIVE: post-release reproducibility run; Phase 4 = third FLEURS exposure; no selection from these numbers
+2026-09-15T10:39:02Z === phase4_fastconformer_v2_p4repro (nemo) ===
+2026-09-15T10:41:05Z phase4_fastconformer_v2_p4repro rc=0 [phase4_fastconformer_v2_p4repro] 81.51 ms/clip  163.1x real time  failures=0
+2026-09-15T10:41:05Z === ehzawad_fastconformer_p4repro (nemo) ===
+2026-09-15T10:43:02Z ehzawad_fastconformer_p4repro rc=0 [ehzawad_fastconformer_p4repro] 75.11 ms/clip  177.0x real time  failures=0
+2026-09-15T10:43:02Z === hishab_conformer_large_p4repro (nemo) ===
+2026-09-15T10:45:01Z hishab_conformer_large_p4repro rc=0 [hishab_conformer_large_p4repro] 76.69 ms/clip  173.3x real time  failures=0
+2026-09-15T10:45:01Z === hishab_fastconformer_p4repro (nemo) ===
+2026-09-15T10:47:01Z hishab_fastconformer_p4repro rc=0 [hishab_fastconformer_p4repro] 77.46 ms/clip  171.6x real time  failures=0
+2026-09-15T10:47:01Z === whisper_medium_p4repro (whisper) ===
+2026-09-15T11:27:40Z whisper_medium_p4repro rc=0 [whisper_medium_p4repro] 1812.94 ms/clip  7.3x real time  failures=0
+2026-09-15T11:27:40Z === wav2vec2_p4repro (wav2vec2) ===
+2026-09-15T11:29:20Z wav2vec2_p4repro rc=0 [wav2vec2_p4repro] 63.66 ms/clip  208.8x real time  failures=0
+2026-09-15T11:29:20Z === qwen3_adapter_p4repro (qwen) ===
+2026-09-15T15:03:36Z qwen3_adapter_p4repro rc=0 [qwen3_adapter_p4repro] 9665.73 ms/clip  1.4x real time  failures=0
+2026-09-15T15:03:36Z ALL-RUNS-DONE
