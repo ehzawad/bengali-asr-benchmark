@@ -1,0 +1,33 @@
+2026-09-15T15:35:35Z PROSPECTIVE: comparison on official test splits, frozen subsets (seed 20260915); Phase 4 re-scored from stored one-shot hypotheses, not re-decoded; one model at a time; foreign process on the card = cooperative stop
+2026-09-15T15:35:35Z === vaani_test__ehzawad_fastconformer (nemo) ===
+2026-09-15T15:37:04Z vaani_test__ehzawad_fastconformer rc=0 [vaani_test__ehzawad_fastconformer] complete: 72.86 ms/clip  failures=0  n=1000
+2026-09-15T15:37:04Z === vaani_test__hishab_conformer_large (nemo) ===
+2026-09-15T15:38:33Z vaani_test__hishab_conformer_large rc=0 [vaani_test__hishab_conformer_large] complete: 73.63 ms/clip  failures=0  n=1000
+2026-09-15T15:38:33Z === vaani_test__hishab_fastconformer (nemo) ===
+2026-09-15T15:40:00Z vaani_test__hishab_fastconformer rc=0 [vaani_test__hishab_fastconformer] complete: 72.05 ms/clip  failures=0  n=1000
+2026-09-15T15:40:01Z === vaani_test__wav2vec2 (wav2vec2) ===
+2026-09-15T15:40:44Z vaani_test__wav2vec2 rc=0 [vaani_test__wav2vec2] complete: 33.12 ms/clip  failures=0  n=1000
+2026-09-15T15:40:44Z === vaani_test__whisper_medium (whisper) ===
+2026-09-15T15:56:33Z vaani_test__whisper_medium rc=0 [vaani_test__whisper_medium] complete: 918.81 ms/clip  failures=0  n=1000
+2026-09-15T15:56:33Z === spring_r1_test__ehzawad_fastconformer (nemo) ===
+2026-09-15T15:58:07Z spring_r1_test__ehzawad_fastconformer rc=0 [spring_r1_test__ehzawad_fastconformer] complete: 74.73 ms/clip  failures=0  n=1000
+2026-09-15T15:58:07Z === spring_r1_test__hishab_conformer_large (nemo) ===
+2026-09-15T15:59:40Z spring_r1_test__hishab_conformer_large rc=0 [spring_r1_test__hishab_conformer_large] complete: 74.93 ms/clip  failures=0  n=1000
+2026-09-15T15:59:40Z === spring_r1_test__hishab_fastconformer (nemo) ===
+2026-09-15T16:01:09Z spring_r1_test__hishab_fastconformer rc=0 [spring_r1_test__hishab_fastconformer] complete: 73.9 ms/clip  failures=0  n=1000
+2026-09-15T16:01:10Z === spring_r1_test__wav2vec2 (wav2vec2) ===
+2026-09-15T16:02:10Z spring_r1_test__wav2vec2 rc=0 [spring_r1_test__wav2vec2] complete: 49.31 ms/clip  failures=0  n=1000
+2026-09-15T16:02:10Z === spring_r1_test__whisper_medium (whisper) ===
+2026-09-15T16:26:37Z spring_r1_test__whisper_medium rc=0 [spring_r1_test__whisper_medium] complete: 1453.68 ms/clip  failures=0  n=1000
+2026-09-15T16:26:37Z === spring_r2_test__ehzawad_fastconformer (nemo) ===
+2026-09-15T16:28:08Z spring_r2_test__ehzawad_fastconformer rc=0 [spring_r2_test__ehzawad_fastconformer] complete: 72.96 ms/clip  failures=0  n=1000
+2026-09-15T16:28:08Z === spring_r2_test__hishab_conformer_large (nemo) ===
+2026-09-15T16:29:39Z spring_r2_test__hishab_conformer_large rc=0 [spring_r2_test__hishab_conformer_large] complete: 76.13 ms/clip  failures=0  n=1000
+2026-09-15T16:29:39Z === spring_r2_test__hishab_fastconformer (nemo) ===
+2026-09-15T16:31:08Z spring_r2_test__hishab_fastconformer rc=0 [spring_r2_test__hishab_fastconformer] complete: 73.35 ms/clip  failures=0  n=1000
+2026-09-15T16:31:09Z === spring_r2_test__wav2vec2 (wav2vec2) ===
+2026-09-15T16:32:10Z spring_r2_test__wav2vec2 rc=0 [spring_r2_test__wav2vec2] complete: 50.59 ms/clip  failures=0  n=1000
+2026-09-15T16:32:10Z === spring_r2_test__whisper_medium (whisper) ===
+2026-09-15T16:57:18Z spring_r2_test__whisper_medium rc=0 [spring_r2_test__whisper_medium] complete: 1494.35 ms/clip  failures=0  n=1000
+2026-09-15T16:57:18Z === vaani_test__qwen3_adapter (qwen) ===
+2026-09-15T17:31:34Z OWNER: Qwen adapter dropped from the multi-dataset comparison ('ignore Qwen', too slow at batch 1); vaani_test__qwen3_adapter stopped at ~250/1000 by pid; SPRING Qwen legs never started; runner stopped by pid

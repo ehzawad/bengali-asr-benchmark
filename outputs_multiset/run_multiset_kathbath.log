@@ -1,0 +1,26 @@
+2026-09-15T17:31:34Z PROSPECTIVE: Kathbath official test known/unknown, frozen subsets (seed 20260915), seven models incl. Phase 4 (first Kathbath-test decode of its lineage)
+2026-09-15T17:31:34Z === kathbath_test_known__phase4_fastconformer_ctc (nemo) ===
+2026-09-15T17:33:02Z kathbath_test_known__phase4_fastconformer_ctc rc=0 [kathbath_test_known__phase4_fastconformer_ctc] complete: 71.78 ms/clip  failures=0  n=1000
+2026-09-15T17:33:02Z === kathbath_test_known__ehzawad_fastconformer (nemo) ===
+2026-09-15T17:34:27Z kathbath_test_known__ehzawad_fastconformer rc=0 [kathbath_test_known__ehzawad_fastconformer] complete: 69.78 ms/clip  failures=0  n=1000
+2026-09-15T17:34:27Z === kathbath_test_known__hishab_conformer_large (nemo) ===
+2026-09-15T17:35:52Z kathbath_test_known__hishab_conformer_large rc=0 [kathbath_test_known__hishab_conformer_large] complete: 70.21 ms/clip  failures=0  n=1000
+2026-09-15T17:35:52Z === kathbath_test_known__hishab_fastconformer (nemo) ===
+2026-09-15T17:37:18Z kathbath_test_known__hishab_fastconformer rc=0 [kathbath_test_known__hishab_fastconformer] complete: 70.18 ms/clip  failures=0  n=1000
+2026-09-15T17:37:18Z === kathbath_test_known__wav2vec2 (wav2vec2) ===
+2026-09-15T17:38:04Z kathbath_test_known__wav2vec2 rc=0 [kathbath_test_known__wav2vec2] complete: 34.88 ms/clip  failures=0  n=1000
+2026-09-15T17:38:04Z === kathbath_test_known__whisper_medium (whisper) ===
+2026-09-15T17:55:10Z kathbath_test_known__whisper_medium rc=0 [kathbath_test_known__whisper_medium] complete: 1013.99 ms/clip  failures=0  n=1000
+2026-09-15T17:55:10Z === kathbath_test_unknown__phase4_fastconformer_ctc (nemo) ===
+2026-09-15T17:56:35Z kathbath_test_unknown__phase4_fastconformer_ctc rc=0 [kathbath_test_unknown__phase4_fastconformer_ctc] complete: 69.9 ms/clip  failures=0  n=1000
+2026-09-15T17:56:35Z === kathbath_test_unknown__ehzawad_fastconformer (nemo) ===
+2026-09-15T17:58:01Z kathbath_test_unknown__ehzawad_fastconformer rc=0 [kathbath_test_unknown__ehzawad_fastconformer] complete: 70.42 ms/clip  failures=0  n=1000
+2026-09-15T17:58:01Z === kathbath_test_unknown__hishab_conformer_large (nemo) ===
+2026-09-15T17:59:27Z kathbath_test_unknown__hishab_conformer_large rc=0 [kathbath_test_unknown__hishab_conformer_large] complete: 71.18 ms/clip  failures=0  n=1000
+2026-09-15T17:59:28Z === kathbath_test_unknown__hishab_fastconformer (nemo) ===
+2026-09-15T18:00:54Z kathbath_test_unknown__hishab_fastconformer rc=0 [kathbath_test_unknown__hishab_fastconformer] complete: 70.61 ms/clip  failures=0  n=1000
+2026-09-15T18:00:54Z === kathbath_test_unknown__wav2vec2 (wav2vec2) ===
+2026-09-15T18:01:40Z kathbath_test_unknown__wav2vec2 rc=0 [kathbath_test_unknown__wav2vec2] complete: 35.15 ms/clip  failures=0  n=1000
+2026-09-15T18:01:40Z === kathbath_test_unknown__whisper_medium (whisper) ===
+2026-09-15T18:19:13Z kathbath_test_unknown__whisper_medium rc=0 [kathbath_test_unknown__whisper_medium] complete: 1040.71 ms/clip  failures=0  n=1000
+2026-09-15T18:19:13Z ALL-RUNS-DONE
