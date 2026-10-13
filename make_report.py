@@ -11,6 +11,7 @@ Every number is read from those files so the PDF cannot drift from the runs, and
 text makes are asserted against them. The README carries the full tables and intervals.
 """
 import json
+import math
 import statistics
 import textwrap
 from pathlib import Path
@@ -37,9 +38,13 @@ MODELS = [
 NAME = {k: n for k, n, _ in MODELS}
 COLOR = {k: c for k, _, c in MODELS}
 PUBLIC = [k for k, _, _ in MODELS if k != MINI]
-SETS = [("fleurs_test", "FLEURS"), ("vaani_test", "Vaani"), ("spring_r1_test", "SPRING-INX R1"),
-        ("spring_r2_test", "SPRING-INX R2"), ("kathbath_test_known", "Kathbath known"),
-        ("kathbath_test_unknown", "Kathbath unknown"), ("indicvoices_conv", "IndicVoices")]
+# (key, chart label, two-line table header)
+BD_SETS = [("subakko_test", "SUBAK.KO", "SUBAK.KO"), ("banspeech", "BanSpeech", "Ban-\nSpeech"),
+           ("cv17_bn_test", "Common Voice 17", "Common\nVoice 17"), ("ben10_valid", "Ben-10 dialects", "Ben-10\ndialects")]
+IN_SETS = [("fleurs_test", "FLEURS", "FLEURS"), ("vaani_test", "Vaani", "Vaani"),
+           ("spring_r1_test", "SPRING-INX R1", "SPRING\nR1"), ("spring_r2_test", "SPRING-INX R2", "SPRING\nR2"),
+           ("kathbath_test_known", "Kathbath known", "Kathbath\nknown"),
+           ("kathbath_test_unknown", "Kathbath unknown", "Kathbath\nunknown"), ("indicvoices_conv", "IndicVoices", "Indic\nVoices")]
 PT = 1 / (11.69 * 72)   # one point as a fraction of the page height
 
 plt.rcParams.update({"font.family": "DejaVu Sans", "figure.facecolor": PAGE, "axes.facecolor": PAGE,
@@ -115,16 +120,17 @@ def legend(fig, y):
 
 
 # ---------------------------------------------------------------------------------------------
-def page1(pdf):
+def wer_page(pdf, page, title, subtitle, sets, notes):
+    """Bars for every model on every set (Voxtral Mini labelled), then the numbers, then notes."""
     fig = plt.figure(figsize=(8.27, 11.69))
-    header(fig, "Voxtral Mini bn-BD", "Word error rate against four public Bengali ASR models, lower is better "
-           "· Voxtral Mini in orange")
+    header(fig, title, subtitle)
     top = legend(fig, 0.857) - 0.02
-
-    ax = fig.add_axes([0.27, 0.445, 0.67, top - 0.445])
+    height = 0.06 * len(sets) - 0.01
+    ax = fig.add_axes([0.27, top - height, 0.67, height])
     n, group = len(MODELS), len(MODELS) + 1.4
+    xmax = 10 * math.ceil(max(wer(k, s) for k in NAME for s, _, _ in sets) / 10 + 0.05)
     centers = []
-    for i, (s, label) in enumerate(SETS):
+    for i, (s, label, _) in enumerate(sets):
         base = -i * group
         centers.append(base - (n - 1) / 2)
         for j, (k, _, c) in enumerate(MODELS):
@@ -132,35 +138,36 @@ def page1(pdf):
             ax.barh(yy, wer(k, s), height=0.82, color=c, alpha=1 if k == MINI else 0.5,
                     edgecolor=PAGE, linewidth=1.2)
             if k == MINI:
-                ax.text(wer(k, s) + 0.6, yy, f"{wer(k, s):.1f}%", va="center", size=8.2, weight="bold", color=INK)
+                ax.text(wer(k, s) + xmax * 0.012, yy, f"{wer(k, s):.1f}%", va="center", size=8.2, weight="bold",
+                        color=INK)
     ax.set_yticks(centers)
-    ax.set_yticklabels([label for _, label in SETS], size=9)
+    ax.set_yticklabels([label for _, label, _ in sets], size=9)
     ax.tick_params(axis="y", length=0)
-    ax.set_xlim(0, 50)
-    ax.set_xticks(range(0, 51, 10))
-    ax.set_xticklabels([f"{t}%" for t in range(0, 51, 10)], size=8)
+    ax.set_xlim(0, xmax)
+    ticks = range(0, xmax + 1, 10 if xmax <= 60 else 20)
+    ax.set_xticks(list(ticks))
+    ax.set_xticklabels([f"{t}%" for t in ticks], size=8)
     ax.grid(axis="x", color=GRID, linewidth=0.7)
     ax.set_axisbelow(True)
     ax.spines[["top", "right", "left"]].set_visible(False)
-    ax.set_ylim(-(len(SETS) - 1) * group - n + 0.3, 0.7)
+    ax.set_ylim(-(len(sets) - 1) * group - n + 0.3, 0.7)
 
-    y = 0.4
+    y = top - height - 0.055
     heading(fig, 0.06, y, "The numbers")
     y -= 0.042
-    xs = [0.385 + 0.0825 * i for i in range(len(SETS))]
-    heads = ["FLEURS", "Vaani", "SPRING\nR1", "SPRING\nR2", "Kathbath\nknown", "Kathbath\nunknown", "Indic\nVoices"]
-    for x, h in zip(xs, heads):
-        fig.text(x, y, h, size=7.6, color=MUTED, weight="bold", ha="right", va="center", linespacing=1.3)
+    xs = [0.385 + 0.0825 * i for i in range(len(sets))]
+    for x, (_, _, head) in zip(xs, sets):
+        fig.text(x, y, head, size=7.6, color=MUTED, weight="bold", ha="right", va="center", linespacing=1.3)
     y -= 0.022
-    best = {s: min(NAME, key=lambda k: wer(k, s)) for s, _ in SETS}
+    best = {s: min(NAME, key=lambda k: wer(k, s)) for s, _, _ in sets}
     for i, (k, n_, c) in enumerate(MODELS):
         cy = y - 0.03 * i - 0.015
         if k == MINI:
-            box(fig, 0.05, cy - 0.015, 0.91, 0.03, MINI_TINT, radius=0.004)
+            box(fig, 0.05, cy - 0.015, 0.36 + 0.0825 * len(sets), 0.03, MINI_TINT, radius=0.004)
         fig.patches.append(Rectangle((0.06, cy - 0.005), 0.012, 0.01, transform=fig.transFigure, facecolor=c,
                                      edgecolor="none"))
         fig.text(0.08, cy, n_, size=8.8, weight="bold" if k == MINI else "normal", va="center")
-        for x, (s, _) in zip(xs, SETS):
+        for x, (s, _, _) in zip(xs, sets):
             if best[s] == k:
                 box(fig, x - 0.062, cy - 0.011, 0.066, 0.022, BEST_TINT, radius=0.004, zorder=1)
             fig.text(x, cy, f"{wer(k, s):.1f}", size=9, ha="right", va="center", zorder=2,
@@ -168,18 +175,29 @@ def page1(pdf):
     y -= 0.03 * len(MODELS) + 0.02
     box(fig, 0.06, y - 0.009, 0.03, 0.013, BEST_TINT, radius=0.003)
     fig.text(0.1, y - 0.0025, "lowest word error rate on that set", size=7.8, color=MUTED, va="center")
-    y -= 0.03
-    assert best["indicvoices_conv"] == "fastconformer_ctc"
-    bullets(fig, 0.06, y, [
-        "Kathbath and IndicVoices are not clean head-to-heads: ehzawad FastConformer-CTC trained on other splits "
-        "of both (hence its lead on IndicVoices), and Conformer Large on Kathbath.",
-        "Voxtral Mini's training data is not documented, so overlap with any of these sets cannot be ruled out.",
-    ], 112, size=8.4)
-    footer(fig, 1)
+    bullets(fig, 0.06, y - 0.03, notes, 112, size=8.4)
+    footer(fig, page)
     pdf.savefig(fig); plt.close(fig)
+    return best
+
+
+def page1(pdf):
+    best = {s: min(NAME, key=lambda k: wer(k, s)) for s, _, _ in BD_SETS}
+    wer_page(pdf, 1, "Voxtral Mini bn-BD", "Bangladeshi and crowd-sourced Bengali test sets · word error rate, "
+             "lower is better · Voxtral Mini in orange", BD_SETS, BD_NOTES(best))
 
 
 def page2(pdf):
+    best = {s: min(NAME, key=lambda k: wer(k, s)) for s, _, _ in IN_SETS}
+    assert best["indicvoices_conv"] == "fastconformer_ctc"
+    wer_page(pdf, 2, "Indian Bengali test sets", "Word error rate, lower is better · Voxtral Mini in orange", IN_SETS, [
+        "Kathbath and IndicVoices are not clean head-to-heads: ehzawad FastConformer-CTC trained on other splits "
+        "of both (hence its lead on IndicVoices), and Conformer Large on Kathbath.",
+        "Voxtral Mini's training data is not documented, so overlap with any of these sets cannot be ruled out.",
+    ])
+
+
+def page3(pdf):
     fig = plt.figure(figsize=(8.27, 11.69))
     header(fig, "Speed, method and caveats", f"Average time to transcribe one FLEURS test clip "
            f"({FLEURS_TEST_S:.1f} s of audio), one clip at a time on one A100")
@@ -237,14 +255,14 @@ def page2(pdf):
         "Like Conformer Large and Whisper Medium, Voxtral Mini writes numbers as Bengali words, which counts as an "
         "error wherever the reference uses digits.",
     ], 108)
-    footer(fig, 2)
+    footer(fig, 3)
     pdf.savefig(fig); plt.close(fig)
 
 
 def main():
     out = "asr_benchmark.pdf"
     with PdfPages(out) as pdf:
-        page1(pdf); page2(pdf)
+        page1(pdf); page2(pdf); page3(pdf)
     print("wrote", out)
 
 
