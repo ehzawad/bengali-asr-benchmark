@@ -1,126 +1,73 @@
 #!/usr/bin/env python
-"""Render the benchmark report (asr_benchmark.pdf) from the committed summaries:
+"""Render the benchmark report (asr_benchmark.pdf): a three-page summary centred on Voxtral Mini
+bn-BD, read from the committed summaries:
 
   * outputs_fleurs/clean_test_table.json    — five models on the FLEURS bn_in test split
-  * outputs_multiset/summary_multiset.json  — the same five on the official test splits of
-    Vaani, SPRING-INX R1/R2, Kathbath (known/unknown speakers) and IndicVoices conversational
+  * outputs_multiset/summary_multiset.json  — the same five on six official-split subsets
+  * eval_manifest.json                      — FLEURS clip durations
 All five ran on one NVIDIA A100-SXM4-40GB (Colab), greedy at batch 1, one model at a time.
-Voxtral Mini bn-BD, a private fine-tune, went through the same harness, decoded by vLLM.
 
-Every number is read from those files so the PDF cannot drift from the runs, and the
-orderings the prose states are asserted against them.
+Every number is read from those files so the PDF cannot drift from the runs, and the claims the
+text makes are asserted against them. The README carries the full tables and intervals.
 """
 import json
-import math
 import statistics
+import textwrap
 from pathlib import Path
 
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt                      # noqa: E402
 from matplotlib.backends.backend_pdf import PdfPages  # noqa: E402
-from matplotlib.patches import FancyBboxPatch         # noqa: E402
+from matplotlib.patches import FancyBboxPatch, Rectangle  # noqa: E402
 
-SURFACE, INK, INK_2, INK_3, RULE = "#fcfcfb", "#0b0b0b", "#52514e", "#8a8880", "#dedcd4"
-ACCENT, BASE = "#2a78d6", "#7d7b74"
-WARN_BG, WARN_EDGE = "#fdf3e7", "#eda100"
-plt.rcParams.update({
-    "font.family": "DejaVu Sans", "figure.facecolor": SURFACE,
-    "axes.facecolor": SURFACE, "savefig.facecolor": SURFACE,
-    "axes.edgecolor": RULE, "text.color": INK, "axes.labelcolor": INK_2,
-    "xtick.color": INK_2, "ytick.color": INK_2,
-})
+PAGE, INK, INK_2, MUTED, GRID = "#fcfcfb", "#0b0b0b", "#52514e", "#898781", "#e1e0d9"
+NAVY, NAVY_SUB = "#16213e", "#c9d1e3"
+MINI = "voxtral_mini_bn"
+MINI_TINT, BEST_TINT, ROW_ALT = "#fdebe2", "#fff1c7", "#f3f2ee"
+# One fixed colour per model, Voxtral Mini first; this order passes the categorical palette checks
+# (adjacent colour-blind and normal-vision separation on the light page).
+MODELS = [
+    (MINI, "Voxtral Mini bn-BD", "#eb6834"),
+    ("fastconformer_ctc", "ehzawad FastConformer-CTC", "#2a78d6"),
+    ("hishab_conformer_large", "Conformer Large (hishab)", "#1baf7a"),
+    ("whisper_medium", "Whisper Medium", "#eda100"),
+    ("wav2vec2", "Wav2Vec2", "#e87ba4"),
+]
+NAME = {k: n for k, n, _ in MODELS}
+COLOR = {k: c for k, _, c in MODELS}
+PUBLIC = [k for k, _, _ in MODELS if k != MINI]
+SETS = [("fleurs_test", "FLEURS", "read speech"),
+        ("vaani_test", "Vaani", "spontaneous speech"),
+        ("spring_r1_test", "SPRING-INX R1", "conversations"),
+        ("spring_r2_test", "SPRING-INX R2", "conversations"),
+        ("kathbath_test_known", "Kathbath", "read, known speakers"),
+        ("kathbath_test_unknown", "Kathbath", "read, new speakers"),
+        ("indicvoices_conv", "IndicVoices", "conversations")]
+VERDICT = {"lower": ("✓  Better", "#0ca30c"), "higher": ("✗  Worse", "#d03b3b"),
+           "inconclusive": ("≈  Too close to call", "#7c7b76")}
+PT = 1 / (11.69 * 72)   # one point as a fraction of the page height
+
+plt.rcParams.update({"font.family": "DejaVu Sans", "figure.facecolor": PAGE, "axes.facecolor": PAGE,
+                     "savefig.facecolor": PAGE, "text.color": INK, "axes.edgecolor": GRID,
+                     "xtick.color": MUTED, "ytick.color": INK_2})
 
 CLEAN = json.loads(Path("outputs_fleurs/clean_test_table.json").read_text())
 MS = json.loads(Path("outputs_multiset/summary_multiset.json").read_text())
-OURS_KEY, MINI_KEY, MINI_COLOR = "fastconformer_ctc", "voxtral_mini_bn", "#c0571f"
-LABELS = {
-    "fastconformer_ctc": ("ehzawad FastConformer-CTC", "ehzawad/stt_bn_fastconformer_ctc", "115.6M"),
-    "hishab_conformer_large": ("Conformer Large (hishab)", "hishab/titu_stt_bn_conformer_large", "121.5M"),
-    "whisper_medium": ("Whisper Medium", "SayedShaun/bengali-whisper-medium", "763.9M"),
-    "wav2vec2": ("Wav2Vec2", "SayedShaun/bangla-wave2vec2-unigram", "315.5M"),
-    "voxtral_mini_bn": ("Voxtral Mini bn-BD ‡", "ehzawad/Voxtral-Mini-3B-2507-bn-BD (private)", "4,676M"),
-}
-SETS = [("vaani_test", "Vaani test"), ("spring_r1_test", "SPRING-INX R1"), ("spring_r2_test", "SPRING-INX R2"),
-        ("kathbath_test_known", "Kathbath known"), ("kathbath_test_unknown", "Kathbath unknown"),
-        ("indicvoices_conv", "IndicVoices conv.")]
-IV = "indicvoices_conv"
-FLAGS = {"fastconformer_ctc": "N N N S S S", "hishab_conformer_large": "N N N S S N", "whisper_medium": "U U U U U U",
-         "wav2vec2": "U U U U U U", "voxtral_mini_bn": "U U U U U U"}
-CM = sorted(CLEAN["models"].items(), key=lambda kv: kv[1]["wer"])
-MM = [k for k in ["fastconformer_ctc", "whisper_medium", "hishab_conformer_large", "wav2vec2",
-                  "voxtral_mini_bn"] if k in MS["models"]]
-PUBLIC = [k for k in MM if k != MINI_KEY]
-NEMO = ["fastconformer_ctc", "hishab_conformer_large"]
-SPEED = CLEAN["speed_default_runtime"]  # batch-1 latency per FLEURS test clip, on the A100
-GPU_TAG = "A100-SXM4-40GB, 2026-10-13"
-ORDINAL = ["first", "second", "third", "fourth", "fifth"]
+FLEURS_TEST_S = statistics.mean(r["duration"] for r in json.loads(Path("eval_manifest.json").read_text())["rows"]
+                                if r["split"] == "test")
 
 
-def name(k): return LABELS.get(k, (k, k, "?"))[0]
-def params(k): return LABELS.get(k, (k, k, "?"))[2]
-def color(k): return ACCENT if k == OURS_KEY else (MINI_COLOR if k == MINI_KEY else BASE)
+def wer(k, s):
+    return 100 * (CLEAN["models"][k]["wer"] if s == "fleurs_test" else MS["models"][k][s]["wer"])
 
 
-def wer(k, st=None):
-    """WER in percent: the FLEURS test split when st is None, else that official-split subset."""
-    return 100 * (CLEAN["models"][k]["wer"] if st is None else MS["models"][k][st]["wer"])
+def paired(s, b):
+    return (CLEAN["paired_voxtral_mini_bn"] if s == "fleurs_test" else MS["paired"][s])[f"{MINI}_vs_{b}"]
 
 
-def ms(k, st=None):
-    return SPEED[k]["ms_per_clip_mean"] if st is None else MS["models"][k][st]["ms_per_clip_mean"]
-
-
-def place(k, st=None, among=None):
-    """k's rank by WER on st among the given models (default: all five): "first" ... "last"."""
-    order = sorted(among or MM, key=lambda m: wer(m, st))
-    i = order.index(k)
-    return "last" if i == len(order) - 1 else ORDINAL[i]
-
-
-def slower(k, sets):
-    """Range of k's per-clip latency as a multiple of each NeMo CTC model's, over the given sets."""
-    r = [ms(k, st) / ms(n, st) for st in sets for n in NEMO]
-    return min(r), max(r)
-
-
-def nolatin(k, st):
-    r = MS["models"][k][st]["no_latin_ref"]
-    return 100 * r["wer"], [100 * x for x in r["wer_ci_reference_clustered"]]
-
-
-def footer(fig, page, tag, where=GPU_TAG):
-    fig.text(0.06, 0.028, f"Bengali ASR benchmark  ·  {tag}  ·  {where}", size=6.6, color=INK_3)
-    fig.text(0.94, 0.028, f"{page}", size=6.6, color=INK_3, ha="right")
-
-
-def caveat(fig, x, y, w, text, h=None, size=7.0):
-    lines = text.count("\n") + 1
-    h = h or 0.016 + 0.0135 * lines
-    fig.patches.append(FancyBboxPatch(
-        (x, y - h), w, h, boxstyle="round,pad=0.004,rounding_size=0.006",
-        transform=fig.transFigure, facecolor=WARN_BG, edgecolor=WARN_EDGE, linewidth=0.7, zorder=0))
-    fig.text(x + 0.012, y - 0.011, text, size=size, color=INK_2, va="top")
-    return y - h
-
-
-def table(fig, x, y, w, headers, rows, offs, row_h=0.021, size=7.0):
-    for i, (hh, o) in enumerate(zip(headers, offs)):
-        fig.text(x + o * w, y, hh, size=size - 0.4, color=INK_3, ha="right" if i else "left", weight="bold")
-    fig.lines.append(plt.Line2D([x, x + w], [y - 0.008, y - 0.008], transform=fig.transFigure, color=RULE, lw=0.8))
-    yy = y - 0.008
-    for r in rows:
-        yy -= row_h
-        for i, (c, o) in enumerate(zip(r, offs)):
-            bold = r[0].startswith("▸")
-            fig.text(x + o * w, yy, c, size=size, color=INK if bold else INK_2,
-                     weight="bold" if bold else "normal", ha="right" if i else "left")
-    return yy
-
-
-def pd(key, block="paired_fastconformer_ctc"):
-    d = CLEAN[block][key]
-    return f"{d['wer_delta_pp']:+.2f} pp [{d['wer_ci95_pp'][0]:+.2f}, {d['wer_ci95_pp'][1]:+.2f}]"
+def best_public(s):
+    return min(PUBLIC, key=lambda k: wer(k, s))
 
 
 def verdict(d):
@@ -128,238 +75,274 @@ def verdict(d):
     return "lower" if hi < 0 else ("higher" if lo > 0 else "inconclusive")
 
 
+def rank(k, s):
+    return sorted(NAME, key=lambda m: wer(m, s)).index(k) + 1
+
+
+def ms(k):
+    return CLEAN["speed_default_runtime"][k]["ms_per_clip_mean"]
+
+
+def signed(x, d=1):
+    return f"{x:+.{d}f}".replace("-", "−")
+
+
+def text_block(fig, x, y, text, width, size=9.5, color=INK_2, weight="normal", spacing=1.5):
+    """Wrapped text from the top-left corner; returns the y below it."""
+    lines = textwrap.wrap(text, width)
+    fig.text(x, y, "\n".join(lines), size=size, color=color, weight=weight, va="top", linespacing=spacing)
+    return y - len(lines) * size * spacing * PT
+
+
+def bullets(fig, x, y, items, width, size=9.2, gap=0.006):
+    for item in items:
+        fig.text(x, y, "•", size=size, color=COLOR[MINI], va="top", weight="bold")
+        y = text_block(fig, x + 0.02, y, item, width, size=size) - gap
+    return y
+
+
+def heading(fig, x, y, text, size=13):
+    fig.patches.append(Rectangle((x, y - 0.0125), 0.008, 0.016, transform=fig.transFigure,
+                                 facecolor=COLOR[MINI], edgecolor="none"))
+    fig.text(x + 0.018, y, text, size=size, weight="bold", va="top")
+
+
+def box(fig, x, y, w, h, color, radius=0.008, zorder=0):
+    fig.patches.append(FancyBboxPatch((x, y), w, h, boxstyle=f"round,pad=0,rounding_size={radius}",
+                                      transform=fig.transFigure, facecolor=color, edgecolor="none", zorder=zorder))
+
+
+def header(fig, title, subtitle):
+    fig.patches.append(Rectangle((0, 0.89), 1, 0.11, transform=fig.transFigure, facecolor=NAVY, edgecolor="none"))
+    fig.patches.append(Rectangle((0, 0.884), 1, 0.006, transform=fig.transFigure, facecolor=COLOR[MINI],
+                                 edgecolor="none"))
+    fig.text(0.06, 0.957, title, size=24, weight="bold", color="white", va="center")
+    fig.text(0.06, 0.915, subtitle, size=10, color=NAVY_SUB, va="center")
+
+
+def footer(fig, page):
+    fig.text(0.06, 0.03, "bengali-asr-benchmark · one Colab A100-SXM4-40GB · 13 Oct 2026 · full tables and "
+             "confidence intervals in README.md", size=7, color=MUTED)
+    fig.text(0.94, 0.03, str(page), size=7, color=MUTED, ha="right")
+
+
+def legend(fig, y):
+    """One swatch and name per model, measured so entries never overlap; wraps to a second row."""
+    renderer, x = fig.canvas.get_renderer(), 0.06
+    for k, n, c in MODELS:
+        t = fig.text(x + 0.024, y, n, size=8.8, va="center", weight="bold" if k == MINI else "normal")
+        w = t.get_window_extent(renderer).width / fig.bbox.width
+        if x + 0.024 + w > 0.95:
+            x, y = 0.06, y - 0.022
+            t.set_position((x + 0.024, y))
+        fig.patches.append(FancyBboxPatch((x, y - 0.0055), 0.016, 0.011, boxstyle="round,pad=0,rounding_size=0.002",
+                                          transform=fig.transFigure, facecolor=c, edgecolor="none"))
+        x += 0.024 + w + 0.032
+    return y
+
+
+# ---------------------------------------------------------------------------------------------
 def page1(pdf):
     fig = plt.figure(figsize=(8.27, 11.69))
-    fig.text(0.06, 0.945, "Bengali ASR: five models on FLEURS", size=20, weight="bold")
-    fig.text(0.06, 0.922, "920 FLEURS bn_in TEST utterances · one A100-SXM4-40GB · greedy, batch 1, no external LM · "
-             "‡ decoded by vLLM", size=8.0, color=INK_2)
-    rows = []
-    for k, m in CM:
-        lo, hi = m["wer_ci95"]; sp = SPEED.get(k, {}).get("ms_per_clip_mean")
-        rows.append([f"{'▸ ' if k == OURS_KEY else '  '}{name(k)}", f"{m['wer']*100:.2f}%",
-                     f"[{lo*100:.2f}–{hi*100:.2f}]", f"{m['cer']*100:.2f}%", f"{sp:,.0f}" if sp else "—", params(k)])
-    yy = table(fig, 0.06, 0.885, 0.88, ["Model", "WER", "95% CI (clustered)", "CER", "ms/clip", "Params"],
-               rows, [0.0, 0.50, 0.66, 0.74, 0.84, 1.0])
-    y = caveat(fig, 0.06, yy - 0.022, 0.88,
-               "Test split only. The ehzawad model trained on a corpus that includes the FLEURS train split, and 88 of\n"
-               "the 150 validation-split sentences also occur there; the 402 validation recordings are therefore\n"
-               "excluded for every model and the table is the 920-utterance test split.")
-    fig.text(0.06, y - 0.03, "Reading this table", size=11, weight="bold")
-    d_wh = CLEAN["paired_fastconformer_ctc"]["fastconformer_ctc_vs_whisper_medium"]["wer_delta_pp"]
-    d_cl = CLEAN["paired_fastconformer_ctc"]["fastconformer_ctc_vs_hishab_conformer_large"]["wer_delta_pp"]
-    assert d_wh > 0 and d_cl > 0
-    body = (
-        "ehzawad/stt_bn_fastconformer_ctc is a FastConformer-CTC large (115.6M parameters, 8x subsampling, "
-        "1,024-piece Bengali BPE) trained on 1,692 hours of human-supervised Bengali, CC-BY-SA-4.0. The other "
-        "three public models are checkpoints from hishab and SayedShaun (mirrors of tugstugi's Whisper and qdv206's "
-        "wav2vec2 competition models).\n\n"
-        "Paired sentence-clustered deltas for the highlighted model (10,000 draws):\n"
-        f"   vs Whisper Medium        {pd('fastconformer_ctc_vs_whisper_medium')}\n"
-        f"   vs Conformer Large       {pd('fastconformer_ctc_vs_hishab_conformer_large')}\n\n"
-        f"{d_wh:.1f} points behind Whisper Medium at {ms('whisper_medium') / ms(OURS_KEY):.0f}x its speed; "
-        f"{d_cl:.1f} points behind Conformer Large. The highlighted model had also been evaluated on FLEURS test "
-        "during its own development, so read its FLEURS row as a like-for-like re-measurement and the other corpora "
-        "as the fresh evidence."
-    )
-    if MINI_KEY in CLEAN["models"]:
-        body += (
-            "\n\n‡ Voxtral Mini bn-BD is a private fine-tune of Voxtral Mini 3B whose card documents no training data. "
-            "It went through the same harness, asr_core path and scorer, decoded at batch 1 by vLLM 0.31 rather than "
-            "by PyTorch directly. Against Conformer Large on this split: "
-            f"{pd('voxtral_mini_bn_vs_hishab_conformer_large', 'paired_voxtral_mini_bn')}, "
-            f"{verdict(CLEAN['paired_voxtral_mini_bn']['voxtral_mini_bn_vs_hishab_conformer_large'])}."
-        )
-    fig.text(0.06, y - 0.048, body, size=8.2, color=INK_2, va="top", wrap=True, linespacing=1.55)
-    footer(fig, 1, "FLEURS bn_in test")
+    header(fig, "Voxtral Mini bn-BD", "Bengali speech-to-text: how a private fine-tune compares with four "
+           "public models on seven test sets")
+
+    v = {s: verdict(paired(s, best_public(s))) for s, _, _ in SETS}
+    assert rank(MINI, "vaani_test") == 1 and rank(MINI, "spring_r1_test") == 1
+    assert v["vaani_test"] == v["spring_r1_test"] == "lower" and v["fleurs_test"] == "inconclusive"
+    assert all(verdict(paired(s, b)) == "higher" for s in ("kathbath_test_known", "kathbath_test_unknown")
+               for b in ("hishab_conformer_large", "whisper_medium"))
+    y = text_block(fig, 0.06, 0.862,
+                   "Voxtral Mini is the most accurate of the five models on spontaneous and conversational speech "
+                   "(Vaani, SPRING-INX R1), level with the best on FLEURS, and behind Conformer Large and Whisper "
+                   "Medium on read Kathbath speech.", 92, size=10.5, color=INK)
+
+    best_f = best_public("fleurs_test")
+    whisper_x = ms("whisper_medium") / ms(MINI)
+    tiles = [
+        (f"{wer(MINI, 'vaani_test'):.1f}%", "word error rate on Vaani", "lowest of all five models"),
+        (f"{wer(MINI, 'spring_r1_test'):.1f}%", "word error rate on SPRING-INX R1", "lowest of all five models"),
+        (f"{wer(MINI, 'fleurs_test'):.1f}%", "word error rate on FLEURS",
+         f"best public model: {wer(best_f, 'fleurs_test'):.1f}%, too close to call"),
+        (f"{ms(MINI) / 1000:.2f} s", f"per {FLEURS_TEST_S:.0f}-second clip on an A100",
+         f"{whisper_x:.0f}× faster than Whisper Medium"),
+    ]
+    top = y - 0.022
+    for i, (big, what, note) in enumerate(tiles):
+        x, ty = 0.06 + (i % 2) * 0.45, top - (i // 2) * 0.1
+        box(fig, x, ty - 0.088, 0.43, 0.088, MINI_TINT)
+        fig.patches.append(Rectangle((x, ty - 0.088), 0.007, 0.088, transform=fig.transFigure,
+                                     facecolor=COLOR[MINI], edgecolor="none"))
+        fig.text(x + 0.03, ty - 0.012, big, size=25, weight="bold", va="top")
+        fig.text(x + 0.03, ty - 0.055, what, size=9.2, color=INK, va="top")
+        fig.text(x + 0.03, ty - 0.071, note, size=8.4, color=INK_2, va="top")
+
+    y = top - 0.215
+    heading(fig, 0.06, y, "Against the best public model on each test set")
+    y -= 0.04
+    cols = {"set": 0.06, "mini": 0.385, "bestw": 0.475, "best": 0.49, "gap": 0.785, "pill": 0.8}
+    for key, label, ha in (("set", "Test set", "left"), ("mini", "Voxtral Mini", "right"),
+                           ("best", "Best public model", "left"), ("gap", "Gap", "right"),
+                           ("pill", "Verdict", "left")):
+        x = 0.418 if key == "best" else cols[key]
+        fig.text(x, y, label, size=8.2, color=MUTED, weight="bold", ha=ha, va="center")
+    y -= 0.012
+    row_h = 0.043
+    for i, (s, label, kind) in enumerate(SETS):
+        b = best_public(s)
+        d = paired(s, b)
+        cy = y - row_h * i - row_h / 2
+        if i % 2 == 0:
+            box(fig, 0.05, cy - row_h / 2, 0.92, row_h, ROW_ALT, radius=0.004)
+        fig.text(cols["set"], cy + 0.006, label, size=9.6, weight="bold", va="center")
+        fig.text(cols["set"], cy - 0.009, kind, size=7.6, color=MUTED, va="center")
+        fig.text(cols["mini"], cy, f"{wer(MINI, s):.1f}%", size=10.5, weight="bold", ha="right", va="center")
+        fig.text(cols["best"], cy, NAME[b], size=9, color=INK_2, va="center")
+        fig.text(cols["bestw"], cy, f"{wer(b, s):.1f}%", size=10.5, color=INK_2, ha="right", va="center")
+        fig.text(cols["gap"], cy, signed(d["wer_delta_pp"]), size=9.6, ha="right", va="center", weight="bold")
+        word, c = VERDICT[verdict(d)]
+        box(fig, cols["pill"], cy - 0.0105, 0.158, 0.021, c, radius=0.0105, zorder=1)
+        fig.text(cols["pill"] + 0.079, cy, word, size=8.4, color="white", weight="bold", ha="center", va="center",
+                 zorder=2)
+    y -= row_h * len(SETS) + 0.016
+    text_block(fig, 0.06, y,
+               "Word error rate (WER): the share of words transcribed wrongly, lower is better. Gap: Voxtral Mini "
+               "minus the best public model, in percentage points. Better or Worse means the gap holds up in a "
+               "paired statistical test on the same recordings (95% bootstrap); Too close to call means it does not.",
+               118, size=7.6, color=MUTED, spacing=1.45)
+    footer(fig, 1)
     pdf.savefig(fig); plt.close(fig)
 
 
 def page2(pdf):
     fig = plt.figure(figsize=(8.27, 11.69))
-    fig.text(0.06, 0.945, "FLEURS test: accuracy and speed side by side", size=16, weight="bold")
-    keys = [k for k, _ in CM][::-1]
-    ax = fig.add_axes([0.30, 0.60, 0.62, 0.30])
-    vals = [CLEAN["models"][k]["wer"] * 100 for k in keys]
-    err = [[CLEAN["models"][k]["wer"] * 100 - CLEAN["models"][k]["wer_ci95"][0] * 100 for k in keys],
-           [CLEAN["models"][k]["wer_ci95"][1] * 100 - CLEAN["models"][k]["wer"] * 100 for k in keys]]
-    ax.barh(range(len(keys)), vals, xerr=err, color=[color(k) for k in keys], height=0.6,
-            error_kw={"ecolor": INK_3, "elinewidth": 0.8, "capsize": 2})
-    ax.set_yticks(range(len(keys))); ax.set_yticklabels([name(k) for k in keys], size=7.5)
-    ax.set_xlabel("WER on the 920-utterance test split, % (95% clustered CI)", size=7.5)
-    ax.spines[["top", "right"]].set_visible(False); ax.tick_params(labelsize=7)
-    for i, (v, top) in enumerate(zip(vals, err[1])):
-        ax.text(v + top + 0.4, i, f"{v:.2f}", va="center", size=7, color=INK_2)
-    ax2 = fig.add_axes([0.30, 0.22, 0.62, 0.30])
-    keys = [k for k in keys if k in SPEED]
-    sp = [SPEED[k]["ms_per_clip_mean"] for k in keys]
-    ax2.barh(range(len(keys)), sp, color=[color(k) for k in keys], height=0.6)
-    ax2.set_xscale("log"); ax2.set_yticks(range(len(keys))); ax2.set_yticklabels([name(k) for k in keys], size=7.5)
-    ax2.set_xlabel("ms per clip, batch 1, warmed (log scale)", size=7.5)
-    ax2.spines[["top", "right"]].set_visible(False); ax2.tick_params(labelsize=7)
-    for i, v in enumerate(sp):
-        ax2.text(v * 1.15, i, f"{v:,.0f}", va="center", size=7, color=INK_2)
-    nemo = [ms(n) for n in NEMO]
-    spread = math.ceil((max(nemo) / min(nemo) - 1) * 100)
-    fig.text(0.06, 0.16, "The two orderings are not the same ordering. The two NeMo CTC models are within "
-             f"{spread}% of each other in speed; Whisper Medium costs ~{ms('whisper_medium') / statistics.mean(nemo):.0f}x "
-             f"their time per clip at batch 1 for its accuracy, and Voxtral Mini ~{ms(MINI_KEY) / statistics.mean(nemo):.0f}x "
-             "(vLLM with CUDA graphs).",
-             size=8.2, color=INK_2, va="top", wrap=True, linespacing=1.5)
-    footer(fig, 2, "FLEURS bn_in test")
+    header(fig, "Every model, every test set", "Word error rate, lower is better · Voxtral Mini in orange")
+    top = legend(fig, 0.857) - 0.02
+
+    ax = fig.add_axes([0.27, 0.445, 0.67, top - 0.445])
+    n, group = len(MODELS), len(MODELS) + 1.4
+    centers = []
+    for i, (s, label, kind) in enumerate(SETS):
+        base = -i * group
+        centers.append(base - (n - 1) / 2)
+        for j, (k, _, c) in enumerate(MODELS):
+            yy = base - j
+            ax.barh(yy, wer(k, s), height=0.82, color=c, alpha=1 if k == MINI else 0.5,
+                    edgecolor=PAGE, linewidth=1.2)
+            if k == MINI:
+                ax.text(wer(k, s) + 0.6, yy, f"{wer(k, s):.1f}%", va="center", size=8.2, weight="bold", color=INK)
+    ax.set_yticks(centers)
+    ax.set_yticklabels([f"{label}\n{kind}" for _, label, kind in SETS], size=8.6)
+    ax.tick_params(axis="y", length=0)
+    ax.set_xlim(0, 50)
+    ax.set_xticks(range(0, 51, 10))
+    ax.set_xticklabels([f"{t}%" for t in range(0, 51, 10)], size=8)
+    ax.grid(axis="x", color=GRID, linewidth=0.7)
+    ax.set_axisbelow(True)
+    ax.spines[["top", "right", "left"]].set_visible(False)
+    ax.set_ylim(-(len(SETS) - 1) * group - n + 0.3, 0.7)
+
+    y = 0.4
+    heading(fig, 0.06, y, "The numbers")
+    y -= 0.042
+    xs = [0.385 + 0.0825 * i for i in range(len(SETS))]
+    heads = ["FLEURS", "Vaani", "SPRING\nR1", "SPRING\nR2", "Kathbath\nknown", "Kathbath\nnew", "Indic\nVoices"]
+    for x, h in zip(xs, heads):
+        fig.text(x, y, h, size=7.6, color=MUTED, weight="bold", ha="right", va="center", linespacing=1.3)
+    y -= 0.022
+    best = {s: min(NAME, key=lambda k: wer(k, s)) for s, _, _ in SETS}
+    for i, (k, n_, c) in enumerate(MODELS):
+        cy = y - 0.03 * i - 0.015
+        if k == MINI:
+            box(fig, 0.05, cy - 0.015, 0.91, 0.03, MINI_TINT, radius=0.004)
+        fig.patches.append(Rectangle((0.06, cy - 0.005), 0.012, 0.01, transform=fig.transFigure, facecolor=c,
+                                     edgecolor="none"))
+        fig.text(0.08, cy, n_, size=8.8, weight="bold" if k == MINI else "normal", va="center")
+        for x, (s, _, _) in zip(xs, SETS):
+            if best[s] == k:
+                box(fig, x - 0.062, cy - 0.011, 0.066, 0.022, BEST_TINT, radius=0.004, zorder=1)
+            fig.text(x, cy, f"{wer(k, s):.1f}", size=9, ha="right", va="center", zorder=2,
+                     weight="bold" if (k == MINI or best[s] == k) else "normal")
+    y -= 0.03 * len(MODELS) + 0.02
+    box(fig, 0.06, y - 0.009, 0.03, 0.013, BEST_TINT, radius=0.003)
+    fig.text(0.1, y - 0.0025, "lowest word error rate on that set", size=7.8, color=MUTED, va="center")
+    y -= 0.03
+    assert best["indicvoices_conv"] == "fastconformer_ctc"
+    bullets(fig, 0.06, y, [
+        "Kathbath and IndicVoices are not clean head-to-heads: ehzawad FastConformer-CTC trained on other splits "
+        "of both (hence its lead on IndicVoices), and Conformer Large on Kathbath.",
+        "Voxtral Mini's training data is not documented, so overlap with any of these sets cannot be ruled out.",
+    ], 112, size=8.4)
+    footer(fig, 2)
     pdf.savefig(fig); plt.close(fig)
 
 
 def page3(pdf):
     fig = plt.figure(figsize=(8.27, 11.69))
-    fig.text(0.06, 0.945, "Beyond FLEURS: six more test sets", size=17, weight="bold")
-    fig.text(0.06, 0.922, "Frozen seeded 1,000-utterance subsets of the OFFICIAL splits · one model at a time · "
-             "same backends and scorer", size=8.0, color=INK_2)
-    rows = []
-    strat = {"vaani_test": "29 state/district strata", "spring_r1_test": "Latin / no-Latin reference",
-             "spring_r2_test": "Latin / no-Latin reference", "kathbath_test_known": "speaker gender", "kathbath_test_unknown": "speaker gender",
-             "indicvoices_conv": "scenario (conversation / extempore)"}
-    for st, n in SETS:
-        s = MS["sets"][st]
-        rows.append([f"  {n}", f"{s['source_rows']:,}", f"{s['n']:,}", f"{s['hours']:.2f} h", f"{s['ref_words']:,}", strat[st]])
-    yy = table(fig, 0.06, 0.885, 0.88, ["Set", "official rows", "sampled", "audio", "ref. words", "stratified by"],
-               rows, [0.0, 0.34, 0.44, 0.54, 0.66, 1.0], size=6.8)
-    rows = []
-    for k in MM:
-        cells = [f"{MS['models'][k][st]['wer']*100:.2f}" if st in MS["models"][k] else "—" for st, _ in SETS]
-        rows.append([f"{'▸ ' if k == OURS_KEY else '  '}{name(k)}"] + cells + [FLAGS[k]])
-    yy = table(fig, 0.06, yy - 0.035, 0.88, ["Model  (WER %)", "Vaani", "SPR R1", "SPR R2", "Kb known", "Kb unk", "IV conv", "flags"],
-               rows, [0.0, 0.36, 0.46, 0.56, 0.66, 0.76, 0.86, 1.0], size=6.8)
-    y = caveat(fig, 0.06, yy - 0.02, 0.88,
-               "flags, per set in the column order: N = corpus not in the model's declared training data;\n"
-               "S = trained on a sibling split of the same corpus (Kathbath train; Conformer Large also its\n"
-               "validation split); U = training provenance not documented. None of these means \"verified clean\".\n"
-               "Every cell is a batch-1 decode from this run. IndicVoices conversational is NOT a clean head-to-head\n"
-               "for the highlighted model: it trained on the IndicVoices train split (same collection, prompts and\n"
-               f"transcription conventions, different speakers), which is a large part of its {wer(OURS_KEY, IV):.1f}% there.")
-    fig.text(0.06, y - 0.03, "What the table says", size=11, weight="bold")
-    cl, wh = "hishab_conformer_large", "whisper_medium"
-    unseen, kb = ["vaani_test", "spring_r1_test", "spring_r2_test"], ["kathbath_test_known", "kathbath_test_unknown"]
-    assert place(cl, among=PUBLIC) == "first" and place(cl, "vaani_test") == "last"
-    assert [place(cl, st) for st in unseen[1:]] == ["fourth", "fourth"]
-    assert all(place(OURS_KEY, st, PUBLIC) == "first" and place(wh, st, PUBLIC) == "second" for st in unseen)
-    assert all(wer(MINI_KEY, st) < wer(OURS_KEY, st) for st in unseen[:2])
-    assert all(sorted(MM, key=lambda m: wer(m, st)) == [cl, wh, MINI_KEY, OURS_KEY, "wav2vec2"] for st in kb)
-    assert all(abs(wer(k, kb[0]) - wer(k, kb[1])) < 1 for k in MM)
-    lo, hi = slower(wh, unseen)
-    others = [k for k in PUBLIC if k != OURS_KEY]
-    empty = {k: MS["models"][k][IV]["empty_hyps"] for k in others}
-    kbs = lambda k: f"{wer(k, kb[0]):.1f} / {wer(k, kb[1]):.1f}%"
-    body = (
-        "On the corpora nobody is documented as having trained on, the FLEURS ranking does not hold. Conformer Large, "
-        f"the FLEURS leader at {wer(cl):.1f}%, is last on Vaani ({wer(cl, 'vaani_test'):.1f}%) and fourth on both SPRING "
-        "sets; its model card lists read and broadcast corpora and neither Vaani nor SPRING-INX. "
-        "ehzawad/stt_bn_fastconformer_ctc leads the four public models on Vaani and both SPRING sets; Whisper Medium "
-        f"is second on all three at {lo:.0f}-{hi:.0f}x the latency of the NeMo CTC models. The private Voxtral Mini "
-        "fine-tune (‡, U on every set) is lower still on Vaani and SPRING R1 (page 5).\n\n"
-        f"On Kathbath the order flips back: Conformer Large ({kbs(cl)}) and Whisper ({kbs(wh)}) lead, Voxtral Mini "
-        f"follows ({kbs(MINI_KEY)}) and the highlighted model is fourth ({kbs(OURS_KEY)}). Conformer Large trained on "
-        "Kathbath validation as well as train, Whisper's provenance for Kathbath is unknown (a U cell can hide "
-        "training overlap), and the highlighted model saw only the train split. Known- vs unknown-speaker Kathbath "
-        "differ by under a point for every model. On IndicVoices conversational the three other public models read "
-        f"{min(wer(k, IV) for k in others):.0f}-{max(wer(k, IV) for k in others):.0f}%; Conformer Large, the one N "
-        f"cell, emitted {empty[cl]} empty hypotheses there and Wav2Vec2 {empty['wav2vec2']}. Sentence-clustered 95% "
-        "intervals for every cell are in the README and summary."
-    )
-    fig.text(0.06, y - 0.048, body, size=8.2, color=INK_2, va="top", wrap=True, linespacing=1.55)
-    footer(fig, 3, "six more test sets")
-    pdf.savefig(fig); plt.close(fig)
+    header(fig, "Speed, method and caveats", f"Average time to transcribe one FLEURS test clip "
+           f"({FLEURS_TEST_S:.1f} s of audio), one clip at a time on one A100")
 
+    ax = fig.add_axes([0.30, 0.64, 0.6, 0.21])
+    keys = [k for k, _, _ in MODELS]
+    for j, k in enumerate(keys):
+        ax.barh(-j, ms(k), height=0.62, color=COLOR[k], alpha=1 if k == MINI else 0.5)
+        ax.text(ms(k) + 25, -j, f"{ms(k):,.0f} ms", va="center", size=8.8,
+                weight="bold" if k == MINI else "normal", color=INK)
+    ax.set_yticks([-j for j in range(len(keys))])
+    ax.set_yticklabels([NAME[k] for k in keys], size=9)
+    for t in ax.get_yticklabels():
+        if t.get_text() == NAME[MINI]:
+            t.set_fontweight("bold")
+    ax.tick_params(axis="y", length=0)
+    ax.set_xlim(0, max(ms(k) for k in keys) * 1.18)
+    ax.set_xlabel("milliseconds per clip (shorter is faster)", size=8.2, color=MUTED)
+    ax.tick_params(axis="x", labelsize=8)
+    ax.grid(axis="x", color=GRID, linewidth=0.7)
+    ax.set_axisbelow(True)
+    ax.spines[["top", "right", "left"]].set_visible(False)
 
-def page4(pdf):
-    fig = plt.figure(figsize=(8.27, 11.69))
-    fig.text(0.06, 0.945, "Latency per set, and how the runs were controlled", size=16, weight="bold")
-    spring = ["spring_r1_test", "spring_r2_test"]
-    assert not any(MS["models"][k][st]["hyps_with_latin"] for k in MM for st in spring)
-    nl = {k: [nolatin(k, st) for st in spring] for k in (OURS_KEY, "whisper_medium", MINI_KEY)}
-    for (a, ia), (b, ib) in zip(nl[OURS_KEY], nl["whisper_medium"]):
-        assert ia[0] <= b <= ia[1] and ib[0] <= a <= ib[1]   # each inside the other's interval
-    both = lambda k: f"{nl[k][0][0]:.1f} / {nl[k][1][0]:.1f}%"
-    fig.text(0.06, 0.905, "SPRING note: about half of its reference utterances contain English words in Latin script; no "
-             "model emitted a single Latin-script word, so those words are errors for every model alike. On the "
-             f"Latin-free half the highlighted model ({both(OURS_KEY)}) and Whisper Medium ({both('whisper_medium')}) are "
-             f"within each other's intervals, and Voxtral Mini reads {both(MINI_KEY)} (per-model split in "
-             "outputs_multiset/summary_multiset.json).", size=8.0, color=INK_2, va="top", wrap=True, linespacing=1.5)
-    yy = 0.93
-    rows = []
-    for k in MM:
-        cells = []
-        for st, _ in SETS:
-            v = MS["models"][k].get(st, {}).get("ms_per_clip_mean")
-            cells.append(f"{v:,.0f}" if v else "N/A")
-        rows.append([f"{'▸ ' if k == OURS_KEY else '  '}{name(k)}"] + cells)
-    fig.text(0.06, yy - 0.105, "ms per clip, batch 1, warmed (Voxtral Mini through vLLM with CUDA graphs)",
-             size=8.0, color=INK_2)
-    yy2 = table(fig, 0.06, yy - 0.125, 0.88, ["Model", "Vaani", "SPR R1", "SPR R2", "Kb known", "Kb unk", "IV conv"],
-                rows, [0.0, 0.40, 0.52, 0.64, 0.76, 0.88, 1.0])
-    y = caveat(fig, 0.06, yy2 - 0.03, 0.88,
-               "Protocol. Every set is a frozen subset (seed 20260915; proportional stratification; per-file SHA-256\n"
-               "verified before decoding). One model resident at a time on the A100; no other process used the card\n"
-               "during any run. Manifests: multiset/; raw predictions and per-run GPU state: outputs_multiset/;\n"
-               "harness bench_run_set.py (bench_run.py's backends unchanged; Voxtral Mini through the voxtral_vllm\n"
-               "backend); scorer score_multiset.py. Reproduce the scoring from the committed predictions.")
-    fig.text(0.06, y - 0.03, "Evaluation data: FLEURS (Google, CC-BY-4.0); Vaani transcription part (ARTPARK-IISc, CC-BY-4.0); "
-             "SPRING-INX R1/R2 (SPRING Lab, IIT Madras, CC-BY-4.0); Kathbath (AI4Bharat IndicSUPERB, CC0); IndicVoices "
-             "(AI4Bharat, CC-BY-4.0). Models: hishab (Conformer Large); SayedShaun (Whisper Medium mirror of "
-             "tugstugi's competition model; wav2vec2 mirror of qdv206's); ehzawad (FastConformer-CTC; Voxtral Mini bn-BD, "
-             "private, fine-tuned from mistralai/Voxtral-Mini-3B-2507, Apache-2.0). "
-             "Author of this benchmark: Emrul Zawad.", size=7.4, color=INK_3, va="top", wrap=True, linespacing=1.5)
-    footer(fig, 4, "six more test sets")
-    pdf.savefig(fig); plt.close(fig)
+    nemo = statistics.mean(ms(k) for k in ("fastconformer_ctc", "hishab_conformer_large"))
+    y = text_block(fig, 0.06, 0.595,
+                   f"Voxtral Mini takes {ms(MINI) / 1000:.2f} s for a {FLEURS_TEST_S:.0f}-second clip, about "
+                   f"{FLEURS_TEST_S * 1000 / ms(MINI):.0f}× faster than real time. That is "
+                   f"{ms('whisper_medium') / ms(MINI):.0f}× faster than Whisper Medium and {ms(MINI) / nemo:.0f}× "
+                   "slower than the two NeMo CTC models (FastConformer-CTC and Conformer Large). The times cover each "
+                   "model's whole pipeline, audio loading included, on vLLM for Voxtral Mini and PyTorch for the "
+                   "others, so they compare setups, not just the models.", 100, size=9.4, color=INK)
 
+    y -= 0.03
+    heading(fig, 0.06, y, "How it was measured")
+    y = bullets(fig, 0.06, y - 0.035, [
+        "One Colab A100 (40 GB) on 13 Oct 2026, one model on the GPU at a time.",
+        "The same audio for every model: 16 kHz, cut at pauses into pieces of at most 25 s.",
+        "Plain decoding: greedy, one clip at a time, no external language model.",
+        f"FLEURS: the {CLEAN['models'][MINI]['n']} test recordings. Other sets: "
+        f"{MS['sets']['vaani_test']['n']:,} recordings each, sampled from the official splits.",
+        "One scorer for everyone: punctuation removed and Bengali text Unicode-normalised before counting errors.",
+    ], 108)
 
-def page5(pdf):
-    fig = plt.figure(figsize=(8.27, 11.69))
-    fig.text(0.06, 0.945, "Voxtral Mini bn-BD against the public models", size=16, weight="bold")
-    fig.text(0.06, 0.922, "Paired difference on the same recordings, WER points, 95% reference-clustered bootstrap "
-             "(10,000 draws, seed 20260903)", size=7.6, color=INK_2)
-    rows = []
-    best_f = min((k for k in CLEAN["models"] if k != MINI_KEY), key=lambda k: CLEAN["models"][k]["wer"])
-    d = CLEAN["paired_voxtral_mini_bn"][f"voxtral_mini_bn_vs_{best_f}"]
-    rows.append(["  FLEURS test", name(best_f), f"{d['wer_delta_pp']:+.2f}",
-                 f"[{d['wer_ci95_pp'][0]:+.2f}, {d['wer_ci95_pp'][1]:+.2f}]", verdict(d)])
-    for st, n in SETS:
-        pub = {k: v[st]["wer"] for k, v in MS["models"].items() if k != MINI_KEY and st in v}
-        b = min(pub, key=pub.get)
-        d = MS["paired"][st][f"voxtral_mini_bn_vs_{b}"]
-        rows.append([f"  {n}", name(b), f"{d['wer_delta_pp']:+.2f}",
-                     f"[{d['wer_ci95_pp'][0]:+.2f}, {d['wer_ci95_pp'][1]:+.2f}]", verdict(d)])
-    yy = table(fig, 0.06, 0.885, 0.88, ["Set", "best public model", "WER points", "95% CI", "paired interval"],
-               rows, [0.0, 0.52, 0.66, 0.84, 1.0], size=6.9)
-    r2 = MS["models"][MINI_KEY]["spring_r2_test"]
-    loops = ""
-    if r2.get("without_capped_clips"):
-        w = r2["without_capped_clips"]
-        loops = (f"On SPRING-INX R2, {r2['clips_at_token_cap']} recordings ran to the 500-token cap repeating a word; they "
-                 f"contribute {r2['errors'] - w['errors']:,} of its {r2['errors']:,} word errors and stay in its "
-                 f"{r2['wer']*100:.2f}% (without them {w['wer']*100:.2f}% on {w['n']:,} recordings, a conditional "
-                 "diagnostic, not a corrected score). ")
-    body = (
-        "Voxtral Mini bn-BD (4.7B parameters) is a private fine-tune of mistralai/Voxtral-Mini-3B-2507; its card documents "
-        "no training data, so every cell is U. It ran through the benchmark's harness like the public models (manifests, "
-        "SHA-256 checks, asr_core path, batch 1, scorer) on the same A100, decoded by vLLM 0.31 with CUDA graphs: one "
-        "piece per request, greedy, at most 500 new tokens per piece. On FLEURS test it takes "
-        f"{ms(MINI_KEY):,.0f} ms per clip, {ms(MINI_KEY) / ms(OURS_KEY):.0f}x the highlighted model. Like Conformer Large "
-        "and Whisper Medium it writes numbers as Bengali words, which the scorer counts as errors against references "
-        "that use digits. " + loops +
-        "Intervals are pointwise, not adjusted for multiple comparisons; an inconclusive result is not evidence of "
-        "equivalence."
-    )
-    fig.text(0.06, yy - 0.03, body, size=8.0, color=INK_2, va="top", wrap=True, linespacing=1.55)
-    footer(fig, 5, "Voxtral Mini bn-BD")
+    r2 = MS["models"][MINI]["spring_r2_test"]
+    capped = r2["errors"] - r2["without_capped_clips"]["errors"]
+    assert not any(MS["models"][k][s]["hyps_with_latin"] for k in NAME for s in ("spring_r1_test", "spring_r2_test"))
+    y -= 0.02
+    heading(fig, 0.06, y, "Keep in mind")
+    bullets(fig, 0.06, y - 0.035, [
+        "These are Indian Bengali test sets; none is a dedicated test of Bangladeshi speech.",
+        "About half of SPRING-INX's reference sentences contain English words written in Latin letters, which no "
+        "model produces, so SPRING error rates are inflated for every model alike.",
+        f"On SPRING-INX R2, Voxtral Mini got stuck repeating one word on {r2['clips_at_token_cap']} recordings; those "
+        f"alone account for {capped:,} of its {r2['errors']:,} word errors there, and they stay in its score.",
+        "Like Conformer Large and Whisper Medium, Voxtral Mini writes numbers as Bengali words, which counts as an "
+        "error wherever the reference uses digits.",
+    ], 108)
+    footer(fig, 3)
     pdf.savefig(fig); plt.close(fig)
 
 
 def main():
     out = "asr_benchmark.pdf"
     with PdfPages(out) as pdf:
-        page1(pdf); page2(pdf); page3(pdf); page4(pdf)
-        if MINI_KEY in MS["models"]:
-            page5(pdf)
+        page1(pdf); page2(pdf); page3(pdf)
     print("wrote", out)
 
 
