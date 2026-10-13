@@ -1,0 +1,55 @@
+{
+ "label": "spring_r1_test__voxtral_mini_bn",
+ "kind": "voxtral_vllm",
+ "model": "/content/colab-persist-cache/huggingface/hub/models--ehzawad--Voxtral-Mini-3B-2507-bn-BD/snapshots/d1c7aeb0cd18f8a7a057bf756df5ee2ccb7aebcd/",
+ "hf_revision": "d1c7aeb0cd18f8a7a057bf756df5ee2ccb7aebcd",
+ "dataset": "spring_r1_test",
+ "manifest": "/content/bench_assets/spring_r1_test/eval_manifest.vm.json",
+ "manifest_sha256": "795b92a9387f421f36ef84e822df289af4b03e08a31f9aaba584826c4e3af99d",
+ "status": "complete",
+ "audio_sha_field_verified": "sha256",
+ "audio_rebuild": null,
+ "n": 1000,
+ "n_manifest": 1000,
+ "failures": 0,
+ "pieces": 1000,
+ "audio_seconds": 9161.3,
+ "ms_per_clip_mean": null,
+ "ms_per_clip_median": null,
+ "ms_per_clip_p95": null,
+ "latency_note": "not measured here: pieces decoded in vLLM continuous batches on an A100-SXM4-40GB, weights fully on the GPU; batch-1 latency is in outputs_a100/voxtral_mini_bn.json",
+ "generate_wall_s": 36.0,
+ "combined_generate": null,
+ "audio_prep_s": 3.7,
+ "engine_load_s": 15.0,
+ "audio_s_per_wall_s": 254.29,
+ "max_num_batched_tokens": 16384,
+ "gen_tokens_total": 48305,
+ "finish_reasons": {
+  "stop": 1000
+ },
+ "decoding": "greedy (temperature 0), max_tokens 500, no external LM or rescoring",
+ "batching": "vLLM continuous batching, max_num_seqs 256",
+ "engine": {
+  "vllm": "0.31.0",
+  "offload": {
+   "offload_backend": "uva",
+   "cpu_offload_gb": 0.0
+  },
+  "gpu_memory_utilization": 0.9,
+  "max_model_len": 2048,
+  "enforce_eager": true,
+  "tokenizer_mode": "mistral",
+  "load_format": "mistral"
+ },
+ "gpu_before": "NVIDIA A100-SXM4-40GB, 38558 MiB, 0 %, 1095 MHz, 46",
+ "gpu_after": "NVIDIA A100-SXM4-40GB, 38558 MiB, 26 %, 1095 MHz, 51",
+ "harness": "voxtral_vllm_bench.py over asr_core (load_audio, chunks, PCM16 staging)",
+ "torch": "2.13.0+cu130",
+ "python": "3.12.3",
+ "harness_in_this_repo": "bench_run_voxtral_vllm.py (the runner that produced these files, without its unused CPU-offload options)",
+ "corrections": [
+  "latency_note corrected on commit: the runner's wording said the weights were CPU-offloaded; they were not (engine.offload records cpu_offload_gb 0.0, the whole 9.4 GB model ran on the GPU)",
+  "gen_token_ids dropped from the committed predictions to save space; gen_tokens keeps the per-piece counts"
+ ]
+}

@@ -1161,7 +1161,586 @@
     "ref_words": 12918,
     "errors": 3893
    }
+  },
+  "voxtral_mini_bn": {
+   "vaani_test": {
+    "status": "complete",
+    "ms_per_clip_mean": null,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.22119,
+    "cer": 0.06497,
+    "wer_ci_utterance": [
+     0.20958,
+     0.23248
+    ],
+    "wer_ci_reference_clustered": [
+     0.20977,
+     0.2327
+    ],
+    "ref_words": 10082,
+    "errors": 2230,
+    "clips_at_token_cap": 0
+   },
+   "spring_r1_test": {
+    "status": "complete",
+    "ms_per_clip_mean": null,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.36989,
+    "cer": 0.21827,
+    "wer_ci_utterance": [
+     0.35756,
+     0.38271
+    ],
+    "wer_ci_reference_clustered": [
+     0.35756,
+     0.38271
+    ],
+    "ref_words": 19706,
+    "errors": 7289,
+    "clips_at_token_cap": 0,
+    "no_latin_ref": {
+     "n": 499,
+     "wer": 0.32305,
+     "cer": 0.14288,
+     "wer_ci_utterance": [
+      0.30222,
+      0.34483
+     ],
+     "wer_ci_reference_clustered": [
+      0.30222,
+      0.34483
+     ],
+     "ref_words": 7974,
+     "errors": 2576
+    },
+    "latin_ref": {
+     "n": 501,
+     "wer": 0.40172,
+     "cer": 0.27053,
+     "wer_ci_utterance": [
+      0.3873,
+      0.41673
+     ],
+     "wer_ci_reference_clustered": [
+      0.3873,
+      0.41673
+     ],
+     "ref_words": 11732,
+     "errors": 4713
+    },
+    "hyps_with_latin": 0
+   },
+   "spring_r2_test": {
+    "status": "complete",
+    "ms_per_clip_mean": null,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.40043,
+    "cer": 0.23634,
+    "wer_ci_utterance": [
+     0.36653,
+     0.44359
+    ],
+    "wer_ci_reference_clustered": [
+     0.36653,
+     0.44359
+    ],
+    "ref_words": 20353,
+    "errors": 8150,
+    "clips_at_token_cap": 3,
+    "without_capped_clips": {
+     "n": 997,
+     "wer": 0.36858,
+     "cer": 0.20771,
+     "wer_ci_utterance": [
+      0.35534,
+      0.38244
+     ],
+     "wer_ci_reference_clustered": [
+      0.35534,
+      0.38244
+     ],
+     "ref_words": 20313,
+     "errors": 7487
+    },
+    "no_latin_ref": {
+     "n": 542,
+     "wer": 0.37789,
+     "cer": 0.1862,
+     "wer_ci_utterance": [
+      0.32447,
+      0.45365
+     ],
+     "wer_ci_reference_clustered": [
+      0.32447,
+      0.45365
+     ],
+     "ref_words": 9225,
+     "errors": 3486
+    },
+    "latin_ref": {
+     "n": 458,
+     "wer": 0.41912,
+     "cer": 0.27855,
+     "wer_ci_utterance": [
+      0.38483,
+      0.47493
+     ],
+     "wer_ci_reference_clustered": [
+      0.38483,
+      0.47493
+     ],
+     "ref_words": 11128,
+     "errors": 4664
+    },
+    "hyps_with_latin": 0
+   },
+   "kathbath_test_known": {
+    "status": "complete",
+    "ms_per_clip_mean": null,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.10733,
+    "cer": 0.02238,
+    "wer_ci_utterance": [
+     0.10006,
+     0.11452
+    ],
+    "wer_ci_reference_clustered": [
+     0.10006,
+     0.11452
+    ],
+    "ref_words": 10789,
+    "errors": 1158,
+    "clips_at_token_cap": 0
+   },
+   "kathbath_test_unknown": {
+    "status": "complete",
+    "ms_per_clip_mean": null,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.10893,
+    "cer": 0.02107,
+    "wer_ci_utterance": [
+     0.10139,
+     0.11694
+    ],
+    "wer_ci_reference_clustered": [
+     0.10139,
+     0.11694
+    ],
+    "ref_words": 10869,
+    "errors": 1184,
+    "clips_at_token_cap": 0
+   },
+   "indicvoices_conv": {
+    "status": "complete",
+    "ms_per_clip_mean": null,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.13446,
+    "cer": 0.04676,
+    "wer_ci_utterance": [
+     0.12552,
+     0.14378
+    ],
+    "wer_ci_reference_clustered": [
+     0.1257,
+     0.14378
+    ],
+    "ref_words": 12918,
+    "errors": 1737,
+    "clips_at_token_cap": 0
+   }
   }
  },
- "note": "Score the multi-dataset comparison : every outputs_multiset/<set>__<model>\nrun, plus fastconformer_ctc's stored hypotheses on Vaani/SPRING from its earlier\nfull-split evaluation (re-scored, not re-decoded), with the benchmark's own scorer (bench_score.norm: punctuation to\nword boundaries, NFC) and two 95% bootstraps (utterance; distinct-reference clusters).\nSPRING sets also get a \"no Latin-script reference characters\" diagnostic for every\nmodel. Writes outputs_multiset/summary_multiset.json and prints the table.\n"
+ "paired": {
+  "vaani_test": {
+   "voxtral_mini_bn_vs_fastconformer_ctc": {
+    "wer_delta_pp": -2.5392,
+    "wer_ci95_pp": [
+     -3.2031,
+     -1.8834
+    ],
+    "cer_delta_pp": -1.1309,
+    "cer_ci95_pp": [
+     -1.4068,
+     -0.8529
+    ]
+   },
+   "voxtral_mini_bn_vs_hishab_conformer_large": {
+    "wer_delta_pp": -10.98,
+    "wer_ci95_pp": [
+     -12.0681,
+     -9.9056
+    ],
+    "cer_delta_pp": -3.9756,
+    "cer_ci95_pp": [
+     -4.4392,
+     -3.5164
+    ]
+   },
+   "voxtral_mini_bn_vs_whisper_medium": {
+    "wer_delta_pp": -4.1262,
+    "wer_ci95_pp": [
+     -4.9827,
+     -3.2767
+    ],
+    "cer_delta_pp": -2.0826,
+    "cer_ci95_pp": [
+     -2.4649,
+     -1.7151
+    ]
+   },
+   "voxtral_mini_bn_vs_wav2vec2": {
+    "wer_delta_pp": -9.145,
+    "wer_ci95_pp": [
+     -10.1606,
+     -8.1136
+    ],
+    "cer_delta_pp": -2.8254,
+    "cer_ci95_pp": [
+     -3.1977,
+     -2.4585
+    ]
+   },
+   "voxtral_mini_bn_vs_hishab_fastconformer": {
+    "wer_delta_pp": -6.586,
+    "wer_ci95_pp": [
+     -7.6101,
+     -5.5682
+    ],
+    "cer_delta_pp": -4.7184,
+    "cer_ci95_pp": [
+     -5.2726,
+     -4.1787
+    ]
+   }
+  },
+  "spring_r1_test": {
+   "voxtral_mini_bn_vs_fastconformer_ctc": {
+    "wer_delta_pp": -2.248,
+    "wer_ci95_pp": [
+     -2.8579,
+     -1.65
+    ],
+    "cer_delta_pp": -0.8543,
+    "cer_ci95_pp": [
+     -1.156,
+     -0.5428
+    ]
+   },
+   "voxtral_mini_bn_vs_hishab_conformer_large": {
+    "wer_delta_pp": -5.4704,
+    "wer_ci95_pp": [
+     -6.2936,
+     -4.669
+    ],
+    "cer_delta_pp": -2.2089,
+    "cer_ci95_pp": [
+     -2.7531,
+     -1.6934
+    ]
+   },
+   "voxtral_mini_bn_vs_whisper_medium": {
+    "wer_delta_pp": -2.9737,
+    "wer_ci95_pp": [
+     -3.6327,
+     -2.3043
+    ],
+    "cer_delta_pp": -2.7892,
+    "cer_ci95_pp": [
+     -3.2874,
+     -2.2899
+    ]
+   },
+   "voxtral_mini_bn_vs_wav2vec2": {
+    "wer_delta_pp": -10.2913,
+    "wer_ci95_pp": [
+     -11.1036,
+     -9.4627
+    ],
+    "cer_delta_pp": -3.573,
+    "cer_ci95_pp": [
+     -3.9552,
+     -3.1819
+    ]
+   },
+   "voxtral_mini_bn_vs_hishab_fastconformer": {
+    "wer_delta_pp": -9.4844,
+    "wer_ci95_pp": [
+     -11.0005,
+     -8.0186
+    ],
+    "cer_delta_pp": -5.6078,
+    "cer_ci95_pp": [
+     -6.377,
+     -4.879
+    ]
+   }
+  },
+  "spring_r2_test": {
+   "voxtral_mini_bn_vs_fastconformer_ctc": {
+    "wer_delta_pp": 1.6312,
+    "wer_ci95_pp": [
+     -1.4912,
+     5.7802
+    ],
+    "cer_delta_pp": 2.296,
+    "cer_ci95_pp": [
+     -0.5303,
+     5.9739
+    ]
+   },
+   "voxtral_mini_bn_vs_hishab_conformer_large": {
+    "wer_delta_pp": -2.2011,
+    "wer_ci95_pp": [
+     -5.3374,
+     1.9033
+    ],
+    "cer_delta_pp": 0.2759,
+    "cer_ci95_pp": [
+     -2.5596,
+     3.9574
+    ]
+   },
+   "voxtral_mini_bn_vs_whisper_medium": {
+    "wer_delta_pp": 0.339,
+    "wer_ci95_pp": [
+     -2.8524,
+     4.4926
+    ],
+    "cer_delta_pp": 0.2713,
+    "cer_ci95_pp": [
+     -2.5641,
+     3.9371
+    ]
+   },
+   "voxtral_mini_bn_vs_wav2vec2": {
+    "wer_delta_pp": -7.2815,
+    "wer_ci95_pp": [
+     -10.4329,
+     -3.1443
+    ],
+    "cer_delta_pp": -0.5916,
+    "cer_ci95_pp": [
+     -3.4137,
+     3.1136
+    ]
+   },
+   "voxtral_mini_bn_vs_hishab_fastconformer": {
+    "wer_delta_pp": -5.041,
+    "wer_ci95_pp": [
+     -8.3607,
+     -0.7801
+    ],
+    "cer_delta_pp": -2.4376,
+    "cer_ci95_pp": [
+     -5.2846,
+     1.2727
+    ]
+   }
+  },
+  "kathbath_test_known": {
+   "voxtral_mini_bn_vs_fastconformer_ctc": {
+    "wer_delta_pp": -2.6508,
+    "wer_ci95_pp": [
+     -3.2453,
+     -2.0602
+    ],
+    "cer_delta_pp": -0.6417,
+    "cer_ci95_pp": [
+     -0.812,
+     -0.4726
+    ]
+   },
+   "voxtral_mini_bn_vs_hishab_conformer_large": {
+    "wer_delta_pp": 1.3996,
+    "wer_ci95_pp": [
+     0.7356,
+     2.0769
+    ],
+    "cer_delta_pp": 0.5142,
+    "cer_ci95_pp": [
+     0.3511,
+     0.6894
+    ]
+   },
+   "voxtral_mini_bn_vs_whisper_medium": {
+    "wer_delta_pp": 1.0474,
+    "wer_ci95_pp": [
+     0.3902,
+     1.6995
+    ],
+    "cer_delta_pp": 0.2819,
+    "cer_ci95_pp": [
+     0.107,
+     0.4628
+    ]
+   },
+   "voxtral_mini_bn_vs_wav2vec2": {
+    "wer_delta_pp": -8.3511,
+    "wer_ci95_pp": [
+     -9.2115,
+     -7.4876
+    ],
+    "cer_delta_pp": -1.4901,
+    "cer_ci95_pp": [
+     -1.6775,
+     -1.3006
+    ]
+   },
+   "voxtral_mini_bn_vs_hishab_fastconformer": {
+    "wer_delta_pp": -15.0802,
+    "wer_ci95_pp": [
+     -16.7878,
+     -13.4257
+    ],
+    "cer_delta_pp": -3.4251,
+    "cer_ci95_pp": [
+     -3.8529,
+     -3.0195
+    ]
+   }
+  },
+  "kathbath_test_unknown": {
+   "voxtral_mini_bn_vs_fastconformer_ctc": {
+    "wer_delta_pp": -2.5393,
+    "wer_ci95_pp": [
+     -3.1261,
+     -1.9575
+    ],
+    "cer_delta_pp": -0.8285,
+    "cer_ci95_pp": [
+     -1.0132,
+     -0.6544
+    ]
+   },
+   "voxtral_mini_bn_vs_hishab_conformer_large": {
+    "wer_delta_pp": 2.1069,
+    "wer_ci95_pp": [
+     1.4335,
+     2.8016
+    ],
+    "cer_delta_pp": 0.5067,
+    "cer_ci95_pp": [
+     0.3467,
+     0.6738
+    ]
+   },
+   "voxtral_mini_bn_vs_whisper_medium": {
+    "wer_delta_pp": 1.1041,
+    "wer_ci95_pp": [
+     0.4346,
+     1.751
+    ],
+    "cer_delta_pp": 0.2103,
+    "cer_ci95_pp": [
+     0.0493,
+     0.3747
+    ]
+   },
+   "voxtral_mini_bn_vs_wav2vec2": {
+    "wer_delta_pp": -7.9032,
+    "wer_ci95_pp": [
+     -8.6964,
+     -7.1086
+    ],
+    "cer_delta_pp": -1.4297,
+    "cer_ci95_pp": [
+     -1.5904,
+     -1.2718
+    ]
+   },
+   "voxtral_mini_bn_vs_hishab_fastconformer": {
+    "wer_delta_pp": -18.9714,
+    "wer_ci95_pp": [
+     -21.495,
+     -16.6051
+    ],
+    "cer_delta_pp": -4.4105,
+    "cer_ci95_pp": [
+     -5.0428,
+     -3.8288
+    ]
+   }
+  },
+  "indicvoices_conv": {
+   "voxtral_mini_bn_vs_fastconformer_ctc": {
+    "wer_delta_pp": 0.836,
+    "wer_ci95_pp": [
+     -0.0149,
+     1.5998
+    ],
+    "cer_delta_pp": 0.5873,
+    "cer_ci95_pp": [
+     0.1166,
+     0.9757
+    ]
+   },
+   "voxtral_mini_bn_vs_hishab_conformer_large": {
+    "wer_delta_pp": -16.2332,
+    "wer_ci95_pp": [
+     -17.5274,
+     -15.0299
+    ],
+    "cer_delta_pp": -6.8377,
+    "cer_ci95_pp": [
+     -7.6477,
+     -6.1027
+    ]
+   },
+   "voxtral_mini_bn_vs_whisper_medium": {
+    "wer_delta_pp": -11.5807,
+    "wer_ci95_pp": [
+     -12.7925,
+     -10.4919
+    ],
+    "cer_delta_pp": -7.0307,
+    "cer_ci95_pp": [
+     -8.0842,
+     -6.1471
+    ]
+   },
+   "voxtral_mini_bn_vs_wav2vec2": {
+    "wer_delta_pp": -19.5619,
+    "wer_ci95_pp": [
+     -20.8559,
+     -18.3249
+    ],
+    "cer_delta_pp": -6.9856,
+    "cer_ci95_pp": [
+     -7.5797,
+     -6.4365
+    ]
+   },
+   "voxtral_mini_bn_vs_hishab_fastconformer": {
+    "wer_delta_pp": -16.6899,
+    "wer_ci95_pp": [
+     -18.0278,
+     -15.4385
+    ],
+    "cer_delta_pp": -9.8785,
+    "cer_ci95_pp": [
+     -10.7859,
+     -9.0344
+    ]
+   }
+  }
+ },
+ "note": "Score the multi-dataset comparison : every outputs_multiset/<set>__<model>\nrun, plus fastconformer_ctc's stored hypotheses on Vaani/SPRING from its earlier\nfull-split evaluation (re-scored, not re-decoded), with the benchmark's own scorer (bench_score.norm: punctuation to\nword boundaries, NFC) and two 95% bootstraps (utterance; distinct-reference clusters).\nSPRING sets also get a \"no Latin-script reference characters\" diagnostic for every\nmodel. Voxtral Mini bn-BD (voxtral_mini_bn, decoded with vLLM on an A100 by\nbench_run_voxtral_vllm.py) is also compared pairwise with each published model on each set:\nWER/CER differences with a 95% bootstrap over distinct-reference clusters (10,000 draws,\nseed 20260903), the method of clean_split_table.py. Writes\noutputs_multiset/summary_multiset.json and prints the table.\n"
 }

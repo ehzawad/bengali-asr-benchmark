@@ -16,7 +16,8 @@ import numpy as np
 from bench_score import norm
 
 OUT = os.environ.get("BENCH_OUT", "outputs_fleurs")
-MODELS = ["fastconformer_ctc", "hishab_conformer_large", "whisper_medium", "wav2vec2", "hishab_fastconformer"]
+MODELS = ["fastconformer_ctc", "hishab_conformer_large", "whisper_medium", "wav2vec2", "hishab_fastconformer",
+          "voxtral_mini_bn"]  # voxtral_mini_bn: vLLM on an A100, batched (bench_run_voxtral_vllm.py); no A5000 latency
 OURS = {"fastconformer_ctc"}   # trained on a corpus that contains fleurs_train
 
 
@@ -97,6 +98,10 @@ paired_extra = {}
 for b in ("hishab_conformer_large", "whisper_medium"):
     paired_extra[f"fastconformer_ctc_vs_{b}"] = paired_delta("fastconformer_ctc", b)
     print(f"fastconformer_ctc vs {b}: {json.dumps(paired_extra[f'fastconformer_ctc_vs_{b}'])}")
+paired_mini = {}
+for b in MODELS[:5]:
+    paired_mini[f"voxtral_mini_bn_vs_{b}"] = paired_delta("voxtral_mini_bn", b)
+    print(f"voxtral_mini_bn vs {b}: {json.dumps(paired_mini[f'voxtral_mini_bn_vs_{b}'])}")
 
 
 # Speed on the same clean split, from the per-clip wall clock already recorded.
@@ -124,5 +129,6 @@ Path(f"{OUT}/clean_test_table.json").write_text(json.dumps(
                  "sentences appear verbatim in the training corpus via fleurs_train, "
                  "which advantages the two models trained on it",
      "models": res, "paired_vs_best": paired, "paired_fastconformer_ctc": paired_extra,
+     "paired_voxtral_mini_bn": paired_mini,
      "speed_default_runtime": speeds}, indent=1))
 print(f"\nwrote {OUT}/clean_test_table.json")

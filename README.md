@@ -7,6 +7,11 @@ validation split. Every decode was run on one GPU (RTX A5000), one model at a ti
 same audio path and the same scorer — with one exception, marked † below — so accuracy and speed
 are comparable across the tables.
 
+A sixth model was added later: **Voxtral Mini bn-BD**, a private fine-tune, marked ‡. It went
+through the same manifests, audio path and scorer, but was decoded with vLLM in continuous batches
+on an A100-40GB, where all six models were then timed at batch 1 on one card
+([Same-GPU latency on an A100](#same-gpu-latency-on-an-a100)).
+
 Report: [`asr_benchmark.pdf`](asr_benchmark.pdf), rendered by `make_report.py` from the committed summaries.
 
 ## Which one to use
@@ -19,6 +24,9 @@ Report: [`asr_benchmark.pdf`](asr_benchmark.pdf), rendered by `make_report.py` f
   transfer to spontaneous speech.
 - **Whisper Medium** — second or close to it nearly everywhere, at 13–22× the latency of the CTC
   models. The most consistent choice if speed does not matter.
+- **`ehzawad/Voxtral-Mini-3B-2507-bn-BD`** ‡ — private, so not a choice for most readers: lowest
+  WER of all six on Vaani (22.1 %) and SPRING R1 (37.0 %), indistinguishable from Conformer Large on
+  FLEURS (14.7 %), behind it on Kathbath, at about 5× the latency of the CTC models on an A100.
 
 The one finding worth reading on for: **on the corpora none of these models is documented as having
 trained on, the FLEURS ranking does not hold.**
@@ -40,11 +48,12 @@ under [`outputs_multiset/`](outputs_multiset/).
 
 | Model | Vaani test | SPRING-INX R1 eval | SPRING-INX R2 eval | Kathbath (known spk) | Kathbath (unknown spk) | IndicVoices conversational |
 |---|---:|---:|---:|---:|---:|---:|
-| **ehzawad FastConformer-CTC** | **24.66%** [23.5–25.9] <sub>N</sub>† | **39.24%** [38.0–40.5] <sub>N</sub>† | **38.41%** [37.2–39.7] <sub>N</sub>† | 13.38% [12.6–14.2] <sub>S</sub> | 13.43% [12.6–14.3] <sub>S</sub> | **12.61%** [11.6–13.7] <sub>S</sub> |
+| **ehzawad FastConformer-CTC** | 24.66% [23.5–25.9] <sub>N</sub>† | 39.24% [38.0–40.5] <sub>N</sub>† | **38.41%** [37.2–39.7] <sub>N</sub>† | 13.38% [12.6–14.2] <sub>S</sub> | 13.43% [12.6–14.3] <sub>S</sub> | **12.61%** [11.6–13.7] <sub>S</sub> |
 | Whisper Medium | 26.25% [25.0–27.5] <sub>U</sub> | 39.96% [38.8–41.2] <sub>U</sub> | 39.70% [38.5–40.9] <sub>U</sub> | 9.69% [9.0–10.4] <sub>U</sub> | 9.79% [9.1–10.5] <sub>U</sub> | 25.03% [23.7–26.5] <sub>U</sub> |
 | Conformer Large (hishab) | 33.10% [31.8–34.5] <sub>N</sub> | 42.46% [41.2–43.8] <sub>N</sub> | 42.24% [40.9–43.6] <sub>N</sub> | **9.33%** [8.6–10.1] <sub>S</sub> | **8.79%** [8.1–9.5] <sub>S</sub> | 29.68% [28.3–31.2] <sub>N</sub> |
 | hishab FastConformer | 28.71% [27.4–30.0] <sub>U</sub> | 46.47% [44.8–48.2] <sub>U</sub> | 45.08% [43.5–46.7] <sub>U</sub> | 25.81% [24.1–27.6] <sub>U</sub> | 29.87% [27.5–32.4] <sub>U</sub> | 30.14% [28.7–31.7] <sub>U</sub> |
 | Wav2Vec2 | 31.26% [29.9–32.7] <sub>U</sub> | 47.28% [46.1–48.6] <sub>U</sub> | 47.33% [46.1–48.6] <sub>U</sub> | 19.08% [18.1–20.1] <sub>U</sub> | 18.80% [17.9–19.7] <sub>U</sub> | 33.01% [31.6–34.5] <sub>U</sub> |
+| Voxtral Mini bn-BD ‡ | **22.12%** [21.0–23.3] <sub>U</sub> | **36.99%** [35.8–38.3] <sub>U</sub> | 40.04% [36.7–44.4] <sub>U</sub> | 10.73% [10.0–11.5] <sub>U</sub> | 10.89% [10.1–11.7] <sub>U</sub> | 13.45% [12.6–14.4] <sub>U</sub> |
 
 Provenance flags, from the model cards only: **N** — the card does not list this corpus;
 **S** — the model trained on another split of this corpus; **U** — the card does not say either
@@ -55,6 +64,12 @@ decoding, batched) rather than decoding them again here; they are scored on exac
 utterances, so accuracy is comparable, but no latency is reported for them. Every other cell is a
 batch-1 decode from this run.
 
+‡ Voxtral Mini bn-BD (4.7B parameters) is a private fine-tune of `mistralai/Voxtral-Mini-3B-2507`
+whose card documents no training data, hence **U** everywhere. Its cells come from
+`bench_run_voxtral_vllm.py`: the same SHA-256-verified manifests, `asr_core` path and scorer, decoded
+with vLLM 0.31 in continuous batches (greedy, 500-token cap) on an A100-40GB, a different inference
+stack from the other rows; no per-set latency is reported for it.
+
 **What the table says.**
 
 - The FLEURS ranking does not transfer. Conformer Large, the FLEURS leader at 14.4 %, is last on
@@ -62,7 +77,16 @@ batch-1 decode from this run.
   lists read and broadcast corpora (OpenSLR, Bengali.AI, MadASR, Kathbath, Common Voice, FLEURS,
   SUBAK.KO, Shrutilipi, Vasha-Bichita, IndicTTS) and none of Vaani, SPRING-INX or IndicVoices.
 - On the three sets nobody is documented as having trained on, `ehzawad/stt_bn_fastconformer_ctc`
-  leads all five, with Whisper Medium second on each at 13–20× the latency of the NeMo CTC models.
+  leads all five public models, with Whisper Medium second on each at 13–20× the latency of the NeMo
+  CTC models.
+- **Voxtral Mini bn-BD ‡** is lower still on Vaani and SPRING R1: against the ehzawad model, the
+  best public one there, −2.54 points [−3.20, −1.88] and −2.25 [−2.86, −1.65] (paired, 95 %
+  reference-clustered bootstrap, `outputs_multiset/summary_multiset.json`). It is higher than
+  Conformer Large on both Kathbath sets (+1.40 [+0.74, +2.08] and +2.11 [+1.43, +2.80]) and
+  inconclusive on SPRING R2 and IndicVoices. Three SPRING R2 recordings ran to its 500-token cap
+  repeating a word; they hold 663 of that set's 8,150 word errors and stay in its score (36.86 % on
+  the other 997, a conditional diagnostic). Its training data is undocumented, so none of this rules
+  out overlap.
 - On Kathbath the order flips back: Conformer Large (9.3 / 8.8 %) and Whisper Medium (9.7 / 9.8 %)
   lead and the ehzawad model is third (13.4 / 13.4 %). Two of those cells are **S** (Conformer
   Large's card lists Kathbath train and validation; the ehzawad model trained on Kathbath train)
@@ -76,7 +100,7 @@ batch-1 decode from this run.
   hishab FastConformer 21 and Wav2Vec2 33 (all counted as full errors).
 - SPRING's 39–47 % WER overstates the real error rate: about half its references contain English
   words in Latin script, and no model emitted a single Latin-script word, so that content is an
-  error for all five alike. On the Latin-free half, `ehzawad/stt_bn_fastconformer_ctc`
+  error for all six alike. On the Latin-free half, `ehzawad/stt_bn_fastconformer_ctc`
   (35.4 / 35.1 %) and Whisper Medium (35.9 / 36.7 %) are inside each other's intervals.
 
 ## FLEURS Bengali test (920 utterances)
@@ -86,13 +110,15 @@ The familiar benchmark, for comparison with published numbers.
 | Model | Checkpoint | WER (95% CI) | CER | ms/clip | Params |
 |---|---|---|---|---|---|
 | Conformer Large | `hishab/titu_stt_bn_conformer_large` | **14.37%** [13.11–15.73] | 4.48% | 77 | 121.5M |
+| Voxtral Mini bn-BD ‡ | `ehzawad/Voxtral-Mini-3B-2507-bn-BD` (private) | 14.73% [13.61–15.92] | 4.77% | — | 4,676M |
 | Whisper Medium | `SayedShaun/bengali-whisper-medium` | 16.23% [15.05–17.45] | 5.09% | 1,866 | 763.9M |
 | **ehzawad FastConformer-CTC** | `ehzawad/stt_bn_fastconformer_ctc` | 17.12% [15.95–18.34] | 5.12% | 83 | 115.6M |
 | Wav2Vec2 | `SayedShaun/bangla-wave2vec2-unigram` | 20.64% [19.46–21.89] | 6.02% | 64 | 315.5M |
 | hishab FastConformer | `hishab/titu_stt_bn_fastconformer` | 36.22% [33.88–38.72] | 9.05% | 79 | 115.6M |
 
-Greedy decoding, batch 1, no external language model; no clip failed and no hypothesis came
-back empty for any model. `ms/clip` is single-clip latency on the A5000.
+Greedy decoding, batch 1 (‡ batched), no external language model; no clip failed and no
+hypothesis came back empty for any model. `ms/clip` is single-clip latency on the A5000; Voxtral
+Mini was not run there, and all six are timed on one A100 below.
 
 **Test split only.** The ehzawad model trained on a corpus that includes the FLEURS *train* split,
 which overlaps the FLEURS *validation* split, so the 402 validation recordings are excluded for
@@ -101,6 +127,38 @@ FLEURS row as a like-for-like re-measurement and the other corpora above as the 
 
 Paired comparisons for `ehzawad/stt_bn_fastconformer_ctc` on this split: +0.89 points behind
 Whisper Medium [+0.27, +1.50] at 22× its speed; +2.74 points behind Conformer Large [+2.01, +3.46].
+
+Voxtral Mini bn-BD ‡ on this split: +0.35 points against Conformer Large [−0.36, +1.06], not
+distinguishable; −1.50 against Whisper Medium [−2.14, −0.86]; −2.39 against the ehzawad model
+[−3.02, −1.74]. Its CER is higher than Conformer Large's (4.77 % vs 4.48 %, interval excluding
+zero), and it writes numbers as Bengali words, which the scorer counts against digit references as
+it does for every model.
+
+## Same-GPU latency on an A100
+
+All six models on one Colab A100-SXM4-40GB, on the 920 FLEURS test clips: batch 1, one warm-up
+clip discarded, each clip timed between CUDA synchronisations with `asr_core` loading, chunking and
+staging included (`time_models.py`, `outputs_a100/`, summarised by `score_a100.py`).
+
+| Model | mean ms/clip | median | p95 | × real time | same transcripts |
+|---|---:|---:|---:|---:|---:|
+| Wav2Vec2 | 56 | 54 | 86 | 242× | 913/920 |
+| Conformer Large (hishab) | 87 | 84 | 97 | 155× | 920/920 |
+| ehzawad FastConformer-CTC | 88 | 85 | 99 | 152× | 919/920 |
+| hishab FastConformer | 89 | 85 | 100 | 151× | 919/920 |
+| Voxtral Mini bn-BD ‡ | 438 | 421 | 681 | 31× | 860/920* |
+| Whisper Medium | 1,945 | 1,837 | 3,135 | 7× | 916/920 |
+
+- These time the configured pipelines, not the models in isolation. The five public models ran
+  through `bench_run.py`'s backends at the pinned revisions (torch 2.11; Whisper in FP16); Voxtral
+  Mini through vLLM 0.31 with CUDA graphs, one request at a time (torch 2.13).
+- One pass per model, startup excluded. A low-priority scoring process shared the VM's CPUs during
+  the four fastest runs; its effect was not measured. A few milliseconds apart is not an
+  established ordering, and p95 is variation across clips, not uncertainty in the mean.
+- "Same transcripts" compares each model's A100 output with its committed A5000 predictions.
+  \* Voxtral Mini has no A5000 run, so it is compared with its batched accuracy run, a different
+  engine configuration: 860 of 920 transcripts are identical, with the same 2,616 word errors, so
+  its outputs depend on the engine configuration while its WER did not move.
 
 ## How the comparison was run
 
@@ -121,6 +179,10 @@ Whisper Medium [+0.27, +1.50] at 22× its speed; +2.74 points behind Conformer L
 - **Every clip counts.** No model raised on a clip. Empty hypotheses (a few on SPRING R2, more on
   IndicVoices conversational for three models) stay in the denominator as full errors.
 - **Checkpoints pinned** by commit hash in `outputs_fleurs/checkpoint_revisions.json`.
+- **Voxtral Mini bn-BD ‡** was decoded by `bench_run_voxtral_vllm.py` with vLLM 0.31 on an A100-40GB,
+  in continuous batches of up to 256 pieces (eager mode), with the prompt vLLM's own transcription
+  endpoint builds for Voxtral (language `bn`). Checked against Hugging Face transformers at batch 1
+  on six FLEURS clips, 6 of 7 pieces had identical text.
 - **Intervals** are 95 % bootstraps over distinct references, because several speakers may read
   the same sentence. That matters on FLEURS (349 distinct sentences over 920 recordings); in the
   1,000-utterance subsets the references are effectively all distinct.
@@ -137,6 +199,8 @@ Whisper Medium [+0.27, +1.50] at 22× its speed; +2.74 points behind Conformer L
   interval are not differences.
 - Training provenance is only as good as the model cards; a **U** flag means it could not be
   established either way.
+- Voxtral Mini's rows come from a different inference stack and GPU (vLLM, batched, A100) from the
+  public models' batch-1 A5000 decodes, and the model is not public.
 
 ## Reproducing this
 
@@ -150,6 +214,16 @@ BENCH_GPU=<A5000 uuid> ./run_multiset.sh          # Vaani + SPRING subsets  -> o
 BENCH_GPU=<A5000 uuid> ./run_multiset_kathbath.sh # Kathbath subsets
 BENCH_GPU=<A5000 uuid> ./run_multiset_conv.sh     # IndicVoices conversational subset
 python score_multiset.py
+
+# Voxtral Mini bn-BD (‡), on an A100 with vllm[audio]==0.31.0; --jobs runs several manifests on one engine
+python bench_run_voxtral_vllm.py --bench-dir . --model <Mistral-format model dir> \
+    --hf-revision d1c7aeb0cd18f8a7a057bf756df5ee2ccb7aebcd \
+    --manifest eval_manifest.json --audio-dir <FLEURS wav dir> --out-root outputs_fleurs --label voxtral_mini_bn
+# same-GPU latency, one model per process, then the summary
+python time_models.py --bench-dir . --manifest eval_manifest.json --audio-dir <FLEURS wav dir> \
+    --kind <nemo|whisper|wav2vec2|voxtral_vllm> --model <checkpoint> --label <label> \
+    --out outputs_a100/<label>.json [--published-label <label>]
+python score_a100.py
 python make_report.py                             # -> asr_benchmark.pdf
 ```
 
@@ -181,9 +255,12 @@ asr_core.py              the single audio path shared by demo and benchmark
 backends.py              model loading for NeMo, wav2vec2 CTC and Whisper seq2seq
 bench_run.py             one model over the FLEURS set, batch 1, timed
 bench_run_set.py         the same backends over any eval manifest (the official-split runs)
+bench_run_voxtral_vllm.py   Voxtral Mini bn-BD under vLLM over any eval manifest (batched)
 bench_score.py           predictions -> WER/CER with bootstrap intervals -> summary.json
 clean_split_table.py     the FLEURS test-split table with paired deltas
-score_multiset.py        the official-split tables
+score_multiset.py        the official-split tables, and Voxtral Mini's paired comparisons
+time_models.py           batch-1 latency of one model on the current GPU (the A100 table)
+score_a100.py            outputs_a100/*.json -> outputs_a100/summary.json
 run_all_fleurs.sh        five models on FLEURS, one at a time, GPU pinned by UUID
 run_multiset.sh, run_multiset_kathbath.sh, run_multiset_conv.sh   the official-split runs
 make_report.py           summaries -> asr_benchmark.pdf
@@ -193,6 +270,7 @@ build_eval.py, prove_audio_path.py, eval_manifest.json   the FLEURS evaluation s
 multiset/                the official-split subsets with per-file SHA-256
 outputs_fleurs/          FLEURS predictions, run metadata, summaries
 outputs_multiset/        official-split predictions, run metadata, summary
+outputs_a100/            same-GPU latency runs of all six models, and their summary
 requirements.txt         pinned
 ```
 
@@ -213,6 +291,9 @@ Not included: model checkpoints, the built evaluation sets, and the virtualenv.
 - `ehzawad/stt_bn_fastconformer_ctc` — FastConformer-CTC large trained on 1,692 hours of
   human-supervised Bengali with a 1,024-piece Bengali BPE vocabulary, CC-BY-SA-4.0; base model
   `nvidia/stt_en_fastconformer_ctc_large`, NVIDIA, CC-BY-4.0.
+
+- `ehzawad/Voxtral-Mini-3B-2507-bn-BD` — private fine-tune of `mistralai/Voxtral-Mini-3B-2507`
+  (Mistral AI, Apache-2.0).
 
 Model licences are those of their respective publishers. Check each model card before use.
 
