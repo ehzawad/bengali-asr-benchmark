@@ -10,7 +10,7 @@ accuracy and speed are comparable across the tables.
 The private model, **Voxtral Mini bn-BD** (marked ‡), went through the same harness, but was decoded
 by vLLM rather than by PyTorch directly.
 
-Report: [`asr_benchmark.pdf`](asr_benchmark.pdf), a three-page summary centred on Voxtral Mini bn-BD, rendered
+Report: [`asr_benchmark.pdf`](asr_benchmark.pdf), a two-page summary centred on Voxtral Mini bn-BD, rendered
 by `make_report.py` from the committed summaries. This README has the full tables and intervals.
 
 ## Which one to use
