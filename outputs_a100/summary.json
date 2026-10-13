@@ -1,0 +1,122 @@
+{
+ "gpu": "NVIDIA A100-SXM4-40GB (Colab)",
+ "date": "2026-10-13",
+ "models": {
+  "fastconformer_ctc": {
+   "model": "/content/colab-persist-cache/huggingface/hub/models--ehzawad--stt_bn_fastconformer_ctc/snapshots/6b0d1aa869560bb22ef35d9e2c589d682daa87d4/stt_bn_fastconformer_ctc_v2.nemo",
+   "revision": null,
+   "kind": "nemo",
+   "n": 920,
+   "ms_per_clip_mean": 88.35,
+   "ms_per_clip_median": 84.92,
+   "ms_per_clip_p95": 99.29,
+   "rtf": 0.00658,
+   "model_load_s": 24.4,
+   "identical_to_published_transcripts": "919/920",
+   "gpu_after": "NVIDIA A100-SXM4-40GB, 1550 MiB, 15 %, 1095 MHz, 37",
+   "torch": "2.11.0+cu128",
+   "vllm": null
+  },
+  "hishab_conformer_large": {
+   "model": "/content/colab-persist-cache/huggingface/hub/models--hishab--titu_stt_bn_conformer_large/snapshots/42041012a7cdb9df071eac4cef33b8a6182eb687/titu_stt_bn_conformer_large.nemo",
+   "revision": null,
+   "kind": "nemo",
+   "n": 920,
+   "ms_per_clip_mean": 86.93,
+   "ms_per_clip_median": 83.51,
+   "ms_per_clip_p95": 97.17,
+   "rtf": 0.00647,
+   "model_load_s": 10.2,
+   "identical_to_published_transcripts": "920/920",
+   "gpu_after": "NVIDIA A100-SXM4-40GB, 1730 MiB, 27 %, 1095 MHz, 38",
+   "torch": "2.11.0+cu128",
+   "vllm": null
+  },
+  "whisper_medium": {
+   "model": "SayedShaun/bengali-whisper-medium",
+   "revision": "5a602253bb554e7508cb1a723888c8505d2e5b2f",
+   "kind": "whisper",
+   "n": 920,
+   "ms_per_clip_mean": 1944.66,
+   "ms_per_clip_median": 1837.31,
+   "ms_per_clip_p95": 3135.37,
+   "rtf": 0.14475,
+   "model_load_s": 9.8,
+   "identical_to_published_transcripts": "916/920",
+   "gpu_after": "NVIDIA A100-SXM4-40GB, 2202 MiB, 19 %, 1095 MHz, 43",
+   "torch": "2.11.0+cu128",
+   "vllm": null
+  },
+  "wav2vec2": {
+   "model": "SayedShaun/bangla-wave2vec2-unigram",
+   "revision": "abfa2b6370535959304e6e1506b1a6e08e603409",
+   "kind": "wav2vec2",
+   "n": 920,
+   "ms_per_clip_mean": 55.59,
+   "ms_per_clip_median": 53.58,
+   "ms_per_clip_p95": 85.67,
+   "rtf": 0.00414,
+   "model_load_s": 14.1,
+   "identical_to_published_transcripts": "913/920",
+   "gpu_after": "NVIDIA A100-SXM4-40GB, 4974 MiB, 75 %, 1410 MHz, 55",
+   "torch": "2.11.0+cu128",
+   "vllm": null
+  },
+  "hishab_fastconformer": {
+   "model": "/content/colab-persist-cache/huggingface/hub/models--hishab--titu_stt_bn_fastconformer/snapshots/993316b17c3db56a42bf0140b8ad524f35b4677b/titu_stt_bn_fastconformer.nemo",
+   "revision": null,
+   "kind": "nemo",
+   "n": 920,
+   "ms_per_clip_mean": 89.03,
+   "ms_per_clip_median": 85.4,
+   "ms_per_clip_p95": 99.67,
+   "rtf": 0.00663,
+   "model_load_s": 10.4,
+   "identical_to_published_transcripts": "919/920",
+   "gpu_after": "NVIDIA A100-SXM4-40GB, 1550 MiB, 21 %, 1095 MHz, 37",
+   "torch": "2.11.0+cu128",
+   "vllm": null
+  },
+  "voxtral_mini_bn": {
+   "model": "ehzawad/Voxtral-Mini-3B-2507-bn-BD",
+   "revision": "d1c7aeb0cd18f8a7a057bf756df5ee2ccb7aebcd",
+   "kind": "voxtral_vllm",
+   "n": 920,
+   "ms_per_clip_mean": 438.39,
+   "ms_per_clip_median": 421.34,
+   "ms_per_clip_p95": 681.12,
+   "rtf": 0.03263,
+   "model_load_s": 139.6,
+   "identical_to_published_transcripts": null,
+   "gpu_after": "NVIDIA A100-SXM4-40GB, 34221 MiB, 100 %, 1410 MHz, 60",
+   "torch": "2.13.0+cu130",
+   "vllm": "0.31.0"
+  }
+ },
+ "notes": [
+  "One Colab A100-SXM4-40GB; FLEURS test (920 clips); batch 1; one warm-up clip discarded; per-clip wall time between torch.cuda.synchronize() calls, including asr_core load, chunking and PCM16 staging.",
+  "The five published models ran through bench_run.py's backends at the pinned revisions (torch 2.11 cu128, NeMo 2.7.3; Whisper in FP16). Voxtral Mini ran through vLLM 0.31.0 (torch 2.13 cu130), one request at a time, with CUDA graphs. Frameworks, precision and per-call overheads differ.",
+  "A low-priority, single-threaded scoring process shared the VM's CPUs while fastconformer_ctc, hishab_conformer_large, hishab_fastconformer and wav2vec2 were timed; its effect was not measured.",
+  "One pass per model: differences of a few milliseconds are not an established ordering, and p95 is variation across clips, not uncertainty in the mean. Startup is excluded.",
+  "identical_to_published_transcripts compares each model's A100 transcripts with its committed A5000 predictions; Voxtral Mini has no A5000 run, so its timing transcripts are compared with its batched accuracy run instead (a different engine configuration: eager, up to 256 pieces at once)."
+ ],
+ "voxtral_mini_bn_timing_vs_accuracy_run": {
+  "identical_transcripts": "860/920",
+  "accuracy_run": {
+   "word_errors": 2616,
+   "ref_words": 17761,
+   "wer": 0.147289,
+   "char_errors": 5484,
+   "ref_chars": 114962,
+   "cer": 0.047703
+  },
+  "timing_run": {
+   "word_errors": 2616,
+   "ref_words": 17761,
+   "wer": 0.147289,
+   "char_errors": 5494,
+   "ref_chars": 114962,
+   "cer": 0.04779
+  }
+ }
+}

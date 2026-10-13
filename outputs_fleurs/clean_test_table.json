@@ -51,6 +51,16 @@
    ],
    "cer": 0.09047,
    "ours": false
+  },
+  "voxtral_mini_bn": {
+   "n": 920,
+   "wer": 0.14729,
+   "wer_ci95": [
+    0.13605,
+    0.15916
+   ],
+   "cer": 0.0477,
+   "ours": false
   }
  },
  "paired_vs_best": {
@@ -94,6 +104,78 @@
    "cer_ci95_pp": [
     -0.191,
     0.2506
+   ]
+  }
+ },
+ "paired_voxtral_mini_bn": {
+  "voxtral_mini_bn_vs_fastconformer_ctc": {
+   "a": "voxtral_mini_bn",
+   "b": "fastconformer_ctc",
+   "wer_delta_pp": -2.3873,
+   "wer_ci95_pp": [
+    -3.0231,
+    -1.7369
+   ],
+   "cer_delta_pp": -0.3514,
+   "cer_ci95_pp": [
+    -0.5695,
+    -0.1254
+   ]
+  },
+  "voxtral_mini_bn_vs_hishab_conformer_large": {
+   "a": "voxtral_mini_bn",
+   "b": "hishab_conformer_large",
+   "wer_delta_pp": 0.3547,
+   "wer_ci95_pp": [
+    -0.3623,
+    1.0644
+   ],
+   "cer_delta_pp": 0.2931,
+   "cer_ci95_pp": [
+    0.0887,
+    0.4883
+   ]
+  },
+  "voxtral_mini_bn_vs_whisper_medium": {
+   "a": "voxtral_mini_bn",
+   "b": "whisper_medium",
+   "wer_delta_pp": -1.4977,
+   "wer_ci95_pp": [
+    -2.1444,
+    -0.8607
+   ],
+   "cer_delta_pp": -0.3175,
+   "cer_ci95_pp": [
+    -0.4823,
+    -0.1545
+   ]
+  },
+  "voxtral_mini_bn_vs_wav2vec2": {
+   "a": "voxtral_mini_bn",
+   "b": "wav2vec2",
+   "wer_delta_pp": -5.9118,
+   "wer_ci95_pp": [
+    -6.6863,
+    -5.1439
+   ],
+   "cer_delta_pp": -1.2508,
+   "cer_ci95_pp": [
+    -1.4338,
+    -1.0704
+   ]
+  },
+  "voxtral_mini_bn_vs_hishab_fastconformer": {
+   "a": "voxtral_mini_bn",
+   "b": "hishab_fastconformer",
+   "wer_delta_pp": -21.4909,
+   "wer_ci95_pp": [
+    -23.625,
+    -19.4775
+   ],
+   "cer_delta_pp": -4.2771,
+   "cer_ci95_pp": [
+    -4.7182,
+    -3.8533
    ]
   }
  },

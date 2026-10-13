@@ -117,7 +117,8 @@ def main():
               f"utt-CI [{rec['wer_ci_utterance'][0]*100:.2f}-{rec['wer_ci_utterance'][1]*100:.2f}]  "
               f"clustered [{rec['wer_ci_sentence_clustered'][0]*100:.2f}-"
               f"{rec['wer_ci_sentence_clustered'][1]*100:.2f}]  "
-              f"CER {rec['cer']*100:.2f}%  {rec['meta']['ms_per_clip_mean']:.1f} ms/clip",
+              f"CER {rec['cer']*100:.2f}%  " + (f"{rec['meta']['ms_per_clip_mean']:.1f} ms/clip"
+              if rec['meta'].get('ms_per_clip_mean') is not None else "batched, no per-clip latency"),
               flush=True)
 
     man = json.loads(Path("eval_manifest.json").read_text())
