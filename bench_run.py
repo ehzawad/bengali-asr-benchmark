@@ -26,8 +26,9 @@ import torch
 import asr_core            # THE shared audio path, vendored from the benchmark
 from types import SimpleNamespace
 
-ASSETS = Path(".")
+ASSETS = Path(os.environ.get("BENCH_ASSETS", "."))
 MANIFEST = ASSETS / "eval_manifest.json"
+OUT_ROOT = Path(os.environ.get("BENCH_OUT_ROOT", "outputs_fleurs"))
 
 
 def transcribe_clip(backend, path):
@@ -104,6 +105,38 @@ class Wav2Vec2Backend:
         return out
 
 
+class VoxtralVLLMBackend:
+    """Voxtral (Mistral-format checkpoint) under vLLM, one request per staged piece, with the
+    prompt vLLM's own transcription endpoint builds for it (mistral_common encode_transcription,
+    language "bn"); greedy, at most 500 new tokens. Runs in an interpreter with vllm[audio].
+    finish_reasons holds the last clip's per-piece stop reasons ("length" = hit the cap)."""
+
+    def __init__(self, model, **kw):
+        from mistral_common.protocol.transcription.request import TranscriptionRequest
+        from mistral_common.tokens.tokenizers.audio import Audio
+        from vllm import LLM, SamplingParams
+        self.llm = LLM(model=model, tokenizer_mode="mistral", config_format="mistral", load_format="mistral",
+                       gpu_memory_utilization=0.85, max_model_len=2048, max_num_seqs=8,
+                       limit_mm_per_prompt={"audio": 1}, seed=0)
+        self.instruct = self.llm.get_tokenizer().instruct
+        self.sp = SamplingParams(temperature=0.0, max_tokens=500)
+        self.request, self.audio, self.model = TranscriptionRequest, Audio, model
+        self.finish_reasons = []
+
+    def transcribe(self, paths, batch_size=1, verbose=False):
+        out, self.finish_reasons = [], []
+        for p in paths:
+            a = self.audio(_read_staged(p), 16000, format="wav")
+            tok = self.instruct.encode_transcription(
+                self.request(model=self.model, audio=a.to_base64(a.format), language="bn"))
+            o = self.llm.generate([{"prompt_token_ids": tok.tokens,
+                                    "multi_modal_data": {"audio": [(x.audio_array, 16000) for x in tok.audios]}}],
+                                  self.sp, use_tqdm=False)[0].outputs[0]
+            self.finish_reasons.append(o.finish_reason)
+            out.append(SimpleNamespace(text=o.text.strip()))
+        return out
+
+
 def _read_staged(path):
     """Read a chunk staged by asr_core.decode. Asserts the staged format so a
     future change cannot silently route a model through different audio."""
@@ -114,7 +147,8 @@ def _read_staged(path):
     return wav
 
 
-KINDS = {"nemo": NeMoBackend, "whisper": WhisperBackend, "wav2vec2": Wav2Vec2Backend}
+KINDS = {"nemo": NeMoBackend, "whisper": WhisperBackend, "wav2vec2": Wav2Vec2Backend,
+         "voxtral_vllm": VoxtralVLLMBackend}
 
 
 def gpu_state():
@@ -170,6 +204,8 @@ def main():
                       "ok": err is None, "transcript": txt,
                       "wall_clock_seconds": round(dt, 6), "error": err,
                       "n_pieces": npieces, "forced_cuts": forced})
+        if hasattr(be, "finish_reasons"):
+            preds[-1]["finish_reasons"] = list(be.finish_reasons)
         if (i + 1) % 200 == 0:
             print(f"  {i+1}/{len(rows)}  {np.mean(times)*1000:.1f} ms/clip",
                   flush=True)

@@ -36,8 +36,8 @@ def norm(t):
     and the NeMo models use the decomposed form; Whisper and wav2vec2 emit
     the precomposed one. Without normalising, every such character scores as a
     substitution and those two models are penalised for an encoding convention
-    rather than for mistranscribing: Whisper medium measured 27.88% WER
-    unnormalised against 16.23% normalised on the FLEURS test split.
+    rather than for mistranscribing: Whisper medium measured 27.87% WER
+    unnormalised against 16.22% normalised on the FLEURS test split.
 
     U+09DF is a Unicode composition exclusion, so NFC maps both spellings to
     the decomposed form; either NFC or NFD would work, NFC is the convention.
@@ -127,10 +127,11 @@ def main():
                  "splits": man["splits"], "n": man["n"],
                  "distinct_references": len({r["reference"] for r in man["rows"]})},
         "protocol": {
-            "gpu": "NVIDIA RTX A5000",
+            "gpu": "NVIDIA A100-SXM4-40GB (Colab)",
             "one_model_resident_at_a_time": True,
-            "audio_path": "vendored asr_core.py, proven byte-identical across "
-                          "both interpreters (SHA-256 over staged chunks)",
+            "audio_path": "vendored asr_core.py for every backend (prove_audio_path.py "
+                          "compares SHA-256 of staged chunks across interpreters); piece "
+                          "counts and forced cuts are identical in every model's run",
             "decoding": "greedy, batch 1, no external LM or rescoring",
             "speed_metric": "warmed in-process batch-1 inference time; includes "
                             "asr_core's temp-WAV staging, as in the original probe",

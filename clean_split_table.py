@@ -16,8 +16,8 @@ import numpy as np
 from bench_score import norm
 
 OUT = os.environ.get("BENCH_OUT", "outputs_fleurs")
-MODELS = ["fastconformer_ctc", "hishab_conformer_large", "whisper_medium", "wav2vec2", "hishab_fastconformer",
-          "voxtral_mini_bn"]  # voxtral_mini_bn: vLLM on an A100, batched (bench_run_voxtral_vllm.py); no A5000 latency
+MODELS = ["fastconformer_ctc", "hishab_conformer_large", "whisper_medium", "wav2vec2", "voxtral_mini_bn"]
+PUBLIC = MODELS[:4]
 OURS = {"fastconformer_ctc"}   # trained on a corpus that contains fleurs_train
 
 
@@ -99,7 +99,7 @@ for b in ("hishab_conformer_large", "whisper_medium"):
     paired_extra[f"fastconformer_ctc_vs_{b}"] = paired_delta("fastconformer_ctc", b)
     print(f"fastconformer_ctc vs {b}: {json.dumps(paired_extra[f'fastconformer_ctc_vs_{b}'])}")
 paired_mini = {}
-for b in MODELS[:5]:
+for b in PUBLIC:
     paired_mini[f"voxtral_mini_bn_vs_{b}"] = paired_delta("voxtral_mini_bn", b)
     print(f"voxtral_mini_bn vs {b}: {json.dumps(paired_mini[f'voxtral_mini_bn_vs_{b}'])}")
 
@@ -111,9 +111,9 @@ for m in MODELS:
     ms = [r["wall_clock_seconds"] * 1000 for r in rows
           if r.get("wall_clock_seconds") is not None]
     if ms:
-        speeds[m] = {"ms_per_clip_mean": round(float(np.mean(ms)), 1),
-                     "ms_per_clip_median": round(float(np.median(ms)), 1),
-                     "ms_per_clip_p95": round(float(np.percentile(ms, 95)), 1),
+        speeds[m] = {"ms_per_clip_mean": round(float(np.mean(ms)), 2),
+                     "ms_per_clip_median": round(float(np.median(ms)), 2),
+                     "ms_per_clip_p95": round(float(np.percentile(ms, 95)), 2),
                      "n": len(ms)}
 print("\ntest-split speed (default runtime, from recorded per-clip wall clock)")
 for m, v in speeds.items():

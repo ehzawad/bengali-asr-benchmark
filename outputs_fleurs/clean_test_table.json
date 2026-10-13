@@ -9,7 +9,7 @@
     0.15948,
     0.18339
    ],
-   "cer": 0.05122,
+   "cer": 0.05123,
    "ours": true
   },
   "hishab_conformer_large": {
@@ -24,42 +24,32 @@
   },
   "whisper_medium": {
    "n": 920,
-   "wer": 0.16227,
+   "wer": 0.16221,
    "wer_ci95": [
-    0.15053,
-    0.1745
+    0.15045,
+    0.17449
    ],
-   "cer": 0.05088,
+   "cer": 0.0509,
    "ours": false
   },
   "wav2vec2": {
    "n": 920,
-   "wer": 0.20641,
+   "wer": 0.20658,
    "wer_ci95": [
-    0.19458,
-    0.21887
+    0.19471,
+    0.21904
    ],
-   "cer": 0.06021,
-   "ours": false
-  },
-  "hishab_fastconformer": {
-   "n": 920,
-   "wer": 0.3622,
-   "wer_ci95": [
-    0.33882,
-    0.38719
-   ],
-   "cer": 0.09047,
+   "cer": 0.06023,
    "ours": false
   },
   "voxtral_mini_bn": {
    "n": 920,
    "wer": 0.14729,
    "wer_ci95": [
-    0.13605,
-    0.15916
+    0.13597,
+    0.15932
    ],
-   "cer": 0.0477,
+   "cer": 0.04779,
    "ours": false
   }
  },
@@ -71,10 +61,10 @@
    2.0083,
    3.4642
   ],
-  "cer_delta_pp": 0.6446,
+  "cer_delta_pp": 0.6454,
   "cer_ci95_pp": [
-   0.3451,
-   0.9301
+   0.3454,
+   0.9309
   ]
  },
  "paired_fastconformer_ctc": {
@@ -86,24 +76,24 @@
     2.0083,
     3.4642
    ],
-   "cer_delta_pp": 0.6446,
+   "cer_delta_pp": 0.6454,
    "cer_ci95_pp": [
-    0.3451,
-    0.9301
+    0.3454,
+    0.9309
    ]
   },
   "fastconformer_ctc_vs_whisper_medium": {
    "a": "fastconformer_ctc",
    "b": "whisper_medium",
-   "wer_delta_pp": 0.8896,
+   "wer_delta_pp": 0.8952,
    "wer_ci95_pp": [
-    0.272,
-    1.5028
+    0.2759,
+    1.5103
    ],
-   "cer_delta_pp": 0.0339,
+   "cer_delta_pp": 0.0331,
    "cer_ci95_pp": [
-    -0.191,
-    0.2506
+    -0.1938,
+    0.2493
    ]
   }
  },
@@ -113,13 +103,13 @@
    "b": "fastconformer_ctc",
    "wer_delta_pp": -2.3873,
    "wer_ci95_pp": [
-    -3.0231,
-    -1.7369
+    -3.0267,
+    -1.7353
    ],
-   "cer_delta_pp": -0.3514,
+   "cer_delta_pp": -0.3436,
    "cer_ci95_pp": [
-    -0.5695,
-    -0.1254
+    -0.5604,
+    -0.1167
    ]
   },
   "voxtral_mini_bn_vs_hishab_conformer_large": {
@@ -127,87 +117,73 @@
    "b": "hishab_conformer_large",
    "wer_delta_pp": 0.3547,
    "wer_ci95_pp": [
-    -0.3623,
-    1.0644
+    -0.357,
+    1.0557
    ],
-   "cer_delta_pp": 0.2931,
+   "cer_delta_pp": 0.3018,
    "cer_ci95_pp": [
-    0.0887,
-    0.4883
+    0.096,
+    0.4985
    ]
   },
   "voxtral_mini_bn_vs_whisper_medium": {
    "a": "voxtral_mini_bn",
    "b": "whisper_medium",
-   "wer_delta_pp": -1.4977,
+   "wer_delta_pp": -1.492,
    "wer_ci95_pp": [
-    -2.1444,
-    -0.8607
+    -2.1335,
+    -0.8577
    ],
-   "cer_delta_pp": -0.3175,
+   "cer_delta_pp": -0.3105,
    "cer_ci95_pp": [
-    -0.4823,
-    -0.1545
+    -0.4781,
+    -0.147
    ]
   },
   "voxtral_mini_bn_vs_wav2vec2": {
    "a": "voxtral_mini_bn",
    "b": "wav2vec2",
-   "wer_delta_pp": -5.9118,
+   "wer_delta_pp": -5.9287,
    "wer_ci95_pp": [
-    -6.6863,
-    -5.1439
+    -6.7045,
+    -5.1631
    ],
-   "cer_delta_pp": -1.2508,
+   "cer_delta_pp": -1.2439,
    "cer_ci95_pp": [
-    -1.4338,
-    -1.0704
-   ]
-  },
-  "voxtral_mini_bn_vs_hishab_fastconformer": {
-   "a": "voxtral_mini_bn",
-   "b": "hishab_fastconformer",
-   "wer_delta_pp": -21.4909,
-   "wer_ci95_pp": [
-    -23.625,
-    -19.4775
-   ],
-   "cer_delta_pp": -4.2771,
-   "cer_ci95_pp": [
-    -4.7182,
-    -3.8533
+    -1.4286,
+    -1.0647
    ]
   }
  },
  "speed_default_runtime": {
   "fastconformer_ctc": {
-   "ms_per_clip_mean": 83.3,
-   "ms_per_clip_median": 78.1,
-   "ms_per_clip_p95": 112.3,
+   "ms_per_clip_mean": 87.91,
+   "ms_per_clip_median": 84.16,
+   "ms_per_clip_p95": 98.45,
    "n": 920
   },
   "hishab_conformer_large": {
-   "ms_per_clip_mean": 77.3,
-   "ms_per_clip_median": 72.2,
-   "ms_per_clip_p95": 91.5,
+   "ms_per_clip_mean": 86.54,
+   "ms_per_clip_median": 83.24,
+   "ms_per_clip_p95": 96.48,
    "n": 920
   },
   "whisper_medium": {
-   "ms_per_clip_mean": 1866.1,
-   "ms_per_clip_median": 1734.6,
-   "ms_per_clip_p95": 3104.9,
+   "ms_per_clip_mean": 1900.6,
+   "ms_per_clip_median": 1788.76,
+   "ms_per_clip_p95": 3018.42,
    "n": 920
   },
   "wav2vec2": {
-   "ms_per_clip_mean": 64.3,
-   "ms_per_clip_median": 60.1,
-   "ms_per_clip_p95": 108.5,
+   "ms_per_clip_mean": 56.43,
+   "ms_per_clip_median": 54.3,
+   "ms_per_clip_p95": 86.2,
    "n": 920
   },
-  "hishab_fastconformer": {
-   "ms_per_clip_mean": 78.6,
-   "ms_per_clip_median": 74.5,
-   "ms_per_clip_p95": 95.5,
+  "voxtral_mini_bn": {
+   "ms_per_clip_mean": 437.72,
+   "ms_per_clip_median": 420.44,
+   "ms_per_clip_p95": 679.61,
    "n": 920
   }
  }

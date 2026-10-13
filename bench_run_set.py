@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""bench_run.py generalised to any eval manifest — the 2026-09-15 multi-dataset
+"""bench_run.py generalised to any eval manifest — the multi-dataset
 comparison on official Bengali test splits (Vaani test, SPRING-INX R1/R2 eval,
 Kathbath test). The decode path is bench_run.py's, unchanged by construction:
 the backends and transcribe_clip are IMPORTED from it, not copied.
@@ -121,6 +121,8 @@ def main():
                       "ok": err is None, "transcript": txt,
                       "wall_clock_seconds": round(dt, 6), "error": err,
                       "n_pieces": npieces, "forced_cuts": forced})
+        if hasattr(be, "finish_reasons"):  # vLLM backends: per-piece stop reasons
+            preds[-1]["finish_reasons"] = list(be.finish_reasons)
         if (i + 1) % 100 == 0:
             print(f"  {i+1}/{len(rows)}  {np.mean(times)*1000:.1f} ms/clip", flush=True)
     total = time.perf_counter() - t_all

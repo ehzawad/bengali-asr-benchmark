@@ -1,4 +1,6 @@
-# Pinned; the committed results were produced with these on an RTX A5000 (CUDA 12.8 wheels).
+# Pinned; the public models' committed results were decoded with torch and nemo_toolkit at these
+# pins on a Colab A100-SXM4-40GB (CUDA 12.8 wheels). Voxtral Mini bn-BD ran in a separate
+# environment with vllm[audio]==0.31.0.
 # cu128 wheels are required: Blackwell is not supported by older CUDA builds.
 --extra-index-url https://download.pytorch.org/whl/cu128
 

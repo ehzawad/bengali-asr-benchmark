@@ -1,11 +1,10 @@
 #!/usr/bin/env python
-"""Score the multi-dataset comparison : every outputs_multiset/<set>__<model>
-run, plus fastconformer_ctc's stored hypotheses on Vaani/SPRING from its earlier
-full-split evaluation (re-scored, not re-decoded), with the benchmark's own scorer (bench_score.norm: punctuation to
-word boundaries, NFC) and two 95% bootstraps (utterance; distinct-reference clusters).
-SPRING sets also get a "no Latin-script reference characters" diagnostic for every
-model. Voxtral Mini bn-BD (voxtral_mini_bn, decoded with vLLM on an A100 by
-bench_run_voxtral_vllm.py) is also compared pairwise with each published model on each set:
+"""Score the multi-dataset comparison: every outputs_multiset/<set>__<model> run (all of them
+batch-1 decodes by bench_run_set.py), with the benchmark's own scorer (bench_score.norm:
+punctuation to word boundaries, NFC) and two 95% bootstraps (utterance; distinct-reference
+clusters). SPRING sets also get a "no Latin-script reference characters" diagnostic for every
+model. Voxtral Mini bn-BD (voxtral_mini_bn, a private fine-tune decoded through vLLM by the
+same harness) is also compared pairwise with each public model on each set:
 WER/CER differences with a 95% bootstrap over distinct-reference clusters (10,000 draws,
 seed 20260903), the method of clean_split_table.py. Writes
 outputs_multiset/summary_multiset.json and prints the table.
@@ -23,10 +22,9 @@ from bench_score import norm, boot   # noqa: E402  (the published scorer, unchan
 A = Path(__file__).resolve().parent
 OUT = A / "outputs_multiset"
 SETS = ["vaani_test", "spring_r1_test", "spring_r2_test", "kathbath_test_known", "kathbath_test_unknown", "indicvoices_conv"]
-MODELS = ["fastconformer_ctc", "hishab_conformer_large",
-          "whisper_medium", "wav2vec2", "hishab_fastconformer", "voxtral_mini_bn"]
-PUBLISHED = MODELS[:5]
+MODELS = ["fastconformer_ctc", "hishab_conformer_large", "whisper_medium", "wav2vec2", "voxtral_mini_bn"]
 NEW = "voxtral_mini_bn"
+PUBLISHED = [m for m in MODELS if m != NEW]
 LATIN = re.compile(r"[A-Za-z]")
 
 
@@ -99,7 +97,7 @@ def main():
                    "empty_hyps": sum(1 for p in preds if not p["transcript"].strip())}
             pairs = [(p["raw_reference"], p["transcript"]) for p in preds]
             rec.update(score(pairs))
-            if any("finish_reasons" in p for p in preds):  # vLLM runs: pieces stopped by the 500-token cap
+            if any("finish_reasons" in p for p in preds):  # vLLM backend: pieces stopped by the 500-token cap
                 capped = [i for i, p in enumerate(preds) if "length" in p.get("finish_reasons", [])]
                 rec["clips_at_token_cap"] = len(capped)
                 if capped:
