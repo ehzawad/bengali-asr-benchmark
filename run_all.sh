@@ -58,7 +58,10 @@ for label in $MODELS; do
     fastconformer_ctc)      args=(nemo "$(nemo_path ehzawad/stt_bn_fastconformer_ctc stt_bn_fastconformer_ctc_v2.nemo)") ;;
     hishab_conformer_large) args=(nemo "$(nemo_path hishab/titu_stt_bn_conformer_large titu_stt_bn_conformer_large.nemo)") ;;
     wav2vec2)               args=(wav2vec2 SayedShaun/bangla-wave2vec2-unigram --revision "$(rev SayedShaun/bangla-wave2vec2-unigram)") ;;
-    whisper_medium)         args=(whisper SayedShaun/bengali-whisper-medium --revision "$(rev SayedShaun/bengali-whisper-medium)") ;;
+    whisper_medium)         # every autoregressive decoder runs under vLLM (Whisper Medium, Whisper turbo, Qwen3-ASR, Voxtral Mini)
+      py=${BENCH_PY_VLLM:?set BENCH_PY_VLLM for whisper_medium}
+      export PATH="$(dirname "$py"):$PATH"
+      args=(whisper_vllm "$(snapshot SayedShaun/bengali-whisper-medium)" --revision "$(rev SayedShaun/bengali-whisper-medium)") ;;
     voxtral_mini_bn)
       [ -n "${VOXTRAL_MINI:-}" ] || { say "skip voxtral_mini_bn (VOXTRAL_MINI not set)"; continue; }
       py=${BENCH_PY_VLLM:?set BENCH_PY_VLLM for voxtral_mini_bn}
@@ -68,9 +71,10 @@ for label in $MODELS; do
     fastconformer_hybrid_bn)
       args=(nemo "$(nemo_path ehzawad/fastconformer-hybrid-rnnt-ctc-large-bn-BD fastconformer-hybrid-rnnt-ctc-large-bn-BD.nemo)") ;;
     canary_1b_v2_bn)        args=(canary "$(nemo_path ehzawad/canary-1b-v2-bn-BD canary-1b-v2-bn-BD.nemo)") ;;
-    whisper_turbo_bn)       # saved by transformers 5, so it runs in the vLLM environment's transformers
+    whisper_turbo_bn)
       py=${BENCH_PY_VLLM:?set BENCH_PY_VLLM for whisper_turbo_bn}
-      args=(whisper_full ehzawad/whisper-large-v3-turbo-bn-BD --revision "$(rev ehzawad/whisper-large-v3-turbo-bn-BD)") ;;
+      export PATH="$(dirname "$py"):$PATH"
+      args=(whisper_vllm "$(snapshot ehzawad/whisper-large-v3-turbo-bn-BD)" --revision "$(rev ehzawad/whisper-large-v3-turbo-bn-BD)") ;;
     qwen3_asr_bn)
       py=${BENCH_PY_VLLM:?set BENCH_PY_VLLM for qwen3_asr_bn}
       export PATH="$(dirname "$py"):$PATH"

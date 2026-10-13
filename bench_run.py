@@ -86,37 +86,28 @@ class WhisperBackend:
         return out
 
 
-class WhisperFullBackend(WhisperBackend):
-    """WhisperBackend with the decoder's whole token budget per piece instead of 256 new tokens, for
-    checkpoints on Whisper's multilingual byte-level tokenizer, which spends about 13 tokens per Bengali
-    word. finish_reasons marks pieces that still ran to the budget ("length"). Loads under transformers 4
-    or 5 (checkpoints saved by transformers 5 need 5)."""
+class WhisperVLLMBackend:
+    """Whisper under vLLM, one request per staged piece, with the prompt of vLLM's own transcription endpoint
+    for Whisper (decoder prompt <|startoftranscript|><|bn|><|transcribe|><|notimestamps|>, audio on the
+    encoder); greedy, up to the decoder's 448 positions. Whisper's multilingual tokenizer spends about 13
+    tokens per Bengali word, so finish_reasons marks pieces that ran to that limit ("length")."""
 
-    def __init__(self, model, revision=None, **kw):
-        import transformers
-        from transformers import WhisperForConditionalGeneration, WhisperProcessor
-        dtype = {"dtype" if int(transformers.__version__.split(".")[0]) >= 5 else "torch_dtype": torch.float16}
-        self.proc = WhisperProcessor.from_pretrained(model, revision=revision)
-        self.m = WhisperForConditionalGeneration.from_pretrained(
-            model, revision=revision, **dtype).to("cuda").eval()
-        self.refreshed = False
-        self.budget = self.m.config.max_target_positions - 8
+    def __init__(self, model, **kw):
+        from vllm import LLM, SamplingParams
+        self.llm = LLM(model=model, gpu_memory_utilization=0.85, max_model_len=448, max_num_seqs=8,
+                       limit_mm_per_prompt={"audio": 1}, seed=0)
+        self.decoder_prompt = "<|startoftranscript|><|bn|><|transcribe|><|notimestamps|>"
+        self.sp = SamplingParams(temperature=0.0, max_tokens=448 - 4)
         self.finish_reasons = []
 
     def transcribe(self, paths, batch_size=1, verbose=False):
         out, self.finish_reasons = [], []
         for p in paths:
-            wav = _read_staged(p)
-            f = self.proc(wav, sampling_rate=16000, return_tensors="pt"
-                          ).input_features.to("cuda", torch.float16)
-            with torch.inference_mode():
-                ids = self.m.generate(f, language="bn", task="transcribe", num_beams=1, do_sample=False,
-                                      max_new_tokens=self.budget, return_dict_in_generate=True)
-            seq = ids.sequences[0]
-            self.finish_reasons.append("stop" if seq[-1].item() == self.m.generation_config.eos_token_id
-                                       else "length")
-            out.append(SimpleNamespace(text=self.proc.batch_decode(
-                seq[None], skip_special_tokens=True)[0].strip()))
+            prompt = {"encoder_prompt": {"prompt": "", "multi_modal_data": {"audio": (_read_staged(p), 16000)}},
+                      "decoder_prompt": self.decoder_prompt}
+            o = self.llm.generate([prompt], self.sp, use_tqdm=False)[0].outputs[0]
+            self.finish_reasons.append(o.finish_reason)
+            out.append(SimpleNamespace(text=o.text.strip()))
         return out
 
 
@@ -227,7 +218,7 @@ def _read_staged(path):
 
 
 KINDS = {"nemo": NeMoBackend, "whisper": WhisperBackend, "wav2vec2": Wav2Vec2Backend,
-         "voxtral_vllm": VoxtralVLLMBackend, "whisper_full": WhisperFullBackend, "canary": CanaryBackend,
+         "voxtral_vllm": VoxtralVLLMBackend, "whisper_vllm": WhisperVLLMBackend, "canary": CanaryBackend,
          "qwen3_asr_vllm": Qwen3ASRVLLMBackend}
 
 

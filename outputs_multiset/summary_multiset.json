@@ -3,6 +3,8 @@
   "vaani_test": {
    "dataset": "vaani_test",
    "source": null,
+   "source_repo": null,
+   "source_revision": null,
    "n": 1000,
    "hours": 1.26,
    "ref_words": 10082,
@@ -133,6 +135,8 @@
   "spring_r1_test": {
    "dataset": "spring_r1_test",
    "source": null,
+   "source_repo": null,
+   "source_revision": null,
    "n": 1000,
    "hours": 2.545,
    "ref_words": 19706,
@@ -155,6 +159,8 @@
   "spring_r2_test": {
    "dataset": "spring_r2_test",
    "source": null,
+   "source_repo": null,
+   "source_revision": null,
    "n": 1000,
    "hours": 2.607,
    "ref_words": 20353,
@@ -177,6 +183,8 @@
   "kathbath_test_known": {
    "dataset": "kathbath_test_known",
    "source": "AI4Bharat IndicSUPERB Kathbath, clean, bengali/test_known (official split; CC0 per the IndicSUPERB page), m4a -> 16 kHz mono PCM16 via ffmpeg",
+   "source_repo": null,
+   "source_revision": null,
    "n": 1000,
    "hours": 1.791,
    "ref_words": 10801,
@@ -199,6 +207,8 @@
   "kathbath_test_unknown": {
    "dataset": "kathbath_test_unknown",
    "source": "AI4Bharat IndicSUPERB Kathbath, clean, bengali/test (official split; CC0 per the IndicSUPERB page), m4a -> 16 kHz mono PCM16 via ffmpeg",
+   "source_repo": null,
+   "source_revision": null,
    "n": 1000,
    "hours": 1.809,
    "ref_words": 10887,
@@ -221,6 +231,8 @@
   "indicvoices_conv": {
    "dataset": "indicvoices_conv",
    "source": "ai4bharat/IndicVoices, bengali/valid-00000-of-00001.parquet (official validation split; CC-BY-4.0); scenarios Conversation + Extempore, human-verified 'excellent', no annotation tag",
+   "source_repo": null,
+   "source_revision": null,
    "n": 1000,
    "hours": 1.569,
    "ref_words": 12918,
@@ -239,6 +251,210 @@
    "source_rows": 3603,
    "source_manifest_sha256": null,
    "speakers": 277
+  },
+  "subakko_test": {
+   "dataset": "subakko_test",
+   "source": "SUST SUBAK.KO, official test split (Bangladeshi standard Bangla; CC-BY-4.0)",
+   "source_repo": "SUST-CSE-Speech/SUBAK.KO",
+   "source_revision": "78ec55bd4207a9268df6bf13ef0cd9303817f62a",
+   "n": 1000,
+   "hours": 3.092,
+   "ref_words": 21576,
+   "seed": 20260915,
+   "sampling": "proportional stratified (stratified by top-level corpus folder), largest-remainder allocation, seeded shuffle within stratum, sorted by utt_id; rows with an empty normalised reference not eligible",
+   "strata": {
+    "L2_speakers": {
+     "source": 429,
+     "sampled": 66
+    },
+    "part1": {
+     "source": 625,
+     "sampled": 96
+    },
+    "part2": {
+     "source": 753,
+     "sampled": 115
+    },
+    "part3": {
+     "source": 1167,
+     "sampled": 178
+    },
+    "part4": {
+     "source": 1769,
+     "sampled": 271
+    },
+    "part5": {
+     "source": 468,
+     "sampled": 72
+    },
+    "part6": {
+     "source": 611,
+     "sampled": 93
+    },
+    "part7": {
+     "source": 510,
+     "sampled": 78
+    },
+    "part8": {
+     "source": 201,
+     "sampled": 31
+    }
+   },
+   "source_rows": 6533,
+   "source_manifest_sha256": null,
+   "speakers": null
+  },
+  "banspeech": {
+   "dataset": "banspeech",
+   "source": "SUST BanSpeech, the 13 human-annotated domains (evaluation-only benchmark; card: CC-BY-NC-4.0 / CC-BY-4.0)",
+   "source_repo": "SUST-CSE-Speech/banspeech",
+   "source_revision": "484dd7aeaa003dcad122d8e468f363d53215ec63",
+   "n": 1000,
+   "hours": 0.804,
+   "ref_words": 7805,
+   "seed": 20260915,
+   "sampling": "proportional stratified (stratified by domain), largest-remainder allocation, seeded shuffle within stratum, sorted by utt_id; rows with an empty normalised reference not eligible",
+   "strata": {
+    "audio_books": {
+     "source": 955,
+     "sampled": 118
+    },
+    "biography": {
+     "source": 657,
+     "sampled": 81
+    },
+    "celebrity_interview": {
+     "source": 561,
+     "sampled": 69
+    },
+    "class_lecture": {
+     "source": 397,
+     "sampled": 49
+    },
+    "documentary": {
+     "source": 615,
+     "sampled": 76
+    },
+    "drama_series": {
+     "source": 514,
+     "sampled": 64
+    },
+    "kid_cartoon": {
+     "source": 660,
+     "sampled": 82
+    },
+    "kid_voice": {
+     "source": 321,
+     "sampled": 40
+    },
+    "medicine": {
+     "source": 704,
+     "sampled": 87
+    },
+    "parliament_speech": {
+     "source": 585,
+     "sampled": 72
+    },
+    "political_talkshow": {
+     "source": 813,
+     "sampled": 101
+    },
+    "sports": {
+     "source": 732,
+     "sampled": 90
+    },
+    "television_news": {
+     "source": 571,
+     "sampled": 71
+    }
+   },
+   "source_rows": 8085,
+   "source_manifest_sha256": null,
+   "speakers": null
+  },
+  "cv17_bn_test": {
+   "dataset": "cv17_bn_test",
+   "source": "Mozilla Common Voice 17.0, bn test split, via the fixie-ai mirror (CC0)",
+   "source_repo": "fixie-ai/common_voice_17_0",
+   "source_revision": "34f78a43893414e7b6e271ba94c1d5e05f18b239",
+   "n": 1000,
+   "hours": 1.773,
+   "ref_words": 9187,
+   "seed": 20260915,
+   "sampling": "proportional stratified (stratified by the gender field), largest-remainder allocation, seeded shuffle within stratum, sorted by utt_id; rows with an empty normalised reference not eligible",
+   "strata": {
+    "female_feminine": {
+     "source": 80,
+     "sampled": 9
+    },
+    "male_masculine": {
+     "source": 423,
+     "sampled": 45
+    },
+    "unspecified": {
+     "source": 8824,
+     "sampled": 946
+    }
+   },
+   "source_rows": 9327,
+   "source_manifest_sha256": null,
+   "speakers": null
+  },
+  "ben10_valid": {
+   "dataset": "ben10_valid",
+   "source": "Bengali.AI Ben-10, validation split (Bangladeshi regional dialects; CC0; the test split is private)",
+   "source_repo": "bengaliAI/Ben-10",
+   "source_revision": "ec1613b99066de1cd92dde0e9f054cbb2905d67f",
+   "n": 1000,
+   "hours": 4.792,
+   "ref_words": 40562,
+   "seed": 20260915,
+   "sampling": "proportional stratified (stratified by district), largest-remainder allocation, seeded shuffle within stratum, sorted by utt_id; rows with an empty normalised reference not eligible",
+   "strata": {
+    "barishal": {
+     "source": 105,
+     "sampled": 63
+    },
+    "chittagong": {
+     "source": 174,
+     "sampled": 104
+    },
+    "habiganj": {
+     "source": 117,
+     "sampled": 70
+    },
+    "kishoreganj": {
+     "source": 204,
+     "sampled": 122
+    },
+    "narail": {
+     "source": 183,
+     "sampled": 110
+    },
+    "narsingdi": {
+     "source": 136,
+     "sampled": 82
+    },
+    "rangpur": {
+     "source": 131,
+     "sampled": 79
+    },
+    "sandwip": {
+     "source": 129,
+     "sampled": 77
+    },
+    "sylhet": {
+     "source": 356,
+     "sampled": 214
+    },
+    "tangail": {
+     "source": 131,
+     "sampled": 79
+    }
+   },
+   "source_rows": 1666,
+   "source_manifest_sha256": null,
+   "speakers": null
   }
  },
  "models": {
@@ -424,6 +640,120 @@
     ],
     "ref_words": 12918,
     "errors": 1629
+   },
+   "subakko_test": {
+    "status": "complete",
+    "ms_per_clip_mean": 84.36,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 1,
+    "n": 1000,
+    "wer": 0.14326,
+    "cer": 0.0443,
+    "wer_ci_utterance": [
+     0.13403,
+     0.1532
+    ],
+    "wer_ci_reference_clustered": [
+     0.13397,
+     0.15318
+    ],
+    "ref_words": 21576,
+    "errors": 3091,
+    "digit_refs": 288,
+    "hyps_with_digits": 282,
+    "no_digit_ref": {
+     "n": 712,
+     "wer": 0.13673,
+     "cer": 0.04046,
+     "wer_ci_utterance": [
+      0.12557,
+      0.14817
+     ],
+     "wer_ci_reference_clustered": [
+      0.12546,
+      0.14838
+     ],
+     "ref_words": 15469,
+     "errors": 2115
+    }
+   },
+   "banspeech": {
+    "status": "complete",
+    "ms_per_clip_mean": 77.45,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.27841,
+    "cer": 0.1042,
+    "wer_ci_utterance": [
+     0.26214,
+     0.29538
+    ],
+    "wer_ci_reference_clustered": [
+     0.26215,
+     0.29478
+    ],
+    "ref_words": 7805,
+    "errors": 2173,
+    "digit_refs": 72,
+    "hyps_with_digits": 17,
+    "no_digit_ref": {
+     "n": 928,
+     "wer": 0.26665,
+     "cer": 0.09347,
+     "wer_ci_utterance": [
+      0.24996,
+      0.28349
+     ],
+     "wer_ci_reference_clustered": [
+      0.25059,
+      0.28346
+     ],
+     "ref_words": 6923,
+     "errors": 1846
+    }
+   },
+   "cv17_bn_test": {
+    "status": "complete",
+    "ms_per_clip_mean": 79.59,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.12137,
+    "cer": 0.02955,
+    "wer_ci_utterance": [
+     0.11237,
+     0.13043
+    ],
+    "wer_ci_reference_clustered": [
+     0.11237,
+     0.13043
+    ],
+    "ref_words": 9187,
+    "errors": 1115
+   },
+   "ben10_valid": {
+    "status": "complete",
+    "ms_per_clip_mean": 87.18,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 24,
+    "n": 1000,
+    "wer": 0.76919,
+    "cer": 0.46502,
+    "wer_ci_utterance": [
+     0.75787,
+     0.78025
+    ],
+    "wer_ci_reference_clustered": [
+     0.75787,
+     0.78025
+    ],
+    "ref_words": 40562,
+    "errors": 31200
    }
   },
   "hishab_conformer_large": {
@@ -608,190 +938,428 @@
     ],
     "ref_words": 12918,
     "errors": 3834
+   },
+   "subakko_test": {
+    "status": "complete",
+    "ms_per_clip_mean": 83.79,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.13645,
+    "cer": 0.06213,
+    "wer_ci_utterance": [
+     0.12528,
+     0.14792
+    ],
+    "wer_ci_reference_clustered": [
+     0.12527,
+     0.14828
+    ],
+    "ref_words": 21576,
+    "errors": 2944,
+    "digit_refs": 288,
+    "hyps_with_digits": 0,
+    "no_digit_ref": {
+     "n": 712,
+     "wer": 0.07854,
+     "cer": 0.02043,
+     "wer_ci_utterance": [
+      0.06907,
+      0.08813
+     ],
+     "wer_ci_reference_clustered": [
+      0.06899,
+      0.08843
+     ],
+     "ref_words": 15469,
+     "errors": 1215
+    }
+   },
+   "banspeech": {
+    "status": "complete",
+    "ms_per_clip_mean": 78.07,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.27072,
+    "cer": 0.09752,
+    "wer_ci_utterance": [
+     0.25498,
+     0.28709
+    ],
+    "wer_ci_reference_clustered": [
+     0.25491,
+     0.28666
+    ],
+    "ref_words": 7805,
+    "errors": 2113,
+    "digit_refs": 72,
+    "hyps_with_digits": 0,
+    "no_digit_ref": {
+     "n": 928,
+     "wer": 0.25437,
+     "cer": 0.08253,
+     "wer_ci_utterance": [
+      0.23787,
+      0.27055
+     ],
+     "wer_ci_reference_clustered": [
+      0.23856,
+      0.27058
+     ],
+     "ref_words": 6923,
+     "errors": 1761
+    }
+   },
+   "cv17_bn_test": {
+    "status": "complete",
+    "ms_per_clip_mean": 78.91,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.07347,
+    "cer": 0.01237,
+    "wer_ci_utterance": [
+     0.06666,
+     0.08045
+    ],
+    "wer_ci_reference_clustered": [
+     0.06666,
+     0.08045
+    ],
+    "ref_words": 9187,
+    "errors": 675
+   },
+   "ben10_valid": {
+    "status": "complete",
+    "ms_per_clip_mean": 86.78,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.63537,
+    "cer": 0.3155,
+    "wer_ci_utterance": [
+     0.62274,
+     0.6484
+    ],
+    "wer_ci_reference_clustered": [
+     0.62274,
+     0.6484
+    ],
+    "ref_words": 40562,
+    "errors": 25772
    }
   },
   "whisper_medium": {
    "vaani_test": {
     "status": "complete",
-    "ms_per_clip_mean": 886.26,
+    "ms_per_clip_mean": 174.93,
     "failures": 0,
     "missing_in_store": 0,
     "empty_hyps": 0,
     "n": 1000,
-    "wer": 0.26265,
-    "cer": 0.08573,
+    "wer": 0.26354,
+    "cer": 0.08612,
     "wer_ci_utterance": [
-     0.25044,
-     0.27487
+     0.25139,
+     0.2757
     ],
     "wer_ci_reference_clustered": [
-     0.2503,
-     0.27501
+     0.25112,
+     0.27599
     ],
     "ref_words": 10082,
-    "errors": 2648
+    "errors": 2657,
+    "clips_at_token_cap": 0
    },
    "spring_r1_test": {
     "status": "complete",
-    "ms_per_clip_mean": 1520.07,
+    "ms_per_clip_mean": 252.33,
     "failures": 0,
     "missing_in_store": 0,
     "empty_hyps": 0,
     "n": 1000,
-    "wer": 0.39973,
-    "cer": 0.24615,
+    "wer": 0.40039,
+    "cer": 0.24644,
     "wer_ci_utterance": [
-     0.38765,
-     0.41203
+     0.3884,
+     0.41279
     ],
     "wer_ci_reference_clustered": [
-     0.38765,
-     0.41203
+     0.3884,
+     0.41279
     ],
     "ref_words": 19706,
-    "errors": 7877,
+    "errors": 7890,
+    "clips_at_token_cap": 0,
     "no_latin_ref": {
      "n": 499,
-     "wer": 0.35954,
-     "cer": 0.17432,
+     "wer": 0.36042,
+     "cer": 0.17449,
      "wer_ci_utterance": [
-      0.3387,
-      0.38042
+      0.33971,
+      0.38114
      ],
      "wer_ci_reference_clustered": [
-      0.3387,
-      0.38042
+      0.33971,
+      0.38114
      ],
      "ref_words": 7974,
-     "errors": 2867
+     "errors": 2874
     },
     "latin_ref": {
      "n": 501,
-     "wer": 0.42704,
-     "cer": 0.29594,
+     "wer": 0.42755,
+     "cer": 0.29631,
      "wer_ci_utterance": [
-      0.4128,
-      0.44163
+      0.4133,
+      0.44235
      ],
      "wer_ci_reference_clustered": [
-      0.4128,
-      0.44163
+      0.4133,
+      0.44235
      ],
      "ref_words": 11732,
-     "errors": 5010
+     "errors": 5016
     },
     "hyps_with_latin": 0
    },
    "spring_r2_test": {
     "status": "complete",
-    "ms_per_clip_mean": 1579.44,
+    "ms_per_clip_mean": 256.97,
     "failures": 0,
     "missing_in_store": 0,
     "empty_hyps": 0,
     "n": 1000,
-    "wer": 0.39704,
-    "cer": 0.23373,
+    "wer": 0.39709,
+    "cer": 0.23394,
     "wer_ci_utterance": [
-     0.38522,
-     0.40936
+     0.38533,
+     0.40942
     ],
     "wer_ci_reference_clustered": [
-     0.38522,
-     0.40936
+     0.38533,
+     0.40942
     ],
     "ref_words": 20353,
-    "errors": 8081,
+    "errors": 8082,
+    "clips_at_token_cap": 0,
     "no_latin_ref": {
      "n": 542,
-     "wer": 0.3665,
-     "cer": 0.17666,
+     "wer": 0.36607,
+     "cer": 0.17621,
      "wer_ci_utterance": [
-      0.34742,
-      0.38612
+      0.34697,
+      0.38573
      ],
      "wer_ci_reference_clustered": [
-      0.34742,
-      0.38612
+      0.34697,
+      0.38573
      ],
      "ref_words": 9225,
-     "errors": 3381
+     "errors": 3377
     },
     "latin_ref": {
      "n": 458,
-     "wer": 0.42236,
-     "cer": 0.28177,
+     "wer": 0.42281,
+     "cer": 0.28252,
      "wer_ci_utterance": [
-      0.40774,
-      0.4372
+      0.40826,
+      0.43777
      ],
      "wer_ci_reference_clustered": [
-      0.40774,
-      0.4372
+      0.40826,
+      0.43777
      ],
      "ref_words": 11128,
-     "errors": 4700
+     "errors": 4705
     },
     "hyps_with_latin": 0
    },
    "kathbath_test_known": {
     "status": "complete",
-    "ms_per_clip_mean": 1108.87,
+    "ms_per_clip_mean": 204.67,
     "failures": 0,
     "missing_in_store": 0,
     "empty_hyps": 0,
     "n": 1000,
-    "wer": 0.09686,
-    "cer": 0.01958,
+    "wer": 0.09695,
+    "cer": 0.01951,
     "wer_ci_utterance": [
-     0.08966,
-     0.10415
+     0.08981,
+     0.10424
     ],
     "wer_ci_reference_clustered": [
-     0.08966,
-     0.10415
+     0.08981,
+     0.10424
     ],
     "ref_words": 10789,
-    "errors": 1045
+    "errors": 1046,
+    "clips_at_token_cap": 0
    },
    "kathbath_test_unknown": {
     "status": "complete",
-    "ms_per_clip_mean": 1126.98,
+    "ms_per_clip_mean": 214.06,
     "failures": 0,
     "missing_in_store": 0,
     "empty_hyps": 0,
     "n": 1000,
-    "wer": 0.09863,
-    "cer": 0.0191,
+    "wer": 0.09909,
+    "cer": 0.01905,
     "wer_ci_utterance": [
-     0.09172,
-     0.10595
+     0.09213,
+     0.10644
     ],
     "wer_ci_reference_clustered": [
-     0.09172,
-     0.10595
+     0.09213,
+     0.10644
     ],
     "ref_words": 10869,
-    "errors": 1072
+    "errors": 1077,
+    "clips_at_token_cap": 0
    },
    "indicvoices_conv": {
     "status": "complete",
-    "ms_per_clip_mean": 1027.53,
+    "ms_per_clip_mean": 199.55,
     "failures": 0,
     "missing_in_store": 0,
     "empty_hyps": 0,
     "n": 1000,
-    "wer": 0.24996,
-    "cer": 0.11684,
+    "wer": 0.24957,
+    "cer": 0.11835,
     "wer_ci_utterance": [
-     0.23737,
-     0.26278
+     0.23693,
+     0.26232
     ],
     "wer_ci_reference_clustered": [
-     0.23689,
-     0.26432
+     0.23641,
+     0.26434
     ],
     "ref_words": 12918,
-    "errors": 3229
+    "errors": 3224,
+    "clips_at_token_cap": 0
+   },
+   "subakko_test": {
+    "status": "complete",
+    "ms_per_clip_mean": 321.86,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.21357,
+    "cer": 0.08157,
+    "wer_ci_utterance": [
+     0.20291,
+     0.22444
+    ],
+    "wer_ci_reference_clustered": [
+     0.20321,
+     0.22465
+    ],
+    "ref_words": 21576,
+    "errors": 4608,
+    "clips_at_token_cap": 0,
+    "digit_refs": 288,
+    "hyps_with_digits": 0,
+    "no_digit_ref": {
+     "n": 712,
+     "wer": 0.16485,
+     "cer": 0.04452,
+     "wer_ci_utterance": [
+      0.15607,
+      0.17386
+     ],
+     "wer_ci_reference_clustered": [
+      0.15585,
+      0.17426
+     ],
+     "ref_words": 15469,
+     "errors": 2550
+    }
+   },
+   "banspeech": {
+    "status": "complete",
+    "ms_per_clip_mean": 155.52,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.23587,
+    "cer": 0.09119,
+    "wer_ci_utterance": [
+     0.22162,
+     0.25043
+    ],
+    "wer_ci_reference_clustered": [
+     0.22135,
+     0.25039
+    ],
+    "ref_words": 7805,
+    "errors": 1841,
+    "clips_at_token_cap": 0,
+    "digit_refs": 72,
+    "hyps_with_digits": 0,
+    "no_digit_ref": {
+     "n": 928,
+     "wer": 0.21927,
+     "cer": 0.07699,
+     "wer_ci_utterance": [
+      0.20462,
+      0.23391
+     ],
+     "wer_ci_reference_clustered": [
+      0.20503,
+      0.23378
+     ],
+     "ref_words": 6923,
+     "errors": 1518
+    }
+   },
+   "cv17_bn_test": {
+    "status": "complete",
+    "ms_per_clip_mean": 189.03,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.10123,
+    "cer": 0.02401,
+    "wer_ci_utterance": [
+     0.09288,
+     0.10972
+    ],
+    "wer_ci_reference_clustered": [
+     0.09288,
+     0.10972
+    ],
+    "ref_words": 9187,
+    "errors": 930,
+    "clips_at_token_cap": 0
+   },
+   "ben10_valid": {
+    "status": "complete",
+    "ms_per_clip_mean": 362.44,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.74787,
+    "cer": 0.48301,
+    "wer_ci_utterance": [
+     0.73606,
+     0.75918
+    ],
+    "wer_ci_reference_clustered": [
+     0.73606,
+     0.75918
+    ],
+    "ref_words": 40562,
+    "errors": 30335,
+    "clips_at_token_cap": 0
    }
   },
   "wav2vec2": {
@@ -976,6 +1544,120 @@
     ],
     "ref_words": 12918,
     "errors": 4265
+   },
+   "subakko_test": {
+    "status": "complete",
+    "ms_per_clip_mean": 51.04,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 1,
+    "n": 1000,
+    "wer": 0.26075,
+    "cer": 0.0834,
+    "wer_ci_utterance": [
+     0.25042,
+     0.27138
+    ],
+    "wer_ci_reference_clustered": [
+     0.25042,
+     0.27136
+    ],
+    "ref_words": 21576,
+    "errors": 5626,
+    "digit_refs": 288,
+    "hyps_with_digits": 10,
+    "no_digit_ref": {
+     "n": 712,
+     "wer": 0.21546,
+     "cer": 0.04819,
+     "wer_ci_utterance": [
+      0.20599,
+      0.22513
+     ],
+     "wer_ci_reference_clustered": [
+      0.20599,
+      0.22528
+     ],
+     "ref_words": 15469,
+     "errors": 3333
+    }
+   },
+   "banspeech": {
+    "status": "complete",
+    "ms_per_clip_mean": 27.83,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.32812,
+    "cer": 0.11251,
+    "wer_ci_utterance": [
+     0.31134,
+     0.34537
+    ],
+    "wer_ci_reference_clustered": [
+     0.31143,
+     0.34458
+    ],
+    "ref_words": 7805,
+    "errors": 2561,
+    "digit_refs": 72,
+    "hyps_with_digits": 3,
+    "no_digit_ref": {
+     "n": 928,
+     "wer": 0.3133,
+     "cer": 0.09984,
+     "wer_ci_utterance": [
+      0.296,
+      0.33048
+     ],
+     "wer_ci_reference_clustered": [
+      0.29623,
+      0.33047
+     ],
+     "ref_words": 6923,
+     "errors": 2169
+    }
+   },
+   "cv17_bn_test": {
+    "status": "complete",
+    "ms_per_clip_mean": 32.99,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.16698,
+    "cer": 0.03658,
+    "wer_ci_utterance": [
+     0.15698,
+     0.17709
+    ],
+    "wer_ci_reference_clustered": [
+     0.15698,
+     0.17709
+    ],
+    "ref_words": 9187,
+    "errors": 1534
+   },
+   "ben10_valid": {
+    "status": "complete",
+    "ms_per_clip_mean": 67.01,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.80504,
+    "cer": 0.43727,
+    "wer_ci_utterance": [
+     0.79516,
+     0.81472
+    ],
+    "wer_ci_reference_clustered": [
+     0.79516,
+     0.81472
+    ],
+    "ref_words": 40562,
+    "errors": 32654
    }
   },
   "voxtral_mini_bn": {
@@ -1181,6 +1863,139 @@
     "ref_words": 12918,
     "errors": 1731,
     "clips_at_token_cap": 0
+   },
+   "subakko_test": {
+    "status": "complete",
+    "ms_per_clip_mean": 490.48,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.11656,
+    "cer": 0.05517,
+    "wer_ci_utterance": [
+     0.10621,
+     0.12758
+    ],
+    "wer_ci_reference_clustered": [
+     0.10637,
+     0.12763
+    ],
+    "ref_words": 21576,
+    "errors": 2515,
+    "clips_at_token_cap": 0,
+    "digit_refs": 288,
+    "hyps_with_digits": 0,
+    "no_digit_ref": {
+     "n": 712,
+     "wer": 0.05424,
+     "cer": 0.01515,
+     "wer_ci_utterance": [
+      0.04784,
+      0.06087
+     ],
+     "wer_ci_reference_clustered": [
+      0.04771,
+      0.06107
+     ],
+     "ref_words": 15469,
+     "errors": 839
+    }
+   },
+   "banspeech": {
+    "status": "complete",
+    "ms_per_clip_mean": 201.23,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.20717,
+    "cer": 0.07692,
+    "wer_ci_utterance": [
+     0.19444,
+     0.22002
+    ],
+    "wer_ci_reference_clustered": [
+     0.1945,
+     0.22016
+    ],
+    "ref_words": 7805,
+    "errors": 1617,
+    "clips_at_token_cap": 0,
+    "digit_refs": 72,
+    "hyps_with_digits": 0,
+    "no_digit_ref": {
+     "n": 928,
+     "wer": 0.1924,
+     "cer": 0.06271,
+     "wer_ci_utterance": [
+      0.17904,
+      0.20521
+     ],
+     "wer_ci_reference_clustered": [
+      0.17974,
+      0.20538
+     ],
+     "ref_words": 6923,
+     "errors": 1332
+    }
+   },
+   "cv17_bn_test": {
+    "status": "complete",
+    "ms_per_clip_mean": 235.56,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.10319,
+    "cer": 0.02671,
+    "wer_ci_utterance": [
+     0.09474,
+     0.11193
+    ],
+    "wer_ci_reference_clustered": [
+     0.09474,
+     0.11193
+    ],
+    "ref_words": 9187,
+    "errors": 948,
+    "clips_at_token_cap": 0
+   },
+   "ben10_valid": {
+    "status": "complete",
+    "ms_per_clip_mean": 928.14,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.69974,
+    "cer": 0.38409,
+    "wer_ci_utterance": [
+     0.65455,
+     0.75127
+    ],
+    "wer_ci_reference_clustered": [
+     0.65455,
+     0.75127
+    ],
+    "ref_words": 40562,
+    "errors": 28383,
+    "clips_at_token_cap": 18,
+    "without_capped_clips": {
+     "n": 982,
+     "wer": 0.61189,
+     "cer": 0.31696,
+     "wer_ci_utterance": [
+      0.59637,
+      0.62787
+     ],
+     "wer_ci_reference_clustered": [
+      0.59637,
+      0.62787
+     ],
+     "ref_words": 39744,
+     "errors": 24319
+    }
    }
   }
  },
@@ -1211,15 +2026,15 @@
     ]
    },
    "voxtral_mini_bn_vs_whisper_medium": {
-    "wer_delta_pp": -4.1857,
+    "wer_delta_pp": -4.2749,
     "wer_ci95_pp": [
-     -5.043,
-     -3.3156
+     -5.1323,
+     -3.4166
     ],
-    "cer_delta_pp": -2.0984,
+    "cer_delta_pp": -2.1371,
     "cer_ci95_pp": [
-     -2.475,
-     -1.733
+     -2.5088,
+     -1.7718
     ]
    },
    "voxtral_mini_bn_vs_wav2vec2": {
@@ -1261,15 +2076,15 @@
     ]
    },
    "voxtral_mini_bn_vs_whisper_medium": {
-    "wer_delta_pp": -3.1006,
+    "wer_delta_pp": -3.1665,
     "wer_ci95_pp": [
-     -3.7611,
-     -2.4308
+     -3.8182,
+     -2.5098
     ],
-    "cer_delta_pp": -2.8215,
+    "cer_delta_pp": -2.85,
     "cer_ci95_pp": [
-     -3.3234,
-     -2.3245
+     -3.3515,
+     -2.3519
     ]
    },
    "voxtral_mini_bn_vs_wav2vec2": {
@@ -1311,15 +2126,15 @@
     ]
    },
    "voxtral_mini_bn_vs_whisper_medium": {
-    "wer_delta_pp": 0.3046,
+    "wer_delta_pp": 0.2997,
     "wer_ci95_pp": [
-     -2.8736,
-     4.4534
+     -2.8656,
+     4.4222
     ],
-    "cer_delta_pp": 0.2389,
+    "cer_delta_pp": 0.2185,
     "cer_ci95_pp": [
-     -2.6009,
-     3.9015
+     -2.618,
+     3.8646
     ]
    },
    "voxtral_mini_bn_vs_wav2vec2": {
@@ -1361,15 +2176,15 @@
     ]
    },
    "voxtral_mini_bn_vs_whisper_medium": {
-    "wer_delta_pp": 1.0844,
+    "wer_delta_pp": 1.0752,
     "wer_ci95_pp": [
-     0.4307,
-     1.738
+     0.4166,
+     1.7259
     ],
-    "cer_delta_pp": 0.2904,
+    "cer_delta_pp": 0.2975,
     "cer_ci95_pp": [
-     0.1141,
-     0.4683
+     0.1222,
+     0.4738
     ]
    },
    "voxtral_mini_bn_vs_wav2vec2": {
@@ -1411,15 +2226,15 @@
     ]
    },
    "voxtral_mini_bn_vs_whisper_medium": {
-    "wer_delta_pp": 0.9568,
+    "wer_delta_pp": 0.9108,
     "wer_ci95_pp": [
-     0.3063,
-     1.5916
+     0.2645,
+     1.5451
     ],
-    "cer_delta_pp": 0.1764,
+    "cer_delta_pp": 0.1807,
     "cer_ci95_pp": [
-     0.0171,
-     0.3362
+     0.0238,
+     0.3412
     ]
    },
    "voxtral_mini_bn_vs_wav2vec2": {
@@ -1461,15 +2276,15 @@
     ]
    },
    "voxtral_mini_bn_vs_whisper_medium": {
-    "wer_delta_pp": -11.5962,
+    "wer_delta_pp": -11.5575,
     "wer_ci95_pp": [
-     -12.8146,
-     -10.4956
+     -12.8293,
+     -10.4485
     ],
-    "cer_delta_pp": -7.0251,
+    "cer_delta_pp": -7.1758,
     "cer_ci95_pp": [
-     -8.0786,
-     -6.1313
+     -8.3285,
+     -6.215
     ]
    },
    "voxtral_mini_bn_vs_wav2vec2": {
@@ -1484,7 +2299,309 @@
      -6.4624
     ]
    }
+  },
+  "subakko_test": {
+   "voxtral_mini_bn_vs_fastconformer_ctc": {
+    "wer_delta_pp": -2.6696,
+    "wer_ci95_pp": [
+     -3.7825,
+     -1.5613
+    ],
+    "cer_delta_pp": 1.0871,
+    "cer_ci95_pp": [
+     0.333,
+     1.8298
+    ]
+   },
+   "voxtral_mini_bn_vs_hishab_conformer_large": {
+    "wer_delta_pp": -1.9883,
+    "wer_ci95_pp": [
+     -2.7355,
+     -1.2548
+    ],
+    "cer_delta_pp": -0.6959,
+    "cer_ci95_pp": [
+     -0.97,
+     -0.4128
+    ]
+   },
+   "voxtral_mini_bn_vs_whisper_medium": {
+    "wer_delta_pp": -9.7006,
+    "wer_ci95_pp": [
+     -10.4281,
+     -8.9748
+    ],
+    "cer_delta_pp": -2.6402,
+    "cer_ci95_pp": [
+     -3.0567,
+     -2.2652
+    ]
+   },
+   "voxtral_mini_bn_vs_wav2vec2": {
+    "wer_delta_pp": -14.4188,
+    "wer_ci95_pp": [
+     -15.1718,
+     -13.6614
+    ],
+    "cer_delta_pp": -2.8231,
+    "cer_ci95_pp": [
+     -3.0679,
+     -2.5559
+    ]
+   }
+  },
+  "banspeech": {
+   "voxtral_mini_bn_vs_fastconformer_ctc": {
+    "wer_delta_pp": -7.1236,
+    "wer_ci95_pp": [
+     -8.2966,
+     -5.9713
+    ],
+    "cer_delta_pp": -2.728,
+    "cer_ci95_pp": [
+     -3.2919,
+     -2.1775
+    ]
+   },
+   "voxtral_mini_bn_vs_hishab_conformer_large": {
+    "wer_delta_pp": -6.3549,
+    "wer_ci95_pp": [
+     -7.5289,
+     -5.2093
+    ],
+    "cer_delta_pp": -2.0599,
+    "cer_ci95_pp": [
+     -2.6119,
+     -1.5513
+    ]
+   },
+   "voxtral_mini_bn_vs_whisper_medium": {
+    "wer_delta_pp": -2.87,
+    "wer_ci95_pp": [
+     -3.8167,
+     -1.9442
+    ],
+    "cer_delta_pp": -1.4266,
+    "cer_ci95_pp": [
+     -1.8364,
+     -1.026
+    ]
+   },
+   "voxtral_mini_bn_vs_wav2vec2": {
+    "wer_delta_pp": -12.0948,
+    "wer_ci95_pp": [
+     -13.3071,
+     -10.8936
+    ],
+    "cer_delta_pp": -3.5584,
+    "cer_ci95_pp": [
+     -4.059,
+     -3.0524
+    ]
+   }
+  },
+  "cv17_bn_test": {
+   "voxtral_mini_bn_vs_fastconformer_ctc": {
+    "wer_delta_pp": -1.8178,
+    "wer_ci95_pp": [
+     -2.4716,
+     -1.1455
+    ],
+    "cer_delta_pp": -0.2839,
+    "cer_ci95_pp": [
+     -0.5162,
+     -0.0436
+    ]
+   },
+   "voxtral_mini_bn_vs_hishab_conformer_large": {
+    "wer_delta_pp": 2.9716,
+    "wer_ci95_pp": [
+     2.2367,
+     3.7049
+    ],
+    "cer_delta_pp": 1.4345,
+    "cer_ci95_pp": [
+     1.1718,
+     1.7236
+    ]
+   },
+   "voxtral_mini_bn_vs_whisper_medium": {
+    "wer_delta_pp": 0.1959,
+    "wer_ci95_pp": [
+     -0.4367,
+     0.8305
+    ],
+    "cer_delta_pp": 0.2703,
+    "cer_ci95_pp": [
+     0.0312,
+     0.5217
+    ]
+   },
+   "voxtral_mini_bn_vs_wav2vec2": {
+    "wer_delta_pp": -6.3786,
+    "wer_ci95_pp": [
+     -7.1942,
+     -5.5753
+    ],
+    "cer_delta_pp": -0.9867,
+    "cer_ci95_pp": [
+     -1.2521,
+     -0.7129
+    ]
+   }
+  },
+  "ben10_valid": {
+   "voxtral_mini_bn_vs_fastconformer_ctc": {
+    "wer_delta_pp": -6.9449,
+    "wer_ci95_pp": [
+     -11.1868,
+     -2.0095
+    ],
+    "cer_delta_pp": -8.093,
+    "cer_ci95_pp": [
+     -11.0378,
+     -4.6796
+    ]
+   },
+   "voxtral_mini_bn_vs_hishab_conformer_large": {
+    "wer_delta_pp": 6.4371,
+    "wer_ci95_pp": [
+     2.1832,
+     11.4014
+    ],
+    "cer_delta_pp": 6.8587,
+    "cer_ci95_pp": [
+     3.7774,
+     10.4352
+    ]
+   },
+   "voxtral_mini_bn_vs_whisper_medium": {
+    "wer_delta_pp": -4.8124,
+    "wer_ci95_pp": [
+     -9.0542,
+     0.2119
+    ],
+    "cer_delta_pp": -9.8919,
+    "cer_ci95_pp": [
+     -12.9369,
+     -6.3781
+    ]
+   },
+   "voxtral_mini_bn_vs_wav2vec2": {
+    "wer_delta_pp": -10.5296,
+    "wer_ci95_pp": [
+     -14.7943,
+     -5.5674
+    ],
+    "cer_delta_pp": -5.3177,
+    "cer_ci95_pp": [
+     -8.3189,
+     -1.8347
+    ]
+   }
   }
  },
- "note": "Score the multi-dataset comparison: every outputs_multiset/<set>__<model> run (all of them\nbatch-1 decodes by bench_run_set.py), with the benchmark's own scorer (bench_score.norm:\npunctuation to word boundaries, NFC) and two 95% bootstraps (utterance; distinct-reference\nclusters). SPRING sets also get a \"no Latin-script reference characters\" diagnostic for every\nmodel. Voxtral Mini bn-BD (voxtral_mini_bn, a private fine-tune decoded through vLLM by the\nsame harness) is also compared pairwise with each public model on each set:\nWER/CER differences with a 95% bootstrap over distinct-reference clusters (10,000 draws,\nseed 20260903), the method of clean_split_table.py. Writes\noutputs_multiset/summary_multiset.json and prints the table.\n"
+ "paired_no_digit_refs": {
+  "subakko_test": {
+   "voxtral_mini_bn_vs_fastconformer_ctc": {
+    "wer_delta_pp": -8.2488,
+    "wer_ci95_pp": [
+     -9.2769,
+     -7.3011
+    ],
+    "cer_delta_pp": -2.5318,
+    "cer_ci95_pp": [
+     -3.2764,
+     -1.8965
+    ]
+   },
+   "voxtral_mini_bn_vs_hishab_conformer_large": {
+    "wer_delta_pp": -2.4307,
+    "wer_ci95_pp": [
+     -3.2437,
+     -1.655
+    ],
+    "cer_delta_pp": -0.5283,
+    "cer_ci95_pp": [
+     -0.7871,
+     -0.2896
+    ]
+   },
+   "voxtral_mini_bn_vs_whisper_medium": {
+    "wer_delta_pp": -11.0608,
+    "wer_ci95_pp": [
+     -11.9281,
+     -10.2336
+    ],
+    "cer_delta_pp": -2.937,
+    "cer_ci95_pp": [
+     -3.4442,
+     -2.5316
+    ]
+   },
+   "voxtral_mini_bn_vs_wav2vec2": {
+    "wer_delta_pp": -16.1226,
+    "wer_ci95_pp": [
+     -16.9909,
+     -15.2806
+    ],
+    "cer_delta_pp": -3.304,
+    "cer_ci95_pp": [
+     -3.516,
+     -3.098
+    ]
+   }
+  },
+  "banspeech": {
+   "voxtral_mini_bn_vs_fastconformer_ctc": {
+    "wer_delta_pp": -7.4245,
+    "wer_ci95_pp": [
+     -8.612,
+     -6.2519
+    ],
+    "cer_delta_pp": -3.0765,
+    "cer_ci95_pp": [
+     -3.6134,
+     -2.5487
+    ]
+   },
+   "voxtral_mini_bn_vs_hishab_conformer_large": {
+    "wer_delta_pp": -6.1967,
+    "wer_ci95_pp": [
+     -7.4386,
+     -4.9501
+    ],
+    "cer_delta_pp": -1.9822,
+    "cer_ci95_pp": [
+     -2.5702,
+     -1.4581
+    ]
+   },
+   "voxtral_mini_bn_vs_whisper_medium": {
+    "wer_delta_pp": -2.6867,
+    "wer_ci95_pp": [
+     -3.6715,
+     -1.6996
+    ],
+    "cer_delta_pp": -1.4286,
+    "cer_ci95_pp": [
+     -1.8798,
+     -1.0022
+    ]
+   },
+   "voxtral_mini_bn_vs_wav2vec2": {
+    "wer_delta_pp": -12.0901,
+    "wer_ci95_pp": [
+     -13.3988,
+     -10.8058
+    ],
+    "cer_delta_pp": -3.7138,
+    "cer_ci95_pp": [
+     -4.2531,
+     -3.1786
+    ]
+   }
+  }
+ },
+ "note": "Score the multi-dataset comparison: every outputs_multiset/<set>__<model> run (all of them\nbatch-1 decodes by bench_run_set.py), with the benchmark's own scorer (bench_score.norm:\npunctuation to word boundaries, NFC) and two 95% bootstraps (utterance; distinct-reference\nclusters). SPRING sets also get a \"no Latin-script reference characters\" diagnostic for every\nmodel, and any set with digit characters in its references a \"no digit references\" one.\nVoxtral Mini bn-BD (voxtral_mini_bn, a private fine-tune decoded through vLLM by the same harness)\nis also compared pairwise with every other model on each set: WER/CER differences with a 95%\nbootstrap over distinct-reference clusters (10,000 draws, seed 20260903), the method of\nclean_split_table.py. Writes outputs_multiset/summary_multiset.json and prints the table.\n"
 }

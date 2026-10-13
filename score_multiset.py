@@ -5,7 +5,7 @@ punctuation to word boundaries, NFC) and two 95% bootstraps (utterance; distinct
 clusters). SPRING sets also get a "no Latin-script reference characters" diagnostic for every
 model, and any set with digit characters in its references a "no digit references" one.
 Voxtral Mini bn-BD (voxtral_mini_bn, a private fine-tune decoded through vLLM by the same harness)
-is also compared pairwise with each public model on each set: WER/CER differences with a 95%
+is also compared pairwise with every other model on each set: WER/CER differences with a 95%
 bootstrap over distinct-reference clusters (10,000 draws, seed 20260903), the method of
 clean_split_table.py. Writes outputs_multiset/summary_multiset.json and prints the table.
 """
@@ -23,9 +23,11 @@ A = Path(__file__).resolve().parent
 OUT = A / "outputs_multiset"
 SETS = ["vaani_test", "spring_r1_test", "spring_r2_test", "kathbath_test_known", "kathbath_test_unknown", "indicvoices_conv",
         "subakko_test", "banspeech", "cv17_bn_test", "ben10_valid"]   # the last four: build_multiset_bd.py
-MODELS = ["fastconformer_ctc", "hishab_conformer_large", "whisper_medium", "wav2vec2", "voxtral_mini_bn"]
+PUBLIC = ["fastconformer_ctc", "hishab_conformer_large", "whisper_medium", "wav2vec2"]
+PRIVATE = ["voxtral_mini_bn", "fastconformer_hybrid_bn", "canary_1b_v2_bn", "qwen3_asr_bn", "whisper_turbo_bn"]
+MODELS = PUBLIC + PRIVATE      # the four public checkpoints and five private ehzawad bn-BD fine-tunes
 NEW = "voxtral_mini_bn"
-PUBLISHED = [m for m in MODELS if m != NEW]
+PUBLISHED = [m for m in MODELS if m != NEW]   # Voxtral Mini is paired with every other model
 LATIN = re.compile(r"[A-Za-z]")
 DIGIT = re.compile(r"[0-9০-৯]")   # ASCII or Bengali digits
 
