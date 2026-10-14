@@ -28,16 +28,22 @@ MINI = "voxtral_mini_bn"
 MINI_TINT, BEST_TINT = "#fdebe2", "#fff1c7"
 # One fixed colour per model, Voxtral Mini first; this order passes the categorical palette checks
 # (adjacent colour-blind and normal-vision separation on the light page).
-MODELS = [
-    (MINI, "Voxtral Mini bn-BD", "#eb6834"),
-    ("fastconformer_ctc", "ehzawad FastConformer-CTC", "#2a78d6"),
-    ("hishab_conformer_large", "Conformer Large (hishab)", "#1baf7a"),
-    ("whisper_medium", "Whisper Medium", "#eda100"),
-    ("wav2vec2", "Wav2Vec2", "#e87ba4"),
+# One fixed colour per model (Voxtral Mini first), in an order that passes the categorical palette checks
+# (adjacent colour-blind and normal-vision separation on the light page); the ninth is a neutral grey.
+ALL_MODELS = [
+    (MINI, "Voxtral Mini bn-BD", "#eb6834", "private"),
+    ("fastconformer_hybrid_bn", "FastConformer hybrid bn-BD", "#1baf7a", "private"),
+    ("canary_1b_v2_bn", "Canary 1B v2 bn-BD", "#eda100", "private"),
+    ("qwen3_asr_bn", "Qwen3-ASR 1.7B bn-BD", "#e87ba4", "private"),
+    ("whisper_turbo_bn", "Whisper turbo bn-BD", "#008300", "private"),
+    ("fastconformer_ctc", "ehzawad FastConformer-CTC", "#6250d6", "public"),
+    ("hishab_conformer_large", "Conformer Large (hishab)", "#e34948", "public"),
+    ("whisper_medium", "Whisper Medium", "#2a78d6", "public"),
+    ("wav2vec2", "Wav2Vec2", "#8a8880", "public"),
 ]
-NAME = {k: n for k, n, _ in MODELS}
-COLOR = {k: c for k, _, c in MODELS}
-PUBLIC = [k for k, _, _ in MODELS if k != MINI]
+NAME = {k: n for k, n, _, _ in ALL_MODELS}
+COLOR = {k: c for k, _, c, _ in ALL_MODELS}
+GROUP = {k: g for k, _, _, g in ALL_MODELS}
 # (key, chart label, two-line table header)
 BD_SETS = [("subakko_test", "SUBAK.KO", "SUBAK.KO"), ("banspeech", "BanSpeech", "Ban-\nSpeech"),
            ("cv17_bn_test", "Common Voice 17", "Common\nVoice 17"), ("ben10_valid", "Ben-10 dialects", "Ben-10\ndialects")]
@@ -53,8 +59,20 @@ plt.rcParams.update({"font.family": "DejaVu Sans", "figure.facecolor": PAGE, "ax
 
 CLEAN = json.loads(Path("outputs_fleurs/clean_test_table.json").read_text())
 MS = json.loads(Path("outputs_multiset/summary_multiset.json").read_text())
+MODELS = [(k, n, c) for k, n, c, _ in ALL_MODELS
+          if k in CLEAN["models"] and all(s in MS["models"].get(k, {}) for s in MS["sets"])]
+KEYS = [k for k, _, _ in MODELS]
+PUBLIC = [k for k in KEYS if GROUP[k] == "public"]
 FLEURS_TEST_S = statistics.mean(r["duration"] for r in json.loads(Path("eval_manifest.json").read_text())["rows"]
                                 if r["split"] == "test")
+
+
+VLLM = {MINI, "whisper_medium", "whisper_turbo_bn", "qwen3_asr_bn"}   # the autoregressive decoders
+
+
+def andjoin(xs):
+    xs = list(xs)
+    return "none" if not xs else xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
 
 
 def wer(k, s):
@@ -105,18 +123,24 @@ def footer(fig, page):
 
 
 def legend(fig, y):
-    """One swatch and name per model, measured so entries never overlap; wraps to a second row."""
-    renderer, x = fig.canvas.get_renderer(), 0.06
-    for k, n, c in MODELS:
-        t = fig.text(x + 0.024, y, n, size=8.8, va="center", weight="bold" if k == MINI else "normal")
-        w = t.get_window_extent(renderer).width / fig.bbox.width
-        if x + 0.024 + w > 0.95:
-            x, y = 0.06, y - 0.022
-            t.set_position((x + 0.024, y))
-        fig.patches.append(FancyBboxPatch((x, y - 0.0055), 0.016, 0.011, boxstyle="round,pad=0,rounding_size=0.002",
-                                          transform=fig.transFigure, facecolor=c, edgecolor="none"))
-        x += 0.024 + w + 0.032
-    return y
+    """Swatches and names, the private fine-tunes on one row and the public models on the next; entries are
+    measured so they never overlap and wrap if a row is full."""
+    renderer = fig.canvas.get_renderer()
+    for group, title in (("private", "ehzawad bn-BD fine-tunes (private)"), ("public", "Public models")):
+        fig.text(0.06, y, title, size=7.6, color=MUTED, weight="bold", va="center")
+        x = 0.06
+        y -= 0.018
+        for k, n, c in [m for m in MODELS if GROUP[m[0]] == group]:
+            t = fig.text(x + 0.024, y, n, size=8.6, va="center", weight="bold" if k == MINI else "normal")
+            w = t.get_window_extent(renderer).width / fig.bbox.width
+            if x + 0.024 + w > 0.95:
+                x, y = 0.06, y - 0.018
+                t.set_position((x + 0.024, y))
+            fig.patches.append(FancyBboxPatch((x, y - 0.0055), 0.016, 0.011, boxstyle="round,pad=0,rounding_size=0.002",
+                                              transform=fig.transFigure, facecolor=c, edgecolor="none"))
+            x += 0.024 + w + 0.03
+        y -= 0.022
+    return y + 0.022
 
 
 # ---------------------------------------------------------------------------------------------
@@ -125,10 +149,10 @@ def wer_page(pdf, page, title, subtitle, sets, notes):
     fig = plt.figure(figsize=(8.27, 11.69))
     header(fig, title, subtitle)
     top = legend(fig, 0.857) - 0.02
-    height = 0.06 * len(sets) - 0.01
+    height = (0.06 if len(MODELS) <= 6 else 0.041) * len(sets) - 0.01
     ax = fig.add_axes([0.27, top - height, 0.67, height])
     n, group = len(MODELS), len(MODELS) + 1.4
-    xmax = 10 * math.ceil(max(wer(k, s) for k in NAME for s, _, _ in sets) / 10 + 0.05)
+    xmax = 10 * math.ceil(max(wer(k, s) for k in KEYS for s, _, _ in sets) / 10 + 0.05)
     centers = []
     for i, (s, label, _) in enumerate(sets):
         base = -i * group
@@ -152,27 +176,28 @@ def wer_page(pdf, page, title, subtitle, sets, notes):
     ax.spines[["top", "right", "left"]].set_visible(False)
     ax.set_ylim(-(len(sets) - 1) * group - n + 0.3, 0.7)
 
-    y = top - height - 0.055
+    y = top - height - 0.045
     heading(fig, 0.06, y, "The numbers")
     y -= 0.042
     xs = [0.385 + 0.0825 * i for i in range(len(sets))]
     for x, (_, _, head) in zip(xs, sets):
         fig.text(x, y, head, size=7.6, color=MUTED, weight="bold", ha="right", va="center", linespacing=1.3)
     y -= 0.022
-    best = {s: min(NAME, key=lambda k: wer(k, s)) for s, _, _ in sets}
+    best = {s: min((m for m, _, _ in MODELS), key=lambda k: wer(k, s)) for s, _, _ in sets}
+    ROW = 0.03 if len(MODELS) <= 6 else 0.021
     for i, (k, n_, c) in enumerate(MODELS):
-        cy = y - 0.03 * i - 0.015
+        cy = y - ROW * i - ROW / 2
         if k == MINI:
-            box(fig, 0.05, cy - 0.015, 0.36 + 0.0825 * len(sets), 0.03, MINI_TINT, radius=0.004)
+            box(fig, 0.05, cy - ROW / 2, 0.36 + 0.0825 * len(sets), ROW, MINI_TINT, radius=0.004)
         fig.patches.append(Rectangle((0.06, cy - 0.005), 0.012, 0.01, transform=fig.transFigure, facecolor=c,
                                      edgecolor="none"))
         fig.text(0.08, cy, n_, size=8.8, weight="bold" if k == MINI else "normal", va="center")
         for x, (s, _, _) in zip(xs, sets):
             if best[s] == k:
-                box(fig, x - 0.062, cy - 0.011, 0.066, 0.022, BEST_TINT, radius=0.004, zorder=1)
+                box(fig, x - 0.062, cy - ROW * 0.37, 0.066, ROW * 0.74, BEST_TINT, radius=0.004, zorder=1)
             fig.text(x, cy, f"{wer(k, s):.1f}", size=9, ha="right", va="center", zorder=2,
                      weight="bold" if (k == MINI or best[s] == k) else "normal")
-    y -= 0.03 * len(MODELS) + 0.02
+    y -= ROW * len(MODELS) + 0.02
     box(fig, 0.06, y - 0.009, 0.03, 0.013, BEST_TINT, radius=0.003)
     fig.text(0.1, y - 0.0025, "lowest word error rate on that set", size=7.8, color=MUTED, va="center")
     bullets(fig, 0.06, y - 0.03, notes, 112, size=8.4)
@@ -181,19 +206,35 @@ def wer_page(pdf, page, title, subtitle, sets, notes):
     return best
 
 
+def BD_NOTES(best):
+    """Notes under the Bangladeshi page, read from the summaries."""
+    led = [label for s, label, _ in BD_SETS if best[s] == MINI]
+    sub_ = MS["models"][MINI]["subakko_test"]
+    assert all(GROUP[best[s]] in ("private", "public") for s, _, _ in BD_SETS)
+    return [
+        f"Voxtral Mini has the lowest word error rate on {andjoin(led)}." if led else
+        "Voxtral Mini does not have the lowest word error rate on any of these sets.",
+        f"{sub_['digit_refs']} of SUBAK.KO's {sub_['n']:,} references write numbers as digits, which models that write "
+        f"numbers as words cannot match; on the other recordings Voxtral Mini reads {100 * sub_['no_digit_ref']['wer']:.1f}%.",
+        "SUBAK.KO and Common Voice are not clean head-to-heads: ehzawad FastConformer-CTC and Conformer Large trained on "
+        "both corpora, and FastConformer-CTC's Common Voice data may include these very clips.",
+        "Ben-10 is regional dialect speech written in dialect spelling; its test split is private, so this is its "
+        "validation split. Common Voice records no speaker region. The private models' training data is undocumented.",
+    ]
+
+
 def page1(pdf):
-    best = {s: min(NAME, key=lambda k: wer(k, s)) for s, _, _ in BD_SETS}
-    wer_page(pdf, 1, "Voxtral Mini bn-BD", "Bangladeshi and crowd-sourced Bengali test sets · word error rate, "
-             "lower is better · Voxtral Mini in orange", BD_SETS, BD_NOTES(best))
+    best = {s: min(KEYS, key=lambda k: wer(k, s)) for s, _, _ in BD_SETS}
+    wer_page(pdf, 1, "Voxtral Mini bn-BD", "Bangladeshi and crowd-sourced test sets · word error rate, lower is "
+             "better · Voxtral Mini in orange", BD_SETS, BD_NOTES(best))
 
 
 def page2(pdf):
-    best = {s: min(NAME, key=lambda k: wer(k, s)) for s, _, _ in IN_SETS}
-    assert best["indicvoices_conv"] == "fastconformer_ctc"
+    best = {s: min(KEYS, key=lambda k: wer(k, s)) for s, _, _ in IN_SETS}
     wer_page(pdf, 2, "Indian Bengali test sets", "Word error rate, lower is better · Voxtral Mini in orange", IN_SETS, [
         "Kathbath and IndicVoices are not clean head-to-heads: ehzawad FastConformer-CTC trained on other splits "
-        "of both (hence its lead on IndicVoices), and Conformer Large on Kathbath.",
-        "Voxtral Mini's training data is not documented, so overlap with any of these sets cannot be ruled out.",
+        "of both, and Conformer Large on Kathbath.",
+        "The private models' training data is undocumented, so overlap with any of these sets cannot be ruled out.",
     ])
 
 
@@ -221,14 +262,17 @@ def page3(pdf):
     ax.set_axisbelow(True)
     ax.spines[["top", "right", "left"]].set_visible(False)
 
-    nemo = statistics.mean(ms(k) for k in ("fastconformer_ctc", "hishab_conformer_large"))
+    faster = [NAME[k] for k in KEYS if ms(k) < ms(MINI)]
+    slower = [NAME[k] for k in KEYS if ms(k) > ms(MINI)]
+    vllm = [NAME[k] for k in KEYS if k in VLLM]
     y = text_block(fig, 0.06, 0.595,
                    f"Voxtral Mini takes {ms(MINI) / 1000:.2f} s for a {FLEURS_TEST_S:.0f}-second clip, about "
-                   f"{FLEURS_TEST_S * 1000 / ms(MINI):.0f}× faster than real time. That is "
-                   f"{ms('whisper_medium') / ms(MINI):.0f}× faster than Whisper Medium and {ms(MINI) / nemo:.0f}× "
-                   "slower than the two NeMo CTC models (FastConformer-CTC and Conformer Large). The times cover each "
-                   "model's whole pipeline, audio loading included, on vLLM for Voxtral Mini and PyTorch for the "
-                   "others, so they compare setups, not just the models.", 100, size=9.4, color=INK)
+                   f"{FLEURS_TEST_S * 1000 / ms(MINI):.0f}× faster than real time. "
+                   + (f"Faster: {andjoin(faster)}. " if faster else "It is the fastest model here. ")
+                   + (f"Slower: {andjoin(slower)}. " if slower else "It is the slowest model here. ")
+                   + "The times cover each model's whole pipeline, audio loading included: "
+                   f"vLLM for {andjoin(vllm)}, NeMo or PyTorch for the rest, so they compare setups, not just "
+                   "the models.", 100, size=9.4, color=INK)
 
     y -= 0.03
     heading(fig, 0.06, y, "How it was measured")
@@ -237,24 +281,26 @@ def page3(pdf):
         "The same audio for every model: 16 kHz, cut at pauses into pieces of at most 25 s.",
         "Plain decoding: greedy, one clip at a time, no external language model.",
         f"FLEURS: the {CLEAN['models'][MINI]['n']} test recordings. Other sets: "
-        f"{MS['sets']['vaani_test']['n']:,} recordings each, sampled from the official splits.",
+        f"{MS['sets']['vaani_test']['n']:,} recordings each, a seeded sample of each set's official split.",
         "One scorer for everyone: punctuation removed and Bengali text Unicode-normalised before counting errors.",
     ], 108)
 
     r2 = MS["models"][MINI]["spring_r2_test"]
     capped = r2["errors"] - r2["without_capped_clips"]["errors"]
-    assert not any(MS["models"][k][s]["hyps_with_latin"] for k in NAME for s in ("spring_r1_test", "spring_r2_test"))
+    assert not any(MS["models"][k][s]["hyps_with_latin"] for k in KEYS for s in ("spring_r1_test", "spring_r2_test"))
     y -= 0.02
     heading(fig, 0.06, y, "Keep in mind")
     bullets(fig, 0.06, y - 0.035, [
-        "These are Indian Bengali test sets; none is a dedicated test of Bangladeshi speech.",
+        "Seven of the eleven sets are Indian Bengali; SUBAK.KO, BanSpeech and Ben-10 are Bangladeshi.",
         "About half of SPRING-INX's reference sentences contain English words written in Latin letters, which no "
         "model produces, so SPRING error rates are inflated for every model alike.",
         f"On SPRING-INX R2, Voxtral Mini got stuck repeating one word on {r2['clips_at_token_cap']} recordings; those "
         f"alone account for {capped:,} of its {r2['errors']:,} word errors there, and they stay in its score.",
         "Like Conformer Large and Whisper Medium, Voxtral Mini writes numbers as Bengali words, which counts as an "
         "error wherever the reference uses digits.",
-    ], 108)
+    ] + ([f"Whisper's tokenizer spends about 13 tokens per Bengali word, so Whisper turbo's longest pieces were cut "
+          f"at its 448-token limit: {MS['models']['whisper_turbo_bn']['ben10_valid']['clips_at_token_cap']:,} of "
+          "Ben-10's 1,000 recordings."] if "whisper_turbo_bn" in KEYS else []), 108)
     footer(fig, 3)
     pdf.savefig(fig); plt.close(fig)
 

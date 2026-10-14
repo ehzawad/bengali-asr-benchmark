@@ -51,6 +51,46 @@
    ],
    "cer": 0.04779,
    "ours": false
+  },
+  "fastconformer_hybrid_bn": {
+   "n": 920,
+   "wer": 0.15376,
+   "wer_ci95": [
+    0.1426,
+    0.1654
+   ],
+   "cer": 0.04907,
+   "ours": false
+  },
+  "canary_1b_v2_bn": {
+   "n": 920,
+   "wer": 0.14352,
+   "wer_ci95": [
+    0.13232,
+    0.15537
+   ],
+   "cer": 0.04661,
+   "ours": false
+  },
+  "qwen3_asr_bn": {
+   "n": 920,
+   "wer": 0.14532,
+   "wer_ci95": [
+    0.13416,
+    0.15718
+   ],
+   "cer": 0.04735,
+   "ours": false
+  },
+  "whisper_turbo_bn": {
+   "n": 920,
+   "wer": 0.15084,
+   "wer_ci95": [
+    0.13885,
+    0.16398
+   ],
+   "cer": 0.05282,
+   "ours": false
   }
  },
  "paired_vs_best": {
@@ -153,6 +193,62 @@
     -1.4286,
     -1.0647
    ]
+  },
+  "voxtral_mini_bn_vs_fastconformer_hybrid_bn": {
+   "a": "voxtral_mini_bn",
+   "b": "fastconformer_hybrid_bn",
+   "wer_delta_pp": -0.6475,
+   "wer_ci95_pp": [
+    -1.2088,
+    -0.0824
+   ],
+   "cer_delta_pp": -0.1279,
+   "cer_ci95_pp": [
+    -0.2826,
+    0.0335
+   ]
+  },
+  "voxtral_mini_bn_vs_canary_1b_v2_bn": {
+   "a": "voxtral_mini_bn",
+   "b": "canary_1b_v2_bn",
+   "wer_delta_pp": 0.3772,
+   "wer_ci95_pp": [
+    -0.1924,
+    0.9504
+   ],
+   "cer_delta_pp": 0.1183,
+   "cer_ci95_pp": [
+    -0.0213,
+    0.2626
+   ]
+  },
+  "voxtral_mini_bn_vs_qwen3_asr_bn": {
+   "a": "voxtral_mini_bn",
+   "b": "qwen3_asr_bn",
+   "wer_delta_pp": 0.1971,
+   "wer_ci95_pp": [
+    -0.3489,
+    0.7412
+   ],
+   "cer_delta_pp": 0.0444,
+   "cer_ci95_pp": [
+    -0.1056,
+    0.1939
+   ]
+  },
+  "voxtral_mini_bn_vs_whisper_turbo_bn": {
+   "a": "voxtral_mini_bn",
+   "b": "whisper_turbo_bn",
+   "wer_delta_pp": -0.3547,
+   "wer_ci95_pp": [
+    -1.0416,
+    0.3165
+   ],
+   "cer_delta_pp": -0.5028,
+   "cer_ci95_pp": [
+    -1.0103,
+    -0.0491
+   ]
   }
  },
  "speed_default_runtime": {
@@ -184,6 +280,30 @@
    "ms_per_clip_mean": 437.72,
    "ms_per_clip_median": 420.44,
    "ms_per_clip_p95": 679.61,
+   "n": 920
+  },
+  "fastconformer_hybrid_bn": {
+   "ms_per_clip_mean": 101.94,
+   "ms_per_clip_median": 97.8,
+   "ms_per_clip_p95": 119.3,
+   "n": 920
+  },
+  "canary_1b_v2_bn": {
+   "ms_per_clip_mean": 484.76,
+   "ms_per_clip_median": 463.2,
+   "ms_per_clip_p95": 739.83,
+   "n": 920
+  },
+  "qwen3_asr_bn": {
+   "ms_per_clip_mean": 655.7,
+   "ms_per_clip_median": 621.14,
+   "ms_per_clip_p95": 1027.57,
+   "n": 920
+  },
+  "whisper_turbo_bn": {
+   "ms_per_clip_mean": 699.9,
+   "ms_per_clip_median": 665.95,
+   "ms_per_clip_p95": 1108.31,
    "n": 920
   }
  }
