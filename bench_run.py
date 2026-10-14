@@ -86,6 +86,76 @@ class WhisperBackend:
         return out
 
 
+class WhisperVLLMBackend:
+    """Whisper under vLLM, one request per staged piece, with the prompt of vLLM's own transcription endpoint
+    for Whisper (decoder prompt <|startoftranscript|><|bn|><|transcribe|><|notimestamps|>, audio on the
+    encoder); greedy, up to the decoder's 448 positions. Whisper's multilingual tokenizer spends about 13
+    tokens per Bengali word, so finish_reasons marks pieces that ran to that limit ("length")."""
+
+    def __init__(self, model, **kw):
+        from vllm import LLM, SamplingParams
+        self.llm = LLM(model=model, gpu_memory_utilization=0.85, max_model_len=448, max_num_seqs=8,
+                       limit_mm_per_prompt={"audio": 1}, seed=0)
+        self.decoder_prompt = "<|startoftranscript|><|bn|><|transcribe|><|notimestamps|>"
+        self.sp = SamplingParams(temperature=0.0, max_tokens=448 - 4)
+        self.finish_reasons = []
+
+    def transcribe(self, paths, batch_size=1, verbose=False):
+        out, self.finish_reasons = [], []
+        for p in paths:
+            prompt = {"encoder_prompt": {"prompt": "", "multi_modal_data": {"audio": (_read_staged(p), 16000)}},
+                      "decoder_prompt": self.decoder_prompt}
+            o = self.llm.generate([prompt], self.sp, use_tqdm=False)[0].outputs[0]
+            self.finish_reasons.append(o.finish_reason)
+            out.append(SimpleNamespace(text=o.text.strip()))
+        return out
+
+
+class CanaryBackend:
+    """NeMo Canary (multitask attention encoder-decoder) as Bengali-to-Bengali transcription without the
+    punctuation-and-case task flag, greedy (beam size 1), as its model card prescribes."""
+
+    def __init__(self, model, **kw):
+        from omegaconf import open_dict
+        from nemo.collections.asr.models import EncDecMultiTaskModel
+        self.m = EncDecMultiTaskModel.restore_from(model).to("cuda").eval()
+        dec = self.m.cfg.decoding
+        with open_dict(dec):
+            dec.strategy = "beam"
+            dec.beam.beam_size = 1
+        self.m.change_decoding_strategy(dec)
+
+    def transcribe(self, paths, batch_size=1, verbose=False):
+        return self.m.transcribe(list(paths), batch_size=batch_size, verbose=verbose,
+                                 source_lang="bn", target_lang="bn", pnc="no")
+
+
+class Qwen3ASRVLLMBackend:
+    """Qwen3-ASR under vLLM, one request per staged piece, with the prompt and output clean-up of vLLM's own
+    transcription endpoint for this architecture (no forced language; the model writes its language tag and
+    post_process_output strips it); greedy, at most 500 new tokens. Runs in an interpreter with vllm[audio]."""
+
+    def __init__(self, model, **kw):
+        from vllm import LLM, SamplingParams
+        from vllm.model_executor.models.qwen3_asr import Qwen3ASRForConditionalGeneration as Q
+        self.llm = LLM(model=model, gpu_memory_utilization=0.85, max_model_len=4096, max_num_seqs=8,
+                       limit_mm_per_prompt={"audio": 1}, seed=0)
+        self.prompt = ("<|im_start|>user\n" + Q.get_placeholder_str("audio", 0) + "<|im_end|>\n"
+                       "<|im_start|>assistant\n")
+        self.post = Q.post_process_output
+        self.sp = SamplingParams(temperature=0.0, max_tokens=500)
+        self.finish_reasons = []
+
+    def transcribe(self, paths, batch_size=1, verbose=False):
+        out, self.finish_reasons = [], []
+        for p in paths:
+            o = self.llm.generate([{"prompt": self.prompt, "multi_modal_data": {"audio": (_read_staged(p), 16000)}}],
+                                  self.sp, use_tqdm=False)[0].outputs[0]
+            self.finish_reasons.append(o.finish_reason)
+            out.append(SimpleNamespace(text=self.post(o.text).strip()))
+        return out
+
+
 class Wav2Vec2Backend:
     def __init__(self, model, revision=None, **kw):
         from transformers import AutoProcessor, AutoModelForCTC
@@ -148,7 +218,8 @@ def _read_staged(path):
 
 
 KINDS = {"nemo": NeMoBackend, "whisper": WhisperBackend, "wav2vec2": Wav2Vec2Backend,
-         "voxtral_vllm": VoxtralVLLMBackend}
+         "voxtral_vllm": VoxtralVLLMBackend, "whisper_vllm": WhisperVLLMBackend, "canary": CanaryBackend,
+         "qwen3_asr_vllm": Qwen3ASRVLLMBackend}
 
 
 def gpu_state():

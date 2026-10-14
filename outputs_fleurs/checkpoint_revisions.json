@@ -4,5 +4,9 @@
  "hishab/titu_stt_bn_conformer_large": "42041012a7cdb9df071eac4cef33b8a6182eb687",
  "ehzawad/stt_bn_fastconformer_ctc": "6b0d1aa869560bb22ef35d9e2c589d682daa87d4",
  "ehzawad/Voxtral-Mini-3B-2507-bn-BD": "d1c7aeb0cd18f8a7a057bf756df5ee2ccb7aebcd",
+ "ehzawad/fastconformer-hybrid-rnnt-ctc-large-bn-BD": "47a7c3d5e45c501d909d85c9d64c32d2f44ec037",
+ "ehzawad/canary-1b-v2-bn-BD": "1aec184147e47477eb171146b322e44a3ecee11d",
+ "ehzawad/whisper-large-v3-turbo-bn-BD": "7cf08bb96ac590e2cb5b7425d52b1021fbf65589",
+ "ehzawad/Qwen3-ASR-1.7B-bn-BD": "9a6458ec4842764cfeb8c0457f6cab0be7606e1f",
  "_note": "fastconformer_ctc decoded from stt_bn_fastconformer_ctc_v2.nemo at the revision above (LFS sha256 bea300ce4f1f1df1fa4707562ddaa7c64db6f01121ef3d64a6333635f3626572)"
 }
