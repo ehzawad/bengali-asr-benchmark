@@ -8,5 +8,6 @@
  "ehzawad/canary-1b-v2-bn-BD": "1aec184147e47477eb171146b322e44a3ecee11d",
  "ehzawad/whisper-large-v3-turbo-bn-BD": "7cf08bb96ac590e2cb5b7425d52b1021fbf65589",
  "ehzawad/Qwen3-ASR-1.7B-bn-BD": "9a6458ec4842764cfeb8c0457f6cab0be7606e1f",
+ "ehzawad/whistle-bn-BD": "7fdb8ebd7a1621436bfc28284645da24a3c633d2",
  "_note": "fastconformer_ctc decoded from stt_bn_fastconformer_ctc_v2.nemo at the revision above (LFS sha256 bea300ce4f1f1df1fa4707562ddaa7c64db6f01121ef3d64a6333635f3626572)"
 }
