@@ -36,6 +36,8 @@ ALL_MODELS = [
     ("canary_1b_v2_bn", "Canary 1B v2 bn-BD", "#eda100", "private"),
     ("qwen3_asr_bn", "Qwen3-ASR 1.7B bn-BD", "#e87ba4", "private"),
     ("whisper_turbo_bn", "Whisper turbo bn-BD", "#008300", "private"),
+    ("whistle_bn_bd_a100", "Whistle bn-BD (55M, A100)", "#9a5b13", "private"),
+    ("whistle_bn_bd", "Whistle bn-BD (55M, CPU)", "#9a5b13", "private"),
     ("fastconformer_ctc", "ehzawad FastConformer-CTC", "#6250d6", "public"),
     ("hishab_conformer_large", "Conformer Large (hishab)", "#e34948", "public"),
     ("whisper_medium", "Whisper Medium", "#2a78d6", "public"),
@@ -68,6 +70,11 @@ FLEURS_TEST_S = statistics.mean(r["duration"] for r in json.loads(Path("eval_man
 
 
 VLLM = {MINI, "whisper_medium", "whisper_turbo_bn", "qwen3_asr_bn"}   # the autoregressive decoders
+CPU = {"whistle_bn_bd"}   # run on CPU with its own engine, so its time is not compared with the A100 rows
+WHISTLE = {"whistle_bn_bd", "whistle_bn_bd_a100"}   # the same checkpoint, A100 (JAX, greedy) and CPU (needle engine)
+HATCH = "///"
+GPU_WHISTLE = (json.loads(Path("outputs_fleurs/whistle_bn_bd_a100/run_meta.json").read_text())["device"]
+               .replace("GPU: NVIDIA ", "an ").replace("-SXM4-80GB", " (80 GB)") if Path("outputs_fleurs/whistle_bn_bd_a100/run_meta.json").exists() else "")
 
 
 def andjoin(xs):
@@ -117,8 +124,8 @@ def header(fig, title, subtitle):
 
 
 def footer(fig, page):
-    fig.text(0.06, 0.03, "bengali-asr-benchmark · one Colab A100-SXM4-40GB · 13 Oct 2026 · full tables and "
-             "confidence intervals in README.md", size=7, color=MUTED)
+    fig.text(0.06, 0.03, "bengali-asr-benchmark · Colab A100-SXM4-40GB, 13 Oct 2026 · Whistle bn-BD: A100 80 GB and CPU, "
+             "21-22 Oct · full tables in README.md", size=7, color=MUTED)
     fig.text(0.94, 0.03, str(page), size=7, color=MUTED, ha="right")
 
 
@@ -137,7 +144,9 @@ def legend(fig, y):
                 x, y = 0.06, y - 0.018
                 t.set_position((x + 0.024, y))
             fig.patches.append(FancyBboxPatch((x, y - 0.0055), 0.016, 0.011, boxstyle="round,pad=0,rounding_size=0.002",
-                                              transform=fig.transFigure, facecolor=c, edgecolor="none"))
+                                              transform=fig.transFigure, facecolor=c,
+                                              edgecolor=PAGE if k in CPU else "none", hatch=HATCH if k in CPU else None,
+                                              linewidth=0))
             x += 0.024 + w + 0.03
         y -= 0.022
     return y + 0.022
@@ -160,7 +169,7 @@ def wer_page(pdf, page, title, subtitle, sets, notes):
         for j, (k, _, c) in enumerate(MODELS):
             yy = base - j
             ax.barh(yy, wer(k, s), height=0.82, color=c, alpha=1 if k == MINI else 0.5,
-                    edgecolor=PAGE, linewidth=1.2)
+                    edgecolor=PAGE, linewidth=1.2, hatch=HATCH if k in CPU else None)
             if k == MINI:
                 ax.text(wer(k, s) + xmax * 0.012, yy, f"{wer(k, s):.1f}%", va="center", size=8.2, weight="bold",
                         color=INK)
@@ -190,7 +199,8 @@ def wer_page(pdf, page, title, subtitle, sets, notes):
         if k == MINI:
             box(fig, 0.05, cy - ROW / 2, 0.36 + 0.0825 * len(sets), ROW, MINI_TINT, radius=0.004)
         fig.patches.append(Rectangle((0.06, cy - 0.005), 0.012, 0.01, transform=fig.transFigure, facecolor=c,
-                                     edgecolor="none"))
+                                     edgecolor=PAGE if k in CPU else "none", hatch=HATCH if k in CPU else None,
+                                     linewidth=0))
         fig.text(0.08, cy, n_, size=8.8, weight="bold" if k == MINI else "normal", va="center")
         for x, (s, _, _) in zip(xs, sets):
             if best[s] == k:
@@ -240,14 +250,15 @@ def page2(pdf):
 
 def page3(pdf):
     fig = plt.figure(figsize=(8.27, 11.69))
-    header(fig, "Speed, method and caveats", f"Average time to transcribe one FLEURS test clip "
-           f"({FLEURS_TEST_S:.1f} s of audio), one clip at a time on one A100")
+    header(fig, "Speed, method and caveats", f"Time per FLEURS test clip "
+           f"({FLEURS_TEST_S:.1f} s of audio), one at a time, on one A100 (Whistle bn-BD also on CPU)")
 
-    ax = fig.add_axes([0.30, 0.64, 0.6, 0.21])
+    ax = fig.add_axes([0.30, 0.665, 0.6, 0.19])
     keys = [k for k, _, _ in MODELS]
     for j, k in enumerate(keys):
-        ax.barh(-j, ms(k), height=0.62, color=COLOR[k], alpha=1 if k == MINI else 0.5)
-        ax.text(ms(k) + 25, -j, f"{ms(k):,.0f} ms", va="center", size=8.8,
+        ax.barh(-j, ms(k), height=0.62, color=COLOR[k], alpha=1 if k == MINI else 0.5,
+                hatch=HATCH if k in CPU else None, edgecolor=PAGE if k in CPU else None)
+        ax.text(ms(k) + 25, -j, f"{ms(k):,.0f} ms" + (" on CPU" if k in CPU else ""), va="center", size=8.8,
                 weight="bold" if k == MINI else "normal", color=INK)
     ax.set_yticks([-j for j in range(len(keys))])
     ax.set_yticklabels([NAME[k] for k in keys], size=9)
@@ -262,24 +273,29 @@ def page3(pdf):
     ax.set_axisbelow(True)
     ax.spines[["top", "right", "left"]].set_visible(False)
 
-    faster = [NAME[k] for k in KEYS if ms(k) < ms(MINI)]
-    slower = [NAME[k] for k in KEYS if ms(k) > ms(MINI)]
+    faster = [NAME[k] for k in KEYS if k not in CPU and ms(k) < ms(MINI)]
+    slower = [NAME[k] for k in KEYS if k not in CPU and ms(k) > ms(MINI)]
     vllm = [NAME[k] for k in KEYS if k in VLLM]
-    y = text_block(fig, 0.06, 0.595,
+    y = text_block(fig, 0.06, 0.62,
                    f"Voxtral Mini takes {ms(MINI) / 1000:.2f} s for a {FLEURS_TEST_S:.0f}-second clip, about "
                    f"{FLEURS_TEST_S * 1000 / ms(MINI):.0f}× faster than real time. "
                    + (f"Faster: {andjoin(faster)}. " if faster else "It is the fastest model here. ")
                    + (f"Slower: {andjoin(slower)}. " if slower else "It is the slowest model here. ")
                    + "The times cover each model's whole pipeline, audio loading included: "
                    f"vLLM for {andjoin(vllm)}, NeMo or PyTorch for the rest, so they compare setups, not just "
-                   "the models.", 100, size=9.4, color=INK)
+                   "the models."
+                   + (" Whistle bn-BD appears twice: on an A100 in JAX (greedy), comparable with the other bars, and "
+                      "hatched on one CPU core in its needle engine, the on-device cost."
+                      if CPU & set(KEYS) else ""), 100, size=9.4, color=INK)
 
-    y -= 0.03
+    y -= 0.022
     heading(fig, 0.06, y, "How it was measured")
-    y = bullets(fig, 0.06, y - 0.035, [
-        "One Colab A100 (40 GB) on 13 Oct 2026, one model on the GPU at a time.",
+    y = bullets(fig, 0.06, y - 0.032, [
+        f"One Colab A100 (40 GB) on 13 Oct 2026, one model on the GPU at a time; Whistle bn-BD on {GPU_WHISTLE} "
+        "and a CPU on 21-22 Oct.",
         "The same audio for every model: 16 kHz, cut at pauses into pieces of at most 25 s.",
-        "Plain decoding: greedy, one clip at a time, no external language model.",
+        "Plain decoding: greedy, one clip at a time, no external language model (Whistle bn-BD on CPU: its engine's "
+        "default decoding).",
         f"FLEURS: the {CLEAN['models'][MINI]['n']} test recordings. Other sets: "
         f"{MS['sets']['vaani_test']['n']:,} recordings each, a seeded sample of each set's official split.",
         "One scorer for everyone: punctuation removed and Bengali text Unicode-normalised before counting errors.",
@@ -287,20 +303,25 @@ def page3(pdf):
 
     r2 = MS["models"][MINI]["spring_r2_test"]
     capped = r2["errors"] - r2["without_capped_clips"]["errors"]
-    assert not any(MS["models"][k][s]["hyps_with_latin"] for k in KEYS for s in ("spring_r1_test", "spring_r2_test"))
-    y -= 0.02
+    SPRING = ("spring_r1_test", "spring_r2_test")
+    assert not any(MS["models"][k][s]["hyps_with_latin"] for k in KEYS if k not in WHISTLE for s in SPRING)
+    latin = {k: [MS["models"][k][s]["hyps_with_latin"] for s in SPRING] for k in KEYS if k in WHISTLE}
+    y -= 0.012
     heading(fig, 0.06, y, "Keep in mind")
-    bullets(fig, 0.06, y - 0.035, [
+    bullets(fig, 0.06, y - 0.032, [
         "Seven of the eleven sets are Indian Bengali; SUBAK.KO, BanSpeech and Ben-10 are Bangladeshi.",
         "About half of SPRING-INX's reference sentences contain English words written in Latin letters, which no "
-        "model produces, so SPRING error rates are inflated for every model alike.",
+        "model reproduces, so SPRING error rates are inflated for every model alike."
+        + (" Whistle bn-BD leaks English fragments into "
+           + " and ".join(f"{r1}/{r2_} ({'CPU' if k in CPU else 'A100'})" for k, (r1, r2_) in latin.items())
+           + " of 1,000 R1/R2 transcripts." if latin else ""),
         f"On SPRING-INX R2, Voxtral Mini got stuck repeating one word on {r2['clips_at_token_cap']} recordings; those "
         f"alone account for {capped:,} of its {r2['errors']:,} word errors there, and they stay in its score.",
         "Like Conformer Large and Whisper Medium, Voxtral Mini writes numbers as Bengali words, which counts as an "
         "error wherever the reference uses digits.",
     ] + ([f"Whisper's tokenizer spends about 13 tokens per Bengali word, so Whisper turbo's longest pieces were cut "
           f"at its 448-token limit: {MS['models']['whisper_turbo_bn']['ben10_valid']['clips_at_token_cap']:,} of "
-          "Ben-10's 1,000 recordings."] if "whisper_turbo_bn" in KEYS else []), 108)
+          "Ben-10's 1,000 recordings."] if "whisper_turbo_bn" in KEYS else []), 112, size=8.8, gap=0.004)
     footer(fig, 3)
     pdf.savefig(fig); plt.close(fig)
 

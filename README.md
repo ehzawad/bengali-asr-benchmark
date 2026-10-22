@@ -2,7 +2,7 @@
 
 A controlled comparison of ten Bengali speech-to-text models on eleven evaluation sets. Four models are
 public checkpoints; six are the author's private bn-BD fine-tunes, marked ‡, one of them a
-55M-parameter on-device model (Whistle bn-BD) run on CPU. The sets are:
+55M-parameter on-device model (Whistle bn-BD) measured twice, on an A100 and on CPU. The sets are:
 
 - the FLEURS Bengali test split;
 - 1,000-utterance samples of six Indian sets: Vaani, SPRING-INX R1 and R2, Kathbath (known- and
@@ -11,9 +11,11 @@ public checkpoints; six are the author's private bn-BD fine-tunes, marked ‡, o
   Bangla), Common Voice 17 (crowd-sourced) and Ben-10 (Bangladeshi regional dialects).
 
 Every decode ran on one Colab A100-SXM4-40GB, one model at a time, greedy at batch 1, through the same
-audio path and the same scorer, so accuracy and speed are comparable across the tables. Every
-autoregressive decoder (Voxtral Mini, Whisper Medium, Whisper turbo, Qwen3-ASR) ran through vLLM; the CTC
-and RNN-T models, Canary and Wav2Vec2 through NeMo or PyTorch.
+audio path and the same scorer, so accuracy and speed are comparable across the tables. The exception is
+Whistle bn-BD, run later on an A100-SXM4-80GB in JAX (greedy, batch 1) and on CPU in its own engine; see
+[On-device model: Whistle bn-BD](#on-device-model-whistle-bn-bd). Every other autoregressive decoder
+(Voxtral Mini, Whisper Medium, Whisper turbo, Qwen3-ASR) ran through vLLM; the CTC and RNN-T models, Canary
+and Wav2Vec2 through NeMo or PyTorch.
 
 The ‡ models are private, so readers cannot run them; they are here to place the author's own
 fine-tunes in the public field.
@@ -45,10 +47,15 @@ The private bn-BD fine-tunes ‡ take five of the top six places by average rank
 | Conformer Large (hishab) | 5.1 | Kathbath ×2, Common Voice (trained on all three) | 26.5% |
 | Whisper Medium | 5.9 | — | 27.0% |
 | ehzawad FastConformer-CTC | 6.5 | — | 26.4% |
-| Whistle bn-BD ‡ (55M, on-device) | 8.6 | — | 30.0% |
+| Whistle bn-BD ‡ (55M, CPU engine) | 8.6 | — | 30.0% |
+| Whistle bn-BD ‡ (55M, A100, greedy) | 9.3 | — | 36.5% |
 | Wav2Vec2 | 9.8 | — | 34.0% |
 
-Ranks and averages weight the eleven sets equally; Ben-10's 60–80 % error rates dominate the average WER.
+Ranks and averages weight the eleven sets equally; Ben-10's 60–80 % error rates dominate the average WER
+(121 % for greedy Whistle on the A100, see below). The two Whistle rows are one checkpoint under two
+runtimes, so each is ranked against the nine other models, not against the other; the other ranks are
+those with the CPU row (with the A100 row instead, Conformer Large moves to 5.0, Whisper Medium to 5.8 and
+Wav2Vec2 to 9.4).
 Several leads are inside their intervals (see [Voxtral Mini against the best other model](#voxtral-mini-against-the-best-other-model)).
 
 - **Whisper turbo bn-BD** is the most accurate on Indian conversational speech, but its multilingual
@@ -85,7 +92,8 @@ Ben-10's test split is private, so its public validation split stands in.
 | Conformer Large (hishab) | 13.64% [12.5–14.8] <sub>S</sub> | 27.07% [25.5–28.7] <sub>N</sub> | **7.35%** [6.7–8.0] <sub>S</sub> | 63.54% [62.3–64.8] <sub>N</sub> |
 | Whisper Medium | 21.36% [20.3–22.5] <sub>U</sub> | 23.59% [22.1–25.0] <sub>U</sub> | 10.12% [9.3–11.0] <sub>U</sub> | 74.79% [73.6–75.9] <sub>U</sub> |
 | Wav2Vec2 | 26.07% [25.0–27.1] <sub>U</sub> | 32.81% [31.1–34.5] <sub>U</sub> | 16.70% [15.7–17.7] <sub>U</sub> | 80.50% [79.5–81.5] <sub>U</sub> |
-| Whistle bn-BD ‡ (55M, on-device) | 18.79% [17.7–20.0] <sub>U</sub> | 31.54% [29.7–33.5] <sub>U</sub> | 17.10% [16.0–18.2] <sub>U</sub> | 79.87% [78.3–81.4] <sub>U</sub> |
+| Whistle bn-BD ‡ (55M, CPU engine) | 18.79% [17.7–20.0] <sub>U</sub> | 31.54% [29.7–33.5] <sub>U</sub> | 17.10% [16.0–18.2] <sub>U</sub> | 79.87% [78.3–81.4] <sub>U</sub> |
+| Whistle bn-BD ‡ (55M, A100, greedy) | 23.90% [20.8–27.5] <sub>U</sub> | 34.49% [30.9–39.4] <sub>U</sub> | 20.53% [17.9–23.8] <sub>U</sub> | 120.86% [114.9–127.2] <sub>U</sub> |
 
 **What the table says.**
 
@@ -108,7 +116,9 @@ Ben-10's test split is private, so its public validation split stands in.
   limit), Qwen3-ASR 63.4 % and Conformer Large 63.5 %. Voxtral Mini (70.0 %) and Qwen3-ASR each ran to their
   500-token cap on 18 clips, mostly repeating a word; without them Voxtral Mini reads 61.2 %, a conditional
   diagnostic, since those clips stay in its score. Canary (76.4 %) produced 37 outputs more than 2.5× the
-  reference's length.
+  reference's length. Greedy Whistle bn-BD on the A100 produced 104 such outputs, repeating a word or
+  phrase up to its length cap, hence its 120.9 % (more insertions than reference words); the same
+  checkpoint in its CPU engine produced 5 and reads 79.9 %.
 - ehzawad FastConformer-CTC returned 24 empty hypotheses on Ben-10 and the hybrid FastConformer 23 on
   SUBAK.KO; they count as full errors.
 
@@ -135,7 +145,8 @@ set); manifests with per-file SHA-256 are under [`multiset/`](multiset/), predic
 | Conformer Large (hishab) | 33.10% [31.8–34.5] <sub>N</sub> | 42.46% [41.2–43.8] <sub>N</sub> | 42.25% [40.9–43.6] <sub>N</sub> | **9.33%** [8.6–10.1] <sub>S</sub> | **8.79%** [8.1–9.5] <sub>S</sub> | 29.68% [28.3–31.2] <sub>N</sub> |
 | Whisper Medium | 26.35% [25.1–27.6] <sub>U</sub> | 40.04% [38.8–41.3] <sub>U</sub> | 39.71% [38.5–40.9] <sub>U</sub> | 9.70% [9.0–10.4] <sub>U</sub> | 9.91% [9.2–10.6] <sub>U</sub> | 24.96% [23.6–26.4] <sub>U</sub> |
 | Wav2Vec2 | 31.28% [29.9–32.7] <sub>U</sub> | 47.28% [46.1–48.6] <sub>U</sub> | 47.32% [46.1–48.5] <sub>U</sub> | 19.07% [18.1–20.0] <sub>U</sub> | 18.80% [17.9–19.7] <sub>U</sub> | 33.02% [31.6–34.5] <sub>U</sub> |
-| Whistle bn-BD ‡ (55M, on-device) | 27.43% [26.1–28.7] <sub>U</sub> | 43.38% [42.1–44.8] <sub>U</sub> | 42.19% [40.9–43.5] <sub>U</sub> | 15.61% [14.7–16.5] <sub>U</sub> | 15.82% [14.9–16.8] <sub>U</sub> | 19.62% [18.3–21.0] <sub>U</sub> |
+| Whistle bn-BD ‡ (55M, CPU engine) | 27.43% [26.1–28.7] <sub>U</sub> | 43.38% [42.1–44.8] <sub>U</sub> | 42.19% [40.9–43.5] <sub>U</sub> | 15.61% [14.7–16.5] <sub>U</sub> | 15.82% [14.9–16.8] <sub>U</sub> | 19.62% [18.3–21.0] <sub>U</sub> |
+| Whistle bn-BD ‡ (55M, A100, greedy) | 28.74% [27.3–30.3] <sub>U</sub> | 48.08% [45.5–51.1] <sub>U</sub> | 47.51% [44.6–50.7] <sub>U</sub> | 17.57% [16.0–19.5] <sub>U</sub> | 17.36% [15.9–19.3] <sub>U</sub> | 21.26% [19.8–22.9] <sub>U</sub> |
 
 Provenance flags, from the model cards only: **N**, the card does not list this corpus; **S**, the model
 trained on another split of this corpus; **U**, the card does not say either way. The ‡ models' training
@@ -158,11 +169,14 @@ data is undocumented, hence **U** everywhere. None of the three means "verified 
   train; a **U** cell can hide training overlap. Known- and unknown-speaker results differ by under a point
   for every model.
 - **IndicVoices conversational is not a clean head-to-head for the ehzawad CTC model**, which trained on
-  its train split. Qwen3-ASR reads 12.0 %, the private models 12.0–13.4 %; Conformer Large (29.7 %, the
-  one **N** cell) emitted 7 empty hypotheses there and Wav2Vec2 33.
+  its train split. Qwen3-ASR reads 12.0 %, the other private models up to 13.4 % (Whistle bn-BD 19.6 % on
+  CPU); Conformer Large (29.7 %, the one **N** cell) emitted 7 empty hypotheses there and Wav2Vec2 33.
 - SPRING's 36–47 % WER overstates the real error rate: about half its references contain English words
-  in Latin script, and no model emitted a single Latin-script word. On the Latin-free half the private
-  models read 31.5–37.7 % and `ehzawad/stt_bn_fastconformer_ctc` 35.4 / 35.1 %.
+  in Latin script, and no model reproduced them: no other model emitted a single Latin-script word, and
+  Whistle bn-BD only leaks English fragments from its English base model (26 of 1,000 R1 and 18 of 1,000 R2
+  transcripts on CPU, 18 and 15 on the A100, such as "aren" or "minutes"), which count as errors. On the
+  Latin-free half the other private models read 31.5–37.7 % and `ehzawad/stt_bn_fastconformer_ctc`
+  35.4 / 35.1 %.
 
 ## FLEURS Bengali test (920 utterances)
 
@@ -178,11 +192,13 @@ The familiar benchmark, for comparison with published numbers.
 | FastConformer hybrid bn-BD ‡ | `ehzawad/fastconformer-hybrid-rnnt-ctc-large-bn-BD` | NeMo, RNN-T | 15.38% [14.26–16.54] | 4.91% | 102 | 114.7M |
 | Whisper Medium | `SayedShaun/bengali-whisper-medium` | vLLM | 16.24% [15.07–17.46] | 5.09% | 304 | 763.9M |
 | **ehzawad FastConformer-CTC** | `ehzawad/stt_bn_fastconformer_ctc` | NeMo, CTC | 17.12% [15.95–18.34] | 5.12% | 88 | 115.6M |
-| Whistle bn-BD ‡ (55M, on-device) | `ehzawad/whistle-bn-BD` | needle engine, CPU | 19.17% [17.93–20.46] | 6.27% | 578 (CPU) | 57.2M |
+| Whistle bn-BD ‡ (55M, CPU engine) | `ehzawad/whistle-bn-BD` | needle engine, CPU | 19.17% [17.93–20.46] | 6.27% | 578 (CPU) | 57.2M |
 | Wav2Vec2 | `SayedShaun/bangla-wave2vec2-unigram` | PyTorch, CTC | 20.66% [19.47–21.90] | 6.02% | 56 | 315.5M |
+| Whistle bn-BD ‡ (55M, A100, greedy) | `ehzawad/whistle-bn-BD` | JAX, A100-80GB | 20.75% [19.26–22.48] | 7.79% | 139 | 57.2M |
 
-Greedy decoding, batch 1, no external language model. No clip failed and no hypothesis came back empty for
-any model. `ms/clip` is the mean single-clip latency on the A100:
+Greedy decoding, batch 1, no external language model (Whistle bn-BD on CPU: its engine's own decoding).
+No clip failed and no hypothesis came back empty for any model. `ms/clip` is the mean single-clip latency
+on the A100 (the Colab A100-SXM4-40GB; Whistle bn-BD on an A100-SXM4-80GB, plus its CPU row):
 
 | Model | mean ms/clip | median | p95 |
 |---|---:|---:|---:|
@@ -190,17 +206,19 @@ any model. `ms/clip` is the mean single-clip latency on the A100:
 | Conformer Large (hishab) | 87 | 83 | 96 |
 | ehzawad FastConformer-CTC | 88 | 84 | 98 |
 | FastConformer hybrid bn-BD ‡ | 102 | 98 | 119 |
+| Whistle bn-BD ‡ (55M), A100-80GB, JAX | 139 | 131 | 235 |
 | Whisper Medium | 304 | 288 | 461 |
 | Voxtral Mini bn-BD ‡ | 438 | 420 | 680 |
 | Canary 1B v2 bn-BD ‡ | 485 | 463 | 740 |
 | Qwen3-ASR 1.7B bn-BD ‡ | 656 | 621 | 1,028 |
 | Whisper turbo bn-BD ‡ | 700 | 666 | 1,108 |
-| Whistle bn-BD ‡ (55M, on-device), CPU | 578 | 530 | 1,012 |
+| Whistle bn-BD ‡ (55M), CPU engine, one core | 578 | 530 | 1,012 |
 
 These numbers time the configured pipelines, not the models in isolation:
 
 - vLLM 0.31 (torch 2.13, CUDA graphs) for Voxtral Mini, Whisper Medium, Whisper turbo and Qwen3-ASR; NeMo
-  2.7.3 or PyTorch (torch 2.11) for the rest.
+  2.7.3 or PyTorch (torch 2.11) for the rest. Whistle bn-BD on the A100: JAX 0.12 with XLA, see
+  [On-device model: Whistle bn-BD](#on-device-model-whistle-bn-bd).
 - The CTC and RNN-T models emit a whole piece in one pass; the others generate text token by token, so
   their time grows with the length of what was said.
 - A few milliseconds apart is not an established ordering, and p95 is variation across clips, not
@@ -245,22 +263,45 @@ Against each of the eight other models on every set, see `paired` in
 
 ## On-device model: Whistle bn-BD
 
-`ehzawad/whistle-bn-BD` ‡ is a full fine-tune of Cactus Compute's 55M-parameter Whistle (57.2M with its added Bengali
-vocabulary) on the same training epoch as Voxtral Mini bn-BD, deployed as a 4-bit `.cact` archive (30.5 MB)
-for the cactus-needle engine. It is the only model here that did not run on the A100:
+`ehzawad/whistle-bn-BD` ‡ is a full fine-tune of Cactus Compute's 55M-parameter Whistle (57.2M with its added
+Bengali vocabulary) on the same training epoch as Voxtral Mini bn-BD, deployed as a 4-bit `.cact` archive
+(30.5 MB) for the cactus-needle engine. The same checkpoint was measured under two runtimes, on 21-22 Oct
+2026, and both rows are kept:
 
-- **Engine and decoding:** the `.cact` file in the official needle engine on CPU (CPU: AMD EPYC 9575F 64-Core Processor), with the engine's own
-  decoding (needle engine default (Whistle.transcribe)), language `bn`.
-- **Same audio path and scorer:** the vendored `asr_core.py` pieces (identical piece counts and forced cuts on
-  every clip, checked on import), one engine call per piece, texts joined with a space; scored by the same
+- **A100, JAX, greedy** (`whistle_bn_bd_a100`), comparable with the other A100 rows. The needle engine is
+  CPU-only and vLLM does not support Whistle's architecture, so the GPU runtime is needle's own JAX model
+  (JAX 0.12, XLA) on one A100-SXM4-80GB (the 40 GB cards were queued for hours), alone on the card. It uses
+  the deployed numerics (4-bit weights, 8-bit activations and KV, bfloat16 compute) and the benchmark's
+  protocol: greedy, language tag `bn` forced, one clip at a time, the `asr_core.py` pieces staged as PCM16,
+  a warm-up clip discarded, each clip timed from audio loading to final text with the audio on node-local
+  disk. Every jitted shape is compiled before timing, the encoder input is padded to the next 2 s instead of
+  30 s, and the greedy loop runs on the device (one host sync per 64-token decoder bucket); the decoder
+  recomputes its prefix at each step, as needle's Whistle has no KV-cache decoding path. A length cap of 12
+  tokens per second of audio stops runaway outputs.
+- **CPU, needle engine** (`whistle_bn_bd`), the on-device cost: the `.cact` file in the official needle
+  engine on one core of an AMD EPYC 9575F, with the engine's own decoding (beam search), language `bn`. Its
+  speed is not comparable with the A100 rows.
+- **Why the accuracy differs.** Greedy decoding is worse than the engine's beam search for this small model:
+  20.75 % against 19.17 % WER on FLEURS and 1.3–5.3 points higher on the other sets, except Ben-10
+  (120.9 % against 79.9 %). Much of the gap is runaway repetition: outputs more than 2.5× the reference's
+  length number 1 (FLEURS), 8 (SUBAK.KO), 13 and 15 (SPRING R1/R2) and 104 (Ben-10) for greedy on the A100,
+  against 0, 2, 2, 6 and 5 for the engine. Without those clips greedy trails the engine by about a point
+  (FLEURS 20.26 % against 19.17 %, SUBAK.KO 19.86 % against 18.76 %), a conditional diagnostic; the clips
+  stay in both scores. As a check of the GPU runner, a batched greedy decode of the same checkpoint (batch
+  32, 30 s padding) gives the identical transcript on 751 of 920 FLEURS clips and 20.27 % WER by the
+  bn-whistle scorer, against 20.75 % for the per-clip runner; the other transcripts differ through
+  bfloat16 numerics of the different shapes (batch 32 and 30 s against batch 1 and 2 s buckets).
+- **Same audio path and scorer** for both: the vendored `asr_core.py` pieces (identical piece counts and
+  forced cuts on every clip, checked on import), texts joined with a space, scored by the same
   `bench_score.norm` and jiwer.
-- **Speed is CPU latency** and is not comparable with the A100 rows; it is listed to show the on-device cost.
 
 ## How the comparison was run
 
 - **One GPU, one model resident at a time**, a Colab A100-SXM4-40GB, on 13 Oct 2026 (UTC). The
   official-split runner refuses to start while another compute process holds the card. Every run records
   the card's state before and after. `run_all.sh` lists every decode behind the committed outputs.
+  Whistle bn-BD is the exception (an A100-SXM4-80GB on UVA Rivanna and a CPU, 21-22 Oct 2026); its runs
+  come from the private bn-whistle repository and were imported with the same checks.
 - **One audio path.** `asr_core.py` loads, downmixes and resamples to 16 kHz, cuts the audio at pauses into
   pieces of at most 25 s and stages them as PCM16; every backend reads those staged files. The nine models'
   runs record identical piece counts and forced cuts on all 11,322 clips.
@@ -272,7 +313,8 @@ for the cactus-needle engine. It is the only model here that did not run on the 
     16.2 %.
   - If your own measurement of these models disagrees with a published number by ten points or more, this
     is usually why.
-- **Greedy decoding, batch 1, no external LM** for every model. This is the interactive-latency workload,
+- **Greedy decoding, batch 1, no external LM** for every model (Whistle bn-BD on CPU: its engine's own
+  decoding). This is the interactive-latency workload,
   applied identically to every decoder type. Batching would help the autoregressive models far more; it is
   not measured here for anyone.
 - **The autoregressive decoders run through vLLM 0.31**, one piece per request, with the prompt vLLM's own
@@ -305,11 +347,13 @@ for the cactus-needle engine. It is the only model here that did not run on the 
   and BanSpeech are largely spontaneous. There is no telephony and no long-form recording.
 - Seven of the eleven sets are Indian Bengali. SUBAK.KO, BanSpeech and Ben-10 are Bangladeshi; Common
   Voice records no speaker region. Ben-10 is its validation split, as its test split is private.
-- Speed is per-clip latency at batch 1 on one GPU model, from one pass per model and set. Throughput
-  under load, batched decoding and CPU inference are not measured.
+- Speed is per-clip latency at batch 1 on one GPU model (Whistle bn-BD: an A100 80 GB card, the same
+  chip with more memory), from one pass per model and set. Throughput
+  under load, batched decoding and CPU inference (except Whistle bn-BD's CPU row) are not measured.
 - Cell intervals on the 1,000-utterance subsets run from about ±0.7 points (Kathbath) to ±1.5 points
   (Vaani, SPRING, IndicVoices). A few cells are wider where a handful of runaway outputs carry many errors
-  (Voxtral Mini's SPRING R2 and Ben-10, Canary's Ben-10, Qwen3-ASR's SUBAK.KO). Differences inside an
+  (Voxtral Mini's SPRING R2 and Ben-10, Canary's Ben-10, Qwen3-ASR's SUBAK.KO, greedy Whistle's SUBAK.KO,
+  BanSpeech, Common Voice and SPRING). Differences inside an
   interval are not differences.
 - Training provenance is only as good as the model cards; a **U** flag means it could not be established
   either way. The ‡ models are not public and their training data is undocumented.

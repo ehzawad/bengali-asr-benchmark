@@ -101,6 +101,16 @@
    ],
    "cer": 0.06273,
    "ours": false
+  },
+  "whistle_bn_bd_a100": {
+   "n": 920,
+   "wer": 0.20753,
+   "wer_ci95": [
+    0.19263,
+    0.22475
+   ],
+   "cer": 0.07789,
+   "ours": false
   }
  },
  "paired_vs_best": {
@@ -273,6 +283,20 @@
     -1.7242,
     -1.2711
    ]
+  },
+  "voxtral_mini_bn_vs_whistle_bn_bd_a100": {
+   "a": "voxtral_mini_bn",
+   "b": "whistle_bn_bd_a100",
+   "wer_delta_pp": -6.0244,
+   "wer_ci95_pp": [
+    -7.4102,
+    -4.9348
+   ],
+   "cer_delta_pp": -3.0097,
+   "cer_ci95_pp": [
+    -4.41,
+    -1.9391
+   ]
   }
  },
  "speed_default_runtime": {
@@ -334,6 +358,12 @@
    "ms_per_clip_mean": 577.93,
    "ms_per_clip_median": 530.45,
    "ms_per_clip_p95": 1012.17,
+   "n": 920
+  },
+  "whistle_bn_bd_a100": {
+   "ms_per_clip_mean": 139.28,
+   "ms_per_clip_median": 130.77,
+   "ms_per_clip_p95": 235.41,
    "n": 920
   }
  }
