@@ -1,0 +1,56 @@
+{
+ "label": "ben10_valid__whistle_bn_bd",
+ "kind": "whistle_cact_needle_engine",
+ "model": "ehzawad/whistle-bn-BD",
+ "adapter": null,
+ "revision": "7fdb8ebd7a1621436bfc28284645da24a3c633d2",
+ "dataset": "ben10_valid",
+ "status": "complete",
+ "n": 1000,
+ "n_manifest": 1000,
+ "failures": 0,
+ "audio_seconds": null,
+ "ms_per_clip_mean": 926.3,
+ "ms_per_clip_median": 849.0,
+ "ms_per_clip_p95": 1687.3,
+ "batch_size": 1,
+ "decoding": "needle engine default (Whistle.transcribe)",
+ "language": "bn",
+ "device": "CPU: AMD EPYC 9575F 64-Core Processor",
+ "threads_per_process": [
+  1
+ ],
+ "cact": "s026000.cact",
+ "cact_mb": 30.5,
+ "harness": "bn-whistle engine_eval.py: the benchmark's asr_core.py audio path, imported by bench_add_whistle.py (rows matched to the benchmark's, piece counts and forced cuts checked)",
+ "source_run_meta": {
+  "label": "ben10_valid__whistle_bn_bd",
+  "kind": "whistle_cact_needle_engine",
+  "cact": "/scratch/jgh6ds/bn_whistle/cact/select_lr1e3/s026000.cact",
+  "cact_mb": 30.5,
+  "checkpoints": [
+   "/scratch/jgh6ds/bn_whistle/runs/final_lr1e3/step026000.msgpack"
+  ],
+  "engine": null,
+  "decoding": "needle engine default (Whistle.transcribe)",
+  "language": "bn",
+  "dataset": "ben10_valid",
+  "status": "complete",
+  "n": 1000,
+  "failures": 0,
+  "empty_hyps": 0,
+  "non_bn_language": 0,
+  "ms_per_clip_mean": 926.3,
+  "ms_per_clip_p50": 849.0,
+  "ms_per_clip_p90": 1334.9,
+  "audio_s_mean": 17.25,
+  "rtf": 0.0537,
+  "threads_per_process": [
+   1
+  ],
+  "cpu": [
+   "AMD EPYC 9575F 64-Core Processor"
+  ],
+  "speed_note": "per-clip wall time of the engine calls for all pieces of a clip, one engine process per thread budget, several processes per node; sysconf CPU count limited by ncpu_shim"
+ }
+}

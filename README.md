@@ -1,7 +1,8 @@
 # Bengali ASR benchmark
 
-A controlled comparison of nine Bengali speech-to-text models on eleven evaluation sets. Four models are
-public checkpoints; five are the author's private bn-BD fine-tunes, marked ‡. The sets are:
+A controlled comparison of ten Bengali speech-to-text models on eleven evaluation sets. Four models are
+public checkpoints; six are the author's private bn-BD fine-tunes, marked ‡, one of them a
+55M-parameter on-device model (Whistle bn-BD) run on CPU. The sets are:
 
 - the FLEURS Bengali test split;
 - 1,000-utterance samples of six Indian sets: Vaani, SPRING-INX R1 and R2, Kathbath (known- and
@@ -41,10 +42,11 @@ The private bn-BD fine-tunes ‡ take five of the top six places by average rank
 | Canary 1B v2 bn-BD ‡ | 3.5 | FLEURS | 24.1% |
 | Voxtral Mini bn-BD ‡ | 4.2 | SUBAK.KO, BanSpeech | 23.8% |
 | FastConformer hybrid bn-BD ‡ | 4.8 | Ben-10 | 23.4% |
-| Conformer Large (hishab) | 4.8 | Kathbath ×2, Common Voice (trained on all three) | 26.5% |
-| Whisper Medium | 5.7 | — | 27.0% |
+| Conformer Large (hishab) | 5.1 | Kathbath ×2, Common Voice (trained on all three) | 26.5% |
+| Whisper Medium | 5.9 | — | 27.0% |
 | ehzawad FastConformer-CTC | 6.5 | — | 26.4% |
-| Wav2Vec2 | 8.9 | — | 34.0% |
+| Whistle bn-BD ‡ (55M, on-device) | 8.6 | — | 30.0% |
+| Wav2Vec2 | 9.8 | — | 34.0% |
 
 Ranks and averages weight the eleven sets equally; Ben-10's 60–80 % error rates dominate the average WER.
 Several leads are inside their intervals (see [Voxtral Mini against the best other model](#voxtral-mini-against-the-best-other-model)).
@@ -83,6 +85,7 @@ Ben-10's test split is private, so its public validation split stands in.
 | Conformer Large (hishab) | 13.64% [12.5–14.8] <sub>S</sub> | 27.07% [25.5–28.7] <sub>N</sub> | **7.35%** [6.7–8.0] <sub>S</sub> | 63.54% [62.3–64.8] <sub>N</sub> |
 | Whisper Medium | 21.36% [20.3–22.5] <sub>U</sub> | 23.59% [22.1–25.0] <sub>U</sub> | 10.12% [9.3–11.0] <sub>U</sub> | 74.79% [73.6–75.9] <sub>U</sub> |
 | Wav2Vec2 | 26.07% [25.0–27.1] <sub>U</sub> | 32.81% [31.1–34.5] <sub>U</sub> | 16.70% [15.7–17.7] <sub>U</sub> | 80.50% [79.5–81.5] <sub>U</sub> |
+| Whistle bn-BD ‡ (55M, on-device) | 18.79% [17.7–20.0] <sub>U</sub> | 31.54% [29.7–33.5] <sub>U</sub> | 17.10% [16.0–18.2] <sub>U</sub> | 79.87% [78.3–81.4] <sub>U</sub> |
 
 **What the table says.**
 
@@ -132,6 +135,7 @@ set); manifests with per-file SHA-256 are under [`multiset/`](multiset/), predic
 | Conformer Large (hishab) | 33.10% [31.8–34.5] <sub>N</sub> | 42.46% [41.2–43.8] <sub>N</sub> | 42.25% [40.9–43.6] <sub>N</sub> | **9.33%** [8.6–10.1] <sub>S</sub> | **8.79%** [8.1–9.5] <sub>S</sub> | 29.68% [28.3–31.2] <sub>N</sub> |
 | Whisper Medium | 26.35% [25.1–27.6] <sub>U</sub> | 40.04% [38.8–41.3] <sub>U</sub> | 39.71% [38.5–40.9] <sub>U</sub> | 9.70% [9.0–10.4] <sub>U</sub> | 9.91% [9.2–10.6] <sub>U</sub> | 24.96% [23.6–26.4] <sub>U</sub> |
 | Wav2Vec2 | 31.28% [29.9–32.7] <sub>U</sub> | 47.28% [46.1–48.6] <sub>U</sub> | 47.32% [46.1–48.5] <sub>U</sub> | 19.07% [18.1–20.0] <sub>U</sub> | 18.80% [17.9–19.7] <sub>U</sub> | 33.02% [31.6–34.5] <sub>U</sub> |
+| Whistle bn-BD ‡ (55M, on-device) | 27.43% [26.1–28.7] <sub>U</sub> | 43.38% [42.1–44.8] <sub>U</sub> | 42.19% [40.9–43.5] <sub>U</sub> | 15.61% [14.7–16.5] <sub>U</sub> | 15.82% [14.9–16.8] <sub>U</sub> | 19.62% [18.3–21.0] <sub>U</sub> |
 
 Provenance flags, from the model cards only: **N**, the card does not list this corpus; **S**, the model
 trained on another split of this corpus; **U**, the card does not say either way. The ‡ models' training
@@ -174,6 +178,7 @@ The familiar benchmark, for comparison with published numbers.
 | FastConformer hybrid bn-BD ‡ | `ehzawad/fastconformer-hybrid-rnnt-ctc-large-bn-BD` | NeMo, RNN-T | 15.38% [14.26–16.54] | 4.91% | 102 | 114.7M |
 | Whisper Medium | `SayedShaun/bengali-whisper-medium` | vLLM | 16.24% [15.07–17.46] | 5.09% | 304 | 763.9M |
 | **ehzawad FastConformer-CTC** | `ehzawad/stt_bn_fastconformer_ctc` | NeMo, CTC | 17.12% [15.95–18.34] | 5.12% | 88 | 115.6M |
+| Whistle bn-BD ‡ (55M, on-device) | `ehzawad/whistle-bn-BD` | needle engine, CPU | 19.17% [17.93–20.46] | 6.27% | 578 (CPU) | 57.2M |
 | Wav2Vec2 | `SayedShaun/bangla-wave2vec2-unigram` | PyTorch, CTC | 20.66% [19.47–21.90] | 6.02% | 56 | 315.5M |
 
 Greedy decoding, batch 1, no external language model. No clip failed and no hypothesis came back empty for
@@ -190,6 +195,7 @@ any model. `ms/clip` is the mean single-clip latency on the A100:
 | Canary 1B v2 bn-BD ‡ | 485 | 463 | 740 |
 | Qwen3-ASR 1.7B bn-BD ‡ | 656 | 621 | 1,028 |
 | Whisper turbo bn-BD ‡ | 700 | 666 | 1,108 |
+| Whistle bn-BD ‡ (55M, on-device), CPU | 578 | 530 | 1,012 |
 
 These numbers time the configured pipelines, not the models in isolation:
 
@@ -236,6 +242,19 @@ Voxtral Mini bn-BD minus the model with the lowest WER on each set, on the same 
 Against each of the eight other models on every set, see `paired` in
 `outputs_multiset/summary_multiset.json` and `paired_voxtral_mini_bn` in
 `outputs_fleurs/clean_test_table.json`.
+
+## On-device model: Whistle bn-BD
+
+`ehzawad/whistle-bn-BD` ‡ is a full fine-tune of Cactus Compute's 55M-parameter Whistle (57.2M with its added Bengali
+vocabulary) on the same training epoch as Voxtral Mini bn-BD, deployed as a 4-bit `.cact` archive (30.5 MB)
+for the cactus-needle engine. It is the only model here that did not run on the A100:
+
+- **Engine and decoding:** the `.cact` file in the official needle engine on CPU (CPU: AMD EPYC 9575F 64-Core Processor), with the engine's own
+  decoding (needle engine default (Whistle.transcribe)), language `bn`.
+- **Same audio path and scorer:** the vendored `asr_core.py` pieces (identical piece counts and forced cuts on
+  every clip, checked on import), one engine call per piece, texts joined with a space; scored by the same
+  `bench_score.norm` and jiwer.
+- **Speed is CPU latency** and is not comparable with the A100 rows; it is listed to show the on-device cost.
 
 ## How the comparison was run
 
@@ -393,6 +412,7 @@ Not included: model checkpoints, the built evaluation sets, and the virtualenvs.
   - `ehzawad/whisper-large-v3-turbo-bn-BD`, from `openai/whisper-large-v3-turbo` (OpenAI, MIT).
   - `ehzawad/fastconformer-hybrid-rnnt-ctc-large-bn-BD`, from `nvidia/stt_en_fastconformer_hybrid_large_pc`
     (NVIDIA, CC-BY-4.0).
+  - `ehzawad/whistle-bn-BD`, from `Cactus-Compute/whistle` (Cactus Compute, Apache-2.0).
 
 Model licences are those of their respective publishers. Check each model card before use.
 
