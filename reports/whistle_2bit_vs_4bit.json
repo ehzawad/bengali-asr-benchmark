@@ -1,0 +1,388 @@
+{
+ "title": "Whistle bn-BD: 2-bit vs 4-bit on the Cactus CPU engine",
+ "engine": "cactus-needle 3.2.1 (libneedle), CPU, engine default decoding, language bn",
+ "sizes": {
+  "w4": {
+   "bytes": 30500382,
+   "mb": 30.5,
+   "layout": "all 152 CQ tensors at 4-bit"
+  },
+  "w2": {
+   "bytes": 18073118,
+   "mb": 18.07,
+   "layout": "embedding and mhc_phi (7 CQ tensors) at 4-bit, the other 145 CQ tensors at 2-bit",
+   "cq_tensor_widths": {
+    "CQ4": 7,
+    "CQ2": 145
+   }
+  }
+ },
+ "test": {
+  "sets": [
+   {
+    "set": "fleurs_test",
+    "label": "FLEURS",
+    "n": 920,
+    "w4": {
+     "wer": 19.17,
+     "cer": 6.27
+    },
+    "w2": {
+     "wer": 19.53,
+     "cer": 6.76
+    },
+    "delta": {
+     "wer": 0.36,
+     "cer": 0.49
+    }
+   },
+   {
+    "set": "subakko_test",
+    "label": "SUBAK.KO",
+    "n": 1000,
+    "w4": {
+     "wer": 18.79,
+     "cer": 7.89
+    },
+    "w2": {
+     "wer": 19.55,
+     "cer": 8.08
+    },
+    "delta": {
+     "wer": 0.76,
+     "cer": 0.19
+    }
+   },
+   {
+    "set": "banspeech",
+    "label": "BanSpeech",
+    "n": 1000,
+    "w4": {
+     "wer": 31.54,
+     "cer": 14.02
+    },
+    "w2": {
+     "wer": 32.09,
+     "cer": 14.33
+    },
+    "delta": {
+     "wer": 0.55,
+     "cer": 0.31
+    }
+   },
+   {
+    "set": "cv17_bn_test",
+    "label": "Common Voice 17",
+    "n": 1000,
+    "w4": {
+     "wer": 17.1,
+     "cer": 5.45
+    },
+    "w2": {
+     "wer": 18.21,
+     "cer": 5.89
+    },
+    "delta": {
+     "wer": 1.11,
+     "cer": 0.44
+    }
+   },
+   {
+    "set": "ben10_valid",
+    "label": "Ben-10 dialects",
+    "n": 1000,
+    "w4": {
+     "wer": 79.87,
+     "cer": 53.81
+    },
+    "w2": {
+     "wer": 79.59,
+     "cer": 53.03
+    },
+    "delta": {
+     "wer": -0.28,
+     "cer": -0.78
+    }
+   },
+   {
+    "set": "vaani_test",
+    "label": "Vaani",
+    "n": 1000,
+    "w4": {
+     "wer": 27.43,
+     "cer": 9.54
+    },
+    "w2": {
+     "wer": 28.38,
+     "cer": 10.08
+    },
+    "delta": {
+     "wer": 0.95,
+     "cer": 0.54
+    }
+   },
+   {
+    "set": "spring_r1_test",
+    "label": "SPRING-INX R1",
+    "n": 1000,
+    "w4": {
+     "wer": 43.38,
+     "cer": 26.05
+    },
+    "w2": {
+     "wer": 44.06,
+     "cer": 26.81
+    },
+    "delta": {
+     "wer": 0.68,
+     "cer": 0.76
+    }
+   },
+   {
+    "set": "spring_r2_test",
+    "label": "SPRING-INX R2",
+    "n": 1000,
+    "w4": {
+     "wer": 42.19,
+     "cer": 24.41
+    },
+    "w2": {
+     "wer": 43.05,
+     "cer": 24.95
+    },
+    "delta": {
+     "wer": 0.86,
+     "cer": 0.54
+    }
+   },
+   {
+    "set": "kathbath_test_known",
+    "label": "Kathbath known",
+    "n": 1000,
+    "w4": {
+     "wer": 15.61,
+     "cer": 3.68
+    },
+    "w2": {
+     "wer": 16.28,
+     "cer": 3.91
+    },
+    "delta": {
+     "wer": 0.67,
+     "cer": 0.23
+    }
+   },
+   {
+    "set": "kathbath_test_unknown",
+    "label": "Kathbath unknown",
+    "n": 1000,
+    "w4": {
+     "wer": 15.82,
+     "cer": 3.59
+    },
+    "w2": {
+     "wer": 16.37,
+     "cer": 3.89
+    },
+    "delta": {
+     "wer": 0.55,
+     "cer": 0.3
+    }
+   },
+   {
+    "set": "indicvoices_conv",
+    "label": "IndicVoices",
+    "n": 1000,
+    "w4": {
+     "wer": 19.62,
+     "cer": 8.16
+    },
+    "w2": {
+     "wer": 20.63,
+     "cer": 9.08
+    },
+    "delta": {
+     "wer": 1.01,
+     "cer": 0.92
+    }
+   }
+  ],
+  "mean": {
+   "w4": {
+    "wer": 30.05,
+    "cer": 14.81
+   },
+   "w2": {
+    "wer": 30.7,
+    "cer": 15.16
+   },
+   "delta": {
+    "wer": 0.65,
+    "cer": 0.35
+   }
+  }
+ },
+ "validation": {
+  "set": "fleurs_validation",
+  "n": 402,
+  "w4": {
+   "wer": 18.86,
+   "cer": 5.97
+  },
+  "w2": {
+   "wer": 19.41,
+   "cer": 6.31
+  }
+ },
+ "speed": {
+  "clips_from": "FLEURS bn_in validation, the first of four shards (101 clips)",
+  "processes": 1,
+  "rows": [
+   {
+    "cpu": "zen5",
+    "cpu_label": "AMD Zen 5 server CPU (AVX-512)",
+    "threads": 1,
+    "bits": 4,
+    "clips": 101,
+    "ms_per_clip": 499.3,
+    "ttft_ms_per_clip": 218.5,
+    "decode_ms_per_clip": 280.8,
+    "decode_ms_per_token": 5.19,
+    "est_out_tokens_per_clip": 54.1,
+    "rtf": 0.0371
+   },
+   {
+    "cpu": "zen5",
+    "cpu_label": "AMD Zen 5 server CPU (AVX-512)",
+    "threads": 1,
+    "bits": 2,
+    "clips": 101,
+    "ms_per_clip": 2821.3,
+    "ttft_ms_per_clip": 2564.7,
+    "decode_ms_per_clip": 256.6,
+    "decode_ms_per_token": 4.73,
+    "est_out_tokens_per_clip": 54.2,
+    "rtf": 0.2096
+   },
+   {
+    "cpu": "zen5",
+    "cpu_label": "AMD Zen 5 server CPU (AVX-512)",
+    "threads": 4,
+    "bits": 4,
+    "clips": 101,
+    "ms_per_clip": 139.4,
+    "ttft_ms_per_clip": 49.5,
+    "decode_ms_per_clip": 89.8,
+    "decode_ms_per_token": 1.65,
+    "est_out_tokens_per_clip": 54.3,
+    "rtf": 0.0104
+   },
+   {
+    "cpu": "zen5",
+    "cpu_label": "AMD Zen 5 server CPU (AVX-512)",
+    "threads": 4,
+    "bits": 2,
+    "clips": 101,
+    "ms_per_clip": 729.3,
+    "ttft_ms_per_clip": 646.2,
+    "decode_ms_per_clip": 83.1,
+    "decode_ms_per_token": 1.53,
+    "est_out_tokens_per_clip": 54.4,
+    "rtf": 0.0542
+   },
+   {
+    "cpu": "cascadelake",
+    "cpu_label": "Intel Cascade Lake server CPU (AVX-512, no VBMI)",
+    "threads": 1,
+    "bits": 4,
+    "clips": 101,
+    "ms_per_clip": 1673.9,
+    "ttft_ms_per_clip": 617.0,
+    "decode_ms_per_clip": 1056.9,
+    "decode_ms_per_token": 19.52,
+    "est_out_tokens_per_clip": 54.1,
+    "rtf": 0.1244
+   },
+   {
+    "cpu": "cascadelake",
+    "cpu_label": "Intel Cascade Lake server CPU (AVX-512, no VBMI)",
+    "threads": 1,
+    "bits": 2,
+    "clips": 101,
+    "ms_per_clip": 7113.0,
+    "ttft_ms_per_clip": 6051.9,
+    "decode_ms_per_clip": 1061.1,
+    "decode_ms_per_token": 19.6,
+    "est_out_tokens_per_clip": 54.1,
+    "rtf": 0.5284
+   },
+   {
+    "cpu": "cascadelake",
+    "cpu_label": "Intel Cascade Lake server CPU (AVX-512, no VBMI)",
+    "threads": 4,
+    "bits": 4,
+    "clips": 101,
+    "ms_per_clip": 762.7,
+    "ttft_ms_per_clip": 201.9,
+    "decode_ms_per_clip": 560.8,
+    "decode_ms_per_token": 10.37,
+    "est_out_tokens_per_clip": 54.1,
+    "rtf": 0.0567
+   },
+   {
+    "cpu": "cascadelake",
+    "cpu_label": "Intel Cascade Lake server CPU (AVX-512, no VBMI)",
+    "threads": 4,
+    "bits": 2,
+    "clips": 101,
+    "ms_per_clip": 2164.3,
+    "ttft_ms_per_clip": 1635.8,
+    "decode_ms_per_clip": 528.5,
+    "decode_ms_per_token": 9.76,
+    "est_out_tokens_per_clip": 54.2,
+    "rtf": 0.1608
+   }
+  ]
+ },
+ "mixed_layout_probe": {
+  "note": "probe only, not fine-tuned; AMD Zen 5, 1 thread, 41 FLEURS validation clips, mean of 2 passes",
+  "rows": [
+   {
+    "layout": "all 4-bit (published)",
+    "bytes": 30500382,
+    "mb": 30.5,
+    "clips": 41,
+    "reps": 2,
+    "ms_per_clip": 485.5,
+    "ttft_ms_per_clip": 201.8
+   },
+   {
+    "layout": "all 2-bit (direct export, not fine-tuned)",
+    "bytes": 18073118,
+    "mb": 18.1,
+    "clips": 41,
+    "reps": 2,
+    "ms_per_clip": 2694.3,
+    "ttft_ms_per_clip": 2370.7
+   },
+   {
+    "layout": "encoder 4-bit, decoder 2-bit",
+    "bytes": 21489182,
+    "mb": 21.5,
+    "clips": 41,
+    "reps": 2,
+    "ms_per_clip": 934.0,
+    "ttft_ms_per_clip": 658.4
+   },
+   {
+    "layout": "encoder 2-bit, decoder 4-bit",
+    "bytes": 27084318,
+    "mb": 27.1,
+    "clips": 41,
+    "reps": 2,
+    "ms_per_clip": 2243.9,
+    "ttft_ms_per_clip": 1919.4
+   }
+  ]
+ }
+}
