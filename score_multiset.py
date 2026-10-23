@@ -24,7 +24,8 @@ OUT = A / "outputs_multiset"
 SETS = ["vaani_test", "spring_r1_test", "spring_r2_test", "kathbath_test_known", "kathbath_test_unknown", "indicvoices_conv",
         "subakko_test", "banspeech", "cv17_bn_test", "ben10_valid"]   # the last four: build_multiset_bd.py
 PUBLIC = ["fastconformer_ctc", "hishab_conformer_large", "whisper_medium", "wav2vec2"]
-PRIVATE = ["voxtral_mini_bn", "fastconformer_hybrid_bn", "canary_1b_v2_bn", "qwen3_asr_bn", "whisper_turbo_bn", "whistle_bn_bd", "whistle_bn_bd_a100"]
+PRIVATE = ["voxtral_mini_bn", "fastconformer_hybrid_bn", "canary_1b_v2_bn", "qwen3_asr_bn", "whisper_turbo_bn", "whistle_bn_bd", "whistle_bn_bd_a100",
+           "granite_speech_bn"]
 MODELS = PUBLIC + PRIVATE      # the four public checkpoints and five private ehzawad bn-BD fine-tunes
 NEW = "voxtral_mini_bn"
 PUBLISHED = [m for m in MODELS if m != NEW]   # Voxtral Mini is paired with every other model

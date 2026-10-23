@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-# Every model (four public, five private ehzawad bn-BD fine-tunes) on FLEURS (1,322 clips) and the ten
+# Every model (four public, six private ehzawad bn-BD fine-tunes) on FLEURS (1,322 clips) and the ten
 # 1,000-utterance subsets: greedy,
 # batch 1, one model resident at a time, the harness unchanged (bench_run.py for FLEURS,
 # bench_run_set.py for the subsets), checkpoints at the revisions in
 # outputs_fleurs/checkpoint_revisions.json. This produced every run in outputs_fleurs/ and
-# outputs_multiset/, on one Colab A100-SXM4-40GB. A completed run (run_meta.json present) is
+# outputs_multiset/ (except the Whistle runs, imported), on one Colab A100-SXM4-40GB; granite_speech_bn ran later
+# on another A100-SXM4-40GB. A completed run (run_meta.json present) is
 # skipped, never overwritten.
 #
 #   BENCH_GPU=<GPU UUID> BENCH_PY=<python with the benchmark's requirements> \
@@ -50,7 +51,7 @@ mkdir -p outputs_fleurs outputs_multiset
 PY=${BENCH_PY:-python}
 snapshot() { ${BENCH_PY:-python} -c "from huggingface_hub import snapshot_download as s; print(s('$1', revision='$(rev "$1")'))"; }
 MODELS=${MODELS:-"fastconformer_ctc hishab_conformer_large wav2vec2 whisper_medium voxtral_mini_bn
-                   fastconformer_hybrid_bn canary_1b_v2_bn whisper_turbo_bn qwen3_asr_bn"}
+                   fastconformer_hybrid_bn canary_1b_v2_bn whisper_turbo_bn qwen3_asr_bn granite_speech_bn"}
 say "models: $(echo $MODELS); FLEURS and the subsets, one model at a time"
 for label in $MODELS; do
   py=$PY
@@ -79,6 +80,10 @@ for label in $MODELS; do
       py=${BENCH_PY_VLLM:?set BENCH_PY_VLLM for qwen3_asr_bn}
       export PATH="$(dirname "$py"):$PATH"
       args=(qwen3_asr_vllm "$(snapshot ehzawad/Qwen3-ASR-1.7B-bn-BD)" --revision "$(rev ehzawad/Qwen3-ASR-1.7B-bn-BD)") ;;
+    granite_speech_bn)      # added 23 Oct 2026, decoded on an A100-SXM4-40GB with the same harness
+      py=${BENCH_PY_VLLM:?set BENCH_PY_VLLM for granite_speech_bn}
+      export PATH="$(dirname "$py"):$PATH"
+      args=(granite_speech_vllm "$(snapshot ehzawad/granite-speech-5.0-2b-bn-BD)" --revision "$(rev ehzawad/granite-speech-5.0-2b-bn-BD)") ;;
     *) say "unknown model $label"; continue ;;
   esac
   fleurs "$py" $label "${args[@]}"

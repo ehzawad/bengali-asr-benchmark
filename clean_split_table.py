@@ -17,7 +17,8 @@ from bench_score import norm
 
 OUT = os.environ.get("BENCH_OUT", "outputs_fleurs")
 PUBLIC = ["fastconformer_ctc", "hishab_conformer_large", "whisper_medium", "wav2vec2"]
-PRIVATE = ["voxtral_mini_bn", "fastconformer_hybrid_bn", "canary_1b_v2_bn", "qwen3_asr_bn", "whisper_turbo_bn", "whistle_bn_bd", "whistle_bn_bd_a100"]
+PRIVATE = ["voxtral_mini_bn", "fastconformer_hybrid_bn", "canary_1b_v2_bn", "qwen3_asr_bn", "whisper_turbo_bn", "whistle_bn_bd", "whistle_bn_bd_a100",
+           "granite_speech_bn"]
 MODELS = [m for m in PUBLIC + PRIVATE if Path(f"{OUT}/{m}/predictions.json").exists()]
 OURS = {"fastconformer_ctc"}   # trained on a corpus that contains fleurs_train
 

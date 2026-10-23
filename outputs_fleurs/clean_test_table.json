@@ -111,6 +111,16 @@
    ],
    "cer": 0.07789,
    "ours": false
+  },
+  "granite_speech_bn": {
+   "n": 920,
+   "wer": 0.16159,
+   "wer_ci95": [
+    0.15015,
+    0.17343
+   ],
+   "cer": 0.05223,
+   "ours": false
   }
  },
  "paired_vs_best": {
@@ -297,6 +307,20 @@
     -4.41,
     -1.9391
    ]
+  },
+  "voxtral_mini_bn_vs_granite_speech_bn": {
+   "a": "voxtral_mini_bn",
+   "b": "granite_speech_bn",
+   "wer_delta_pp": -1.4301,
+   "wer_ci95_pp": [
+    -2.0572,
+    -0.7999
+   ],
+   "cer_delta_pp": -0.4436,
+   "cer_ci95_pp": [
+    -0.6492,
+    -0.2496
+   ]
   }
  },
  "speed_default_runtime": {
@@ -364,6 +388,12 @@
    "ms_per_clip_mean": 139.28,
    "ms_per_clip_median": 130.77,
    "ms_per_clip_p95": 235.41,
+   "n": 920
+  },
+  "granite_speech_bn": {
+   "ms_per_clip_mean": 960.77,
+   "ms_per_clip_median": 910.86,
+   "ms_per_clip_p95": 1484.5,
    "n": 920
   }
  }

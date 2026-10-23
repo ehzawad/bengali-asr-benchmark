@@ -207,6 +207,38 @@ class VoxtralVLLMBackend:
         return out
 
 
+class GraniteSpeechVLLMBackend:
+    """Granite Speech (granite_speech architecture) under vLLM, one request per staged piece. The prompt is the
+    checkpoint's chat template with an instruction to transcribe Bengali (the instruction the bn-BD fine-tune
+    expects, so not the English-only prompt of vLLM's transcription endpoint); greedy, new tokens capped at
+    TOKENS_PER_SECOND per second of the piece + EXTRA_TOKENS. Runs in an interpreter with vllm[audio].
+    finish_reasons holds the last clip's per-piece stop reasons ("length" = hit the cap)."""
+
+    PROMPT = ("The speech is in Bengali. Transcribe it exactly; do not translate. "
+              "can you transcribe the speech into a written format?")
+    TOKENS_PER_SECOND, EXTRA_TOKENS = 25, 16
+
+    def __init__(self, model, **kw):
+        from vllm import LLM, SamplingParams
+        self.llm = LLM(model=model, gpu_memory_utilization=0.85, max_model_len=2048, max_num_seqs=8,
+                       limit_mm_per_prompt={"audio": 1}, seed=0)
+        self.prompt = self.llm.get_tokenizer().apply_chat_template(
+            [{"role": "user", "content": "<|audio|>" + self.PROMPT}], tokenize=False, add_generation_prompt=True)
+        self.sp = SamplingParams
+        self.finish_reasons = []
+
+    def transcribe(self, paths, batch_size=1, verbose=False):
+        out, self.finish_reasons = [], []
+        for p in paths:
+            wav = _read_staged(p)
+            cap = int(len(wav) / 16000 * self.TOKENS_PER_SECOND) + self.EXTRA_TOKENS
+            o = self.llm.generate([{"prompt": self.prompt, "multi_modal_data": {"audio": (wav, 16000)}}],
+                                  self.sp(temperature=0.0, max_tokens=cap), use_tqdm=False)[0].outputs[0]
+            self.finish_reasons.append(o.finish_reason)
+            out.append(SimpleNamespace(text=o.text.strip()))
+        return out
+
+
 def _read_staged(path):
     """Read a chunk staged by asr_core.decode. Asserts the staged format so a
     future change cannot silently route a model through different audio."""
@@ -219,7 +251,7 @@ def _read_staged(path):
 
 KINDS = {"nemo": NeMoBackend, "whisper": WhisperBackend, "wav2vec2": Wav2Vec2Backend,
          "voxtral_vllm": VoxtralVLLMBackend, "whisper_vllm": WhisperVLLMBackend, "canary": CanaryBackend,
-         "qwen3_asr_vllm": Qwen3ASRVLLMBackend}
+         "qwen3_asr_vllm": Qwen3ASRVLLMBackend, "granite_speech_vllm": GraniteSpeechVLLMBackend}
 
 
 def gpu_state():

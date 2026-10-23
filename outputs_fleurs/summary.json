@@ -29,6 +29,7 @@
   "ehzawad/whisper-large-v3-turbo-bn-BD": "7cf08bb96ac590e2cb5b7425d52b1021fbf65589",
   "ehzawad/Qwen3-ASR-1.7B-bn-BD": "9a6458ec4842764cfeb8c0457f6cab0be7606e1f",
   "ehzawad/whistle-bn-BD": "7fdb8ebd7a1621436bfc28284645da24a3c633d2",
+  "ehzawad/granite-speech-5.0-2b-bn-BD": "435cff6a47e52b446497c4d10f1a5bd2f874b17e",
   "_note": "fastconformer_ctc decoded from stt_bn_fastconformer_ctc_v2.nemo at the revision above (LFS sha256 bea300ce4f1f1df1fa4707562ddaa7c64db6f01121ef3d64a6333635f3626572)"
  },
  "models": {
@@ -183,6 +184,57 @@
    "n_test": 920,
    "wer_validation": 0.15392,
    "cer_validation": 0.04686,
+   "n_validation": 402
+  },
+  "granite_speech_bn": {
+   "meta": {
+    "label": "granite_speech_bn",
+    "kind": "granite_speech_vllm",
+    "model": "ehzawad/granite-speech-5.0-2b-bn-BD",
+    "adapter": null,
+    "revision": "435cff6a47e52b446497c4d10f1a5bd2f874b17e",
+    "n": 1322,
+    "failures": 0,
+    "audio_seconds": 17574.4,
+    "ms_per_clip_mean": 946.84,
+    "ms_per_clip_median": 898.27,
+    "ms_per_clip_p95": 1483.56,
+    "inference_wall_s": 1251.7,
+    "loop_wall_s": 1251.8,
+    "audio_s_per_wall_s": 14.0,
+    "rtf": 0.07122,
+    "batch_size": 1,
+    "decoding": "greedy, no external LM or rescoring",
+    "gpu_before": "NVIDIA A100-SXM4-40GB, 34123 MiB, 19 %, 1410 MHz, 50",
+    "gpu_after": "NVIDIA A100-SXM4-40GB, 34187 MiB, 100 %, 1410 MHz, 60",
+    "torch": "2.13.0+cu130",
+    "python": "3.12.15",
+    "manifest_sha256": "27e5649cd8577a85b857e3b688e667742c41df99a9f0226732f2cab5ce8bd462"
+   },
+   "n": 1322,
+   "wer": 0.16046,
+   "cer": 0.05153,
+   "wer_ci_utterance": [
+    0.1536,
+    0.16734
+   ],
+   "wer_ci_sentence_clustered": [
+    0.15075,
+    0.17065
+   ],
+   "word_counts": {
+    "errors": 4056,
+    "ref_words": 25278
+   },
+   "failures": 0,
+   "empty_hyps": 0,
+   "multi_piece_clips": 31,
+   "forced_cuts": 10,
+   "wer_test": 0.16159,
+   "cer_test": 0.05223,
+   "n_test": 920,
+   "wer_validation": 0.15778,
+   "cer_validation": 0.04989,
    "n_validation": 402
   },
   "hishab_conformer_large": {
@@ -602,7 +654,7 @@
     "source_run_meta": {
      "label": "fleurs_test__whistle_bn_bd_a100",
      "kind": "whistle_jax_gpu_w4a8_greedy",
-     "checkpoint": "ehzawad/whistle-bn-BD",
+     "checkpoint": "ehzawad/whistle-bn-BD at revision 7fdb8eb (the published weights)",
      "dataset": "fleurs_test",
      "status": "complete",
      "n": 920,
