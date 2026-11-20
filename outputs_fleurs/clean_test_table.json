@@ -121,6 +121,16 @@
    ],
    "cer": 0.05223,
    "ours": false
+  },
+  "rumble_bn": {
+   "n": 920,
+   "wer": 0.1563,
+   "wer_ci95": [
+    0.14501,
+    0.16817
+   ],
+   "cer": 0.05032,
+   "ours": false
   }
  },
  "paired_vs_best": {
@@ -321,6 +331,20 @@
     -0.6492,
     -0.2496
    ]
+  },
+  "voxtral_mini_bn_vs_rumble_bn": {
+   "a": "voxtral_mini_bn",
+   "b": "rumble_bn",
+   "wer_delta_pp": -0.9009,
+   "wer_ci95_pp": [
+    -1.4325,
+    -0.3651
+   ],
+   "cer_delta_pp": -0.2531,
+   "cer_ci95_pp": [
+    -0.4635,
+    -0.0644
+   ]
   }
  },
  "speed_default_runtime": {
@@ -394,6 +418,12 @@
    "ms_per_clip_mean": 960.77,
    "ms_per_clip_median": 910.86,
    "ms_per_clip_p95": 1484.5,
+   "n": 920
+  },
+  "rumble_bn": {
+   "ms_per_clip_mean": 211.19,
+   "ms_per_clip_median": 199.18,
+   "ms_per_clip_p95": 330.16,
    "n": 920
   }
  }

@@ -4398,6 +4398,344 @@
      "errors": 25265
     }
    }
+  },
+  "rumble_bn": {
+   "vaani_test": {
+    "status": "complete",
+    "ms_per_clip_mean": 105.6,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.22793,
+    "cer": 0.06796,
+    "wer_ci_utterance": [
+     0.21585,
+     0.23951
+    ],
+    "wer_ci_reference_clustered": [
+     0.21611,
+     0.23987
+    ],
+    "ref_words": 10082,
+    "errors": 2298,
+    "clips_at_token_cap": 0
+   },
+   "spring_r1_test": {
+    "status": "complete",
+    "ms_per_clip_mean": 176.08,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.37451,
+    "cer": 0.2211,
+    "wer_ci_utterance": [
+     0.3623,
+     0.38727
+    ],
+    "wer_ci_reference_clustered": [
+     0.3623,
+     0.38727
+    ],
+    "ref_words": 19706,
+    "errors": 7380,
+    "clips_at_token_cap": 0,
+    "no_latin_ref": {
+     "n": 499,
+     "wer": 0.33559,
+     "cer": 0.15092,
+     "wer_ci_utterance": [
+      0.31444,
+      0.35766
+     ],
+     "wer_ci_reference_clustered": [
+      0.31444,
+      0.35766
+     ],
+     "ref_words": 7974,
+     "errors": 2676
+    },
+    "latin_ref": {
+     "n": 501,
+     "wer": 0.40095,
+     "cer": 0.26974,
+     "wer_ci_utterance": [
+      0.38679,
+      0.41552
+     ],
+     "wer_ci_reference_clustered": [
+      0.38679,
+      0.41552
+     ],
+     "ref_words": 11732,
+     "errors": 4704
+    },
+    "hyps_with_latin": 0
+   },
+   "spring_r2_test": {
+    "status": "complete",
+    "ms_per_clip_mean": 183.73,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.37046,
+    "cer": 0.20991,
+    "wer_ci_utterance": [
+     0.35766,
+     0.38387
+    ],
+    "wer_ci_reference_clustered": [
+     0.35766,
+     0.38387
+    ],
+    "ref_words": 20353,
+    "errors": 7540,
+    "clips_at_token_cap": 0,
+    "no_latin_ref": {
+     "n": 542,
+     "wer": 0.34244,
+     "cer": 0.15164,
+     "wer_ci_utterance": [
+      0.32155,
+      0.36391
+     ],
+     "wer_ci_reference_clustered": [
+      0.32155,
+      0.36391
+     ],
+     "ref_words": 9225,
+     "errors": 3159
+    },
+    "latin_ref": {
+     "n": 458,
+     "wer": 0.39369,
+     "cer": 0.25896,
+     "wer_ci_utterance": [
+      0.37762,
+      0.41006
+     ],
+     "wer_ci_reference_clustered": [
+      0.37762,
+      0.41006
+     ],
+     "ref_words": 11128,
+     "errors": 4381
+    },
+    "hyps_with_latin": 0
+   },
+   "kathbath_test_known": {
+    "status": "complete",
+    "ms_per_clip_mean": 123.04,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.11669,
+    "cer": 0.02323,
+    "wer_ci_utterance": [
+     0.10894,
+     0.1246
+    ],
+    "wer_ci_reference_clustered": [
+     0.10894,
+     0.1246
+    ],
+    "ref_words": 10789,
+    "errors": 1259,
+    "clips_at_token_cap": 0
+   },
+   "kathbath_test_unknown": {
+    "status": "complete",
+    "ms_per_clip_mean": 125.53,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.11326,
+    "cer": 0.02196,
+    "wer_ci_utterance": [
+     0.10569,
+     0.12115
+    ],
+    "wer_ci_reference_clustered": [
+     0.10569,
+     0.12115
+    ],
+    "ref_words": 10869,
+    "errors": 1231,
+    "clips_at_token_cap": 0
+   },
+   "indicvoices_conv": {
+    "status": "complete",
+    "ms_per_clip_mean": 125.75,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.13245,
+    "cer": 0.04704,
+    "wer_ci_utterance": [
+     0.12369,
+     0.14155
+    ],
+    "wer_ci_reference_clustered": [
+     0.12365,
+     0.14167
+    ],
+    "ref_words": 12918,
+    "errors": 1711,
+    "clips_at_token_cap": 0
+   },
+   "subakko_test": {
+    "status": "complete",
+    "ms_per_clip_mean": 224.45,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 2,
+    "n": 1000,
+    "wer": 0.13997,
+    "cer": 0.06294,
+    "wer_ci_utterance": [
+     0.12899,
+     0.15202
+    ],
+    "wer_ci_reference_clustered": [
+     0.12905,
+     0.15191
+    ],
+    "ref_words": 21576,
+    "errors": 3020,
+    "clips_at_token_cap": 1,
+    "without_capped_clips": {
+     "n": 999,
+     "wer": 0.13786,
+     "cer": 0.06033,
+     "wer_ci_utterance": [
+      0.12744,
+      0.14861
+     ],
+     "wer_ci_reference_clustered": [
+      0.12752,
+      0.14873
+     ],
+     "ref_words": 21558,
+     "errors": 2972
+    },
+    "digit_refs": 288,
+    "hyps_with_digits": 0,
+    "no_digit_ref": {
+     "n": 712,
+     "wer": 0.07829,
+     "cer": 0.02145,
+     "wer_ci_utterance": [
+      0.07108,
+      0.08556
+     ],
+     "wer_ci_reference_clustered": [
+      0.07097,
+      0.08593
+     ],
+     "ref_words": 15469,
+     "errors": 1211
+    }
+   },
+   "banspeech": {
+    "status": "complete",
+    "ms_per_clip_mean": 84.14,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.21755,
+    "cer": 0.08161,
+    "wer_ci_utterance": [
+     0.20313,
+     0.23266
+    ],
+    "wer_ci_reference_clustered": [
+     0.20322,
+     0.23224
+    ],
+    "ref_words": 7805,
+    "errors": 1698,
+    "clips_at_token_cap": 0,
+    "digit_refs": 72,
+    "hyps_with_digits": 0,
+    "no_digit_ref": {
+     "n": 928,
+     "wer": 0.20107,
+     "cer": 0.06678,
+     "wer_ci_utterance": [
+      0.18596,
+      0.21631
+     ],
+     "wer_ci_reference_clustered": [
+      0.18658,
+      0.2162
+     ],
+     "ref_words": 6923,
+     "errors": 1392
+    }
+   },
+   "cv17_bn_test": {
+    "status": "complete",
+    "ms_per_clip_mean": 107.61,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.11179,
+    "cer": 0.02921,
+    "wer_ci_utterance": [
+     0.10311,
+     0.12064
+    ],
+    "wer_ci_reference_clustered": [
+     0.10311,
+     0.12064
+    ],
+    "ref_words": 9187,
+    "errors": 1027,
+    "clips_at_token_cap": 0
+   },
+   "ben10_valid": {
+    "status": "complete",
+    "ms_per_clip_mean": 347.94,
+    "failures": 0,
+    "missing_in_store": 0,
+    "empty_hyps": 0,
+    "n": 1000,
+    "wer": 0.65958,
+    "cer": 0.34802,
+    "wer_ci_utterance": [
+     0.63991,
+     0.67942
+    ],
+    "wer_ci_reference_clustered": [
+     0.63991,
+     0.67942
+    ],
+    "ref_words": 40562,
+    "errors": 26754,
+    "clips_at_token_cap": 15,
+    "without_capped_clips": {
+     "n": 985,
+     "wer": 0.64128,
+     "cer": 0.33335,
+     "wer_ci_utterance": [
+      0.62431,
+      0.65841
+     ],
+     "wer_ci_reference_clustered": [
+      0.62431,
+      0.65841
+     ],
+     "ref_words": 39669,
+     "errors": 25439
+    }
+   }
   }
  },
  "paired": {
@@ -4533,6 +4871,18 @@
      -0.8588,
      -0.291
     ]
+   },
+   "voxtral_mini_bn_vs_rumble_bn": {
+    "wer_delta_pp": -0.7141,
+    "wer_ci95_pp": [
+     -1.3367,
+     -0.1097
+    ],
+    "cer_delta_pp": -0.3214,
+    "cer_ci95_pp": [
+     -0.5712,
+     -0.0676
+    ]
    }
   },
   "spring_r1_test": {
@@ -4666,6 +5016,18 @@
     "cer_ci95_pp": [
      -1.8528,
      -1.0629
+    ]
+   },
+   "voxtral_mini_bn_vs_rumble_bn": {
+    "wer_delta_pp": -0.5785,
+    "wer_ci95_pp": [
+     -1.1239,
+     -0.0302
+    ],
+    "cer_delta_pp": -0.3158,
+    "cer_ci95_pp": [
+     -0.6248,
+     0.0084
     ]
    }
   },
@@ -4801,6 +5163,18 @@
      -0.5707,
      5.7514
     ]
+   },
+   "voxtral_mini_bn_vs_rumble_bn": {
+    "wer_delta_pp": 2.9627,
+    "wer_ci95_pp": [
+     -0.1933,
+     7.1058
+    ],
+    "cer_delta_pp": 2.6209,
+    "cer_ci95_pp": [
+     -0.2116,
+     6.2989
+    ]
    }
   },
   "kathbath_test_known": {
@@ -4934,6 +5308,18 @@
     "cer_ci95_pp": [
      -0.3181,
      -0.0114
+    ]
+   },
+   "voxtral_mini_bn_vs_rumble_bn": {
+    "wer_delta_pp": -0.8991,
+    "wer_ci95_pp": [
+     -1.4137,
+     -0.3879
+    ],
+    "cer_delta_pp": -0.0751,
+    "cer_ci95_pp": [
+     -0.2084,
+     0.065
     ]
    }
   },
@@ -5069,6 +5455,18 @@
      -0.3221,
      -0.0377
     ]
+   },
+   "voxtral_mini_bn_vs_rumble_bn": {
+    "wer_delta_pp": -0.506,
+    "wer_ci95_pp": [
+     -1.0112,
+     0.0183
+    ],
+    "cer_delta_pp": -0.1101,
+    "cer_ci95_pp": [
+     -0.2359,
+     0.0182
+    ]
    }
   },
   "indicvoices_conv": {
@@ -5202,6 +5600,18 @@
     "cer_ci95_pp": [
      -0.7738,
      -0.1728
+    ]
+   },
+   "voxtral_mini_bn_vs_rumble_bn": {
+    "wer_delta_pp": 0.1548,
+    "wer_ci95_pp": [
+     -0.4116,
+     0.7335
+    ],
+    "cer_delta_pp": -0.0451,
+    "cer_ci95_pp": [
+     -0.3262,
+     0.2407
     ]
    }
   },
@@ -5337,6 +5747,18 @@
      -1.1412,
      -0.2575
     ]
+   },
+   "voxtral_mini_bn_vs_rumble_bn": {
+    "wer_delta_pp": -2.3406,
+    "wer_ci95_pp": [
+     -2.9311,
+     -1.8425
+    ],
+    "cer_delta_pp": -0.7773,
+    "cer_ci95_pp": [
+     -1.3992,
+     -0.3979
+    ]
    }
   },
   "banspeech": {
@@ -5470,6 +5892,18 @@
     "cer_ci95_pp": [
      -2.2535,
      -1.311
+    ]
+   },
+   "voxtral_mini_bn_vs_rumble_bn": {
+    "wer_delta_pp": -1.0378,
+    "wer_ci95_pp": [
+     -1.9294,
+     -0.1766
+    ],
+    "cer_delta_pp": -0.4686,
+    "cer_ci95_pp": [
+     -0.81,
+     -0.1327
     ]
    }
   },
@@ -5605,6 +6039,18 @@
      -0.336,
      0.1687
     ]
+   },
+   "voxtral_mini_bn_vs_rumble_bn": {
+    "wer_delta_pp": -0.8599,
+    "wer_ci95_pp": [
+     -1.4859,
+     -0.2234
+    ],
+    "cer_delta_pp": -0.2501,
+    "cer_ci95_pp": [
+     -0.5066,
+     0.0153
+    ]
    }
   },
   "ben10_valid": {
@@ -5738,6 +6184,18 @@
     "cer_ci95_pp": [
      -3.2823,
      3.0125
+    ]
+   },
+   "voxtral_mini_bn_vs_rumble_bn": {
+    "wer_delta_pp": 4.0161,
+    "wer_ci95_pp": [
+     -0.1118,
+     8.8121
+    ],
+    "cer_delta_pp": 3.6068,
+    "cer_ci95_pp": [
+     0.6685,
+     7.0032
     ]
    }
   }
@@ -5875,6 +6333,18 @@
      -1.2451,
      -0.1692
     ]
+   },
+   "voxtral_mini_bn_vs_rumble_bn": {
+    "wer_delta_pp": -2.4048,
+    "wer_ci95_pp": [
+     -2.874,
+     -1.948
+    ],
+    "cer_delta_pp": -0.6306,
+    "cer_ci95_pp": [
+     -0.8455,
+     -0.445
+    ]
    }
   },
   "banspeech": {
@@ -6008,6 +6478,18 @@
     "cer_ci95_pp": [
      -2.4146,
      -1.3667
+    ]
+   },
+   "voxtral_mini_bn_vs_rumble_bn": {
+    "wer_delta_pp": -0.8667,
+    "wer_ci95_pp": [
+     -1.8265,
+     0.0828
+    ],
+    "cer_delta_pp": -0.4074,
+    "cer_ci95_pp": [
+     -0.7577,
+     -0.0491
     ]
    }
   }

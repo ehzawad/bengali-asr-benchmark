@@ -221,19 +221,19 @@
    "macro": {
     "wer": 0.23634101951042782,
     "cer": 0.10592799151725063,
-    "average_rank": 6.181818181818182,
+    "average_rank": 6.909090909090909,
     "ranks": {
-     "fleurs_test": 7,
+     "fleurs_test": 8,
      "vaani_test": 4,
-     "spring_r1_test": 6,
-     "spring_r2_test": 5,
-     "kathbath_test_known": 8,
-     "kathbath_test_unknown": 8,
-     "indicvoices_conv": 7,
+     "spring_r1_test": 7,
+     "spring_r2_test": 6,
+     "kathbath_test_known": 9,
+     "kathbath_test_unknown": 9,
+     "indicvoices_conv": 8,
      "subakko_test": 3,
-     "banspeech": 7,
+     "banspeech": 8,
      "cv17_bn_test": 8,
-     "ben10_valid": 5
+     "ben10_valid": 6
     },
     "best_on": []
    }
@@ -374,7 +374,7 @@
    "macro": {
     "wer": 0.21866470854492795,
     "cer": 0.09891956369212627,
-    "average_rank": 3.272727272727273,
+    "average_rank": 3.3636363636363638,
     "ranks": {
      "fleurs_test": 5,
      "vaani_test": 1,
@@ -383,7 +383,7 @@
      "kathbath_test_known": 4,
      "kathbath_test_unknown": 4,
      "indicvoices_conv": 5,
-     "subakko_test": 7,
+     "subakko_test": 8,
      "banspeech": 3,
      "cv17_bn_test": 3,
      "ben10_valid": 2
@@ -531,11 +531,11 @@
    "macro": {
     "wer": 0.219446129817877,
     "cer": 0.09753904061947619,
-    "average_rank": 3.4545454545454546,
+    "average_rank": 3.5454545454545454,
     "ranks": {
      "fleurs_test": 3,
      "vaani_test": 6,
-     "spring_r1_test": 5,
+     "spring_r1_test": 6,
      "spring_r2_test": 4,
      "kathbath_test_known": 3,
      "kathbath_test_unknown": 3,
@@ -686,7 +686,7 @@
    "macro": {
     "wer": 0.23121950363668073,
     "cer": 0.104262812510441,
-    "average_rank": 3.727272727272727,
+    "average_rank": 3.909090909090909,
     "ranks": {
      "fleurs_test": 2,
      "vaani_test": 2,
@@ -696,9 +696,9 @@
      "kathbath_test_unknown": 6,
      "indicvoices_conv": 4,
      "subakko_test": 2,
-     "banspeech": 4,
+     "banspeech": 5,
      "cv17_bn_test": 2,
-     "ben10_valid": 8
+     "ben10_valid": 9
     },
     "best_on": []
    }
@@ -839,19 +839,19 @@
    "macro": {
     "wer": 0.2281178828587132,
     "cer": 0.10226191294860933,
-    "average_rank": 4.363636363636363,
+    "average_rank": 4.636363636363637,
     "ranks": {
      "fleurs_test": 4,
      "vaani_test": 3,
      "spring_r1_test": 3,
-     "spring_r2_test": 8,
+     "spring_r2_test": 9,
      "kathbath_test_known": 5,
      "kathbath_test_unknown": 5,
-     "indicvoices_conv": 6,
+     "indicvoices_conv": 7,
      "subakko_test": 1,
      "banspeech": 1,
      "cv17_bn_test": 6,
-     "ben10_valid": 6
+     "ben10_valid": 7
     },
     "best_on": [
      "subakko_test",
@@ -995,17 +995,17 @@
    "macro": {
     "wer": 0.22393385171419852,
     "cer": 0.09816794991223148,
-    "average_rank": 4.909090909090909,
+    "average_rank": 5.181818181818182,
     "ranks": {
      "fleurs_test": 6,
      "vaani_test": 5,
      "spring_r1_test": 4,
      "spring_r2_test": 2,
      "kathbath_test_known": 7,
-     "kathbath_test_unknown": 7,
+     "kathbath_test_unknown": 8,
      "indicvoices_conv": 3,
-     "subakko_test": 6,
-     "banspeech": 6,
+     "subakko_test": 7,
+     "banspeech": 7,
      "cv17_bn_test": 7,
      "ben10_valid": 1
     },
@@ -1150,17 +1150,17 @@
    "macro": {
     "wer": 0.2547579860307739,
     "cer": 0.10699191215895154,
-    "average_rank": 5.545454545454546,
+    "average_rank": 6.090909090909091,
     "ranks": {
      "fleurs_test": 1,
-     "vaani_test": 11,
-     "spring_r1_test": 9,
-     "spring_r2_test": 10,
+     "vaani_test": 12,
+     "spring_r1_test": 10,
+     "spring_r2_test": 11,
      "kathbath_test_known": 1,
      "kathbath_test_unknown": 1,
-     "indicvoices_conv": 10,
-     "subakko_test": 5,
-     "banspeech": 8,
+     "indicvoices_conv": 11,
+     "subakko_test": 6,
+     "banspeech": 9,
      "cv17_bn_test": 1,
      "ben10_valid": 4
     },
@@ -1308,19 +1308,19 @@
    "macro": {
     "wer": 0.26123062708947625,
     "cer": 0.1251456453822333,
-    "average_rank": 6.454545454545454,
+    "average_rank": 7.181818181818182,
     "ranks": {
-     "fleurs_test": 8,
-     "vaani_test": 8,
-     "spring_r1_test": 8,
-     "spring_r2_test": 7,
+     "fleurs_test": 9,
+     "vaani_test": 9,
+     "spring_r1_test": 9,
+     "spring_r2_test": 8,
      "kathbath_test_known": 2,
      "kathbath_test_unknown": 2,
-     "indicvoices_conv": 9,
-     "subakko_test": 10,
-     "banspeech": 5,
+     "indicvoices_conv": 10,
+     "subakko_test": 11,
+     "banspeech": 6,
      "cv17_bn_test": 5,
-     "ben10_valid": 7
+     "ben10_valid": 8
     },
     "best_on": []
    }
@@ -1461,19 +1461,19 @@
    "macro": {
     "wer": 0.25946679956412577,
     "cer": 0.11606439957082416,
-    "average_rank": 7.7272727272727275,
+    "average_rank": 8.636363636363637,
     "ranks": {
-     "fleurs_test": 9,
-     "vaani_test": 7,
-     "spring_r1_test": 7,
-     "spring_r2_test": 6,
-     "kathbath_test_known": 9,
-     "kathbath_test_unknown": 9,
+     "fleurs_test": 10,
+     "vaani_test": 8,
+     "spring_r1_test": 8,
+     "spring_r2_test": 7,
+     "kathbath_test_known": 10,
+     "kathbath_test_unknown": 10,
      "indicvoices_conv": 2,
-     "subakko_test": 9,
-     "banspeech": 9,
-     "cv17_bn_test": 9,
-     "ben10_valid": 9
+     "subakko_test": 10,
+     "banspeech": 10,
+     "cv17_bn_test": 10,
+     "ben10_valid": 10
     },
     "best_on": []
    }
@@ -1614,19 +1614,19 @@
    "macro": {
     "wer": 0.3316268531533695,
     "cer": 0.1308571410510161,
-    "average_rank": 10.818181818181818,
+    "average_rank": 11.818181818181818,
     "ranks": {
-     "fleurs_test": 11,
-     "vaani_test": 10,
-     "spring_r1_test": 11,
-     "spring_r2_test": 11,
-     "kathbath_test_known": 11,
-     "kathbath_test_unknown": 11,
-     "indicvoices_conv": 11,
-     "subakko_test": 11,
-     "banspeech": 11,
-     "cv17_bn_test": 10,
-     "ben10_valid": 11
+     "fleurs_test": 12,
+     "vaani_test": 11,
+     "spring_r1_test": 12,
+     "spring_r2_test": 12,
+     "kathbath_test_known": 12,
+     "kathbath_test_unknown": 12,
+     "indicvoices_conv": 12,
+     "subakko_test": 12,
+     "banspeech": 12,
+     "cv17_bn_test": 11,
+     "ben10_valid": 12
     },
     "best_on": []
    }
@@ -1767,19 +1767,19 @@
    "macro": {
     "wer": 0.2915549932058398,
     "cer": 0.14159357156995817,
-    "average_rank": 9.545454545454545,
+    "average_rank": 10.545454545454545,
     "ranks": {
-     "fleurs_test": 10,
-     "vaani_test": 9,
-     "spring_r1_test": 10,
-     "spring_r2_test": 9,
-     "kathbath_test_known": 10,
-     "kathbath_test_unknown": 10,
-     "indicvoices_conv": 8,
-     "subakko_test": 8,
-     "banspeech": 10,
-     "cv17_bn_test": 11,
-     "ben10_valid": 10
+     "fleurs_test": 11,
+     "vaani_test": 10,
+     "spring_r1_test": 11,
+     "spring_r2_test": 10,
+     "kathbath_test_known": 11,
+     "kathbath_test_unknown": 11,
+     "indicvoices_conv": 9,
+     "subakko_test": 9,
+     "banspeech": 11,
+     "cv17_bn_test": 12,
+     "ben10_valid": 11
     },
     "best_on": []
    }
@@ -1920,19 +1920,172 @@
    "macro": {
     "wer": 0.35565727919386,
     "cer": 0.20544176111592982,
-    "average_rank": 10.181818181818182,
+    "average_rank": 11.181818181818182,
     "ranks": {
-     "fleurs_test": 10,
-     "vaani_test": 9,
-     "spring_r1_test": 11,
-     "spring_r2_test": 11,
-     "kathbath_test_known": 10,
-     "kathbath_test_unknown": 10,
-     "indicvoices_conv": 8,
-     "subakko_test": 10,
-     "banspeech": 11,
-     "cv17_bn_test": 11,
-     "ben10_valid": 11
+     "fleurs_test": 11,
+     "vaani_test": 10,
+     "spring_r1_test": 12,
+     "spring_r2_test": 12,
+     "kathbath_test_known": 11,
+     "kathbath_test_unknown": 11,
+     "indicvoices_conv": 9,
+     "subakko_test": 11,
+     "banspeech": 12,
+     "cv17_bn_test": 12,
+     "ben10_valid": 12
+    },
+    "best_on": []
+   }
+  },
+  "rumble_bn": {
+   "fleurs_test": {
+    "n": 733,
+    "wer": 0.13013599537037038,
+    "cer": 0.030339577547384842,
+    "wer_ci_reference_clustered": [
+     0.11997,
+     0.14044
+    ],
+    "word_errors": 1799,
+    "ref_words": 13824,
+    "wer_full_set": 0.15629750577107146
+   },
+   "vaani_test": {
+    "n": 1000,
+    "wer": 0.2279309660781591,
+    "cer": 0.06795792579064744,
+    "wer_ci_reference_clustered": [
+     0.21611,
+     0.23987
+    ],
+    "word_errors": 2298,
+    "ref_words": 10082,
+    "wer_full_set": 0.2279309660781591
+   },
+   "spring_r1_test": {
+    "n": 1000,
+    "wer": 0.3745052268344667,
+    "cer": 0.22109759229839898,
+    "wer_ci_reference_clustered": [
+     0.3623,
+     0.38727
+    ],
+    "word_errors": 7380,
+    "ref_words": 19706,
+    "wer_full_set": 0.3745052268344667
+   },
+   "spring_r2_test": {
+    "n": 1000,
+    "wer": 0.370461357048101,
+    "cer": 0.20991334617093763,
+    "wer_ci_reference_clustered": [
+     0.35766,
+     0.38387
+    ],
+    "word_errors": 7540,
+    "ref_words": 20353,
+    "wer_full_set": 0.370461357048101
+   },
+   "kathbath_test_known": {
+    "n": 1000,
+    "wer": 0.1166929279822041,
+    "cer": 0.023230448885929997,
+    "wer_ci_reference_clustered": [
+     0.10894,
+     0.1246
+    ],
+    "word_errors": 1259,
+    "ref_words": 10789,
+    "wer_full_set": 0.1166929279822041
+   },
+   "kathbath_test_unknown": {
+    "n": 1000,
+    "wer": 0.11325788941024933,
+    "cer": 0.02196096142718022,
+    "wer_ci_reference_clustered": [
+     0.10569,
+     0.12115
+    ],
+    "word_errors": 1231,
+    "ref_words": 10869,
+    "wer_full_set": 0.11325788941024933
+   },
+   "indicvoices_conv": {
+    "n": 918,
+    "wer": 0.13233000623830318,
+    "cer": 0.046638435282620704,
+    "wer_ci_reference_clustered": [
+     0.12359,
+     0.1415
+    ],
+    "word_errors": 1697,
+    "ref_words": 12824,
+    "wer_full_set": 0.13245084378386748
+   },
+   "subakko_test": {
+    "n": 712,
+    "wer": 0.07828560346499451,
+    "cer": 0.021451241070597843,
+    "wer_ci_reference_clustered": [
+     0.07097,
+     0.08593
+    ],
+    "word_errors": 1211,
+    "ref_words": 15469,
+    "wer_full_set": 0.1399703374119392
+   },
+   "banspeech": {
+    "n": 928,
+    "wer": 0.20106890076556405,
+    "cer": 0.06677983807782711,
+    "wer_ci_reference_clustered": [
+     0.18658,
+     0.2162
+    ],
+    "word_errors": 1392,
+    "ref_words": 6923,
+    "wer_full_set": 0.21755285073670724
+   },
+   "cv17_bn_test": {
+    "n": 1000,
+    "wer": 0.11178839664743659,
+    "cer": 0.029213483146067417,
+    "wer_ci_reference_clustered": [
+     0.10311,
+     0.12064
+    ],
+    "word_errors": 1027,
+    "ref_words": 9187,
+    "wer_full_set": 0.11178839664743659
+   },
+   "ben10_valid": {
+    "n": 1000,
+    "wer": 0.6595828608056802,
+    "cer": 0.34802030266706624,
+    "wer_ci_reference_clustered": [
+     0.63991,
+     0.67942
+    ],
+    "word_errors": 26754,
+    "ref_words": 40562,
+    "wer_full_set": 0.6595828608056802
+   },
+   "macro": {
+    "wer": 0.2287309209677754,
+    "cer": 0.09878210476042347,
+    "average_rank": 6.181818181818182,
+    "ranks": {
+     "fleurs_test": 7,
+     "vaani_test": 7,
+     "spring_r1_test": 5,
+     "spring_r2_test": 5,
+     "kathbath_test_known": 8,
+     "kathbath_test_unknown": 7,
+     "indicvoices_conv": 6,
+     "subakko_test": 5,
+     "banspeech": 4,
+     "cv17_bn_test": 9,
+     "ben10_valid": 5
     },
     "best_on": []
    }
@@ -2072,6 +2225,18 @@
       -4.6024,
       -1.4555
      ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 0.4774,
+     "wer_ci95_pp": [
+      -0.1798,
+      1.1547
+     ],
+     "cer_delta_pp": 0.2058,
+     "cer_ci95_pp": [
+      -0.0011,
+      0.4228
+     ]
     }
    },
    "vaani_test": {
@@ -2205,6 +2370,18 @@
      "cer_ci95_pp": [
       -6.3322,
       -2.9511
+     ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": -0.2777,
+     "wer_ci95_pp": [
+      -0.8976,
+      0.347
+     ],
+     "cer_delta_pp": 0.2494,
+     "cer_ci95_pp": [
+      -0.0089,
+      0.5162
      ]
     }
    },
@@ -2340,6 +2517,18 @@
       -14.071,
       -6.53
      ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 1.6949,
+     "wer_ci95_pp": [
+      1.0983,
+      2.3111
+     ],
+     "cer_delta_pp": 1.1206,
+     "cer_ci95_pp": [
+      0.732,
+      1.5723
+     ]
     }
    },
    "spring_r2_test": {
@@ -2473,6 +2662,18 @@
      "cer_ci95_pp": [
       -14.1852,
       -7.1247
+     ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 1.0367,
+     "wer_ci95_pp": [
+      0.3914,
+      1.7134
+     ],
+     "cer_delta_pp": 0.4601,
+     "cer_ci95_pp": [
+      0.0723,
+      0.8756
      ]
     }
    },
@@ -2608,6 +2809,18 @@
       -5.2016,
       -1.5474
      ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 0.0463,
+     "wer_ci95_pp": [
+      -0.5068,
+      0.6069
+     ],
+     "cer_delta_pp": 0.0907,
+     "cer_ci95_pp": [
+      -0.0414,
+      0.2274
+     ]
     }
    },
    "kathbath_test_unknown": {
@@ -2741,6 +2954,18 @@
      "cer_ci95_pp": [
       -4.3712,
       -1.7462
+     ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 0.138,
+     "wer_ci95_pp": [
+      -0.4138,
+      0.6836
+     ],
+     "cer_delta_pp": 0.0677,
+     "cer_ci95_pp": [
+      -0.0729,
+      0.2098
      ]
     }
    },
@@ -2876,6 +3101,18 @@
       -9.2416,
       -3.2661
      ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 0.8032,
+     "wer_ci95_pp": [
+      0.1878,
+      1.4435
+     ],
+     "cer_delta_pp": 0.4022,
+     "cer_ci95_pp": [
+      0.1257,
+      0.6814
+     ]
     }
    },
    "subakko_test": {
@@ -3009,6 +3246,18 @@
      "cer_ci95_pp": [
       -10.093,
       -4.024
+     ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": -1.5967,
+     "wer_ci95_pp": [
+      -2.2959,
+      -0.7826
+     ],
+     "cer_delta_pp": -0.0196,
+     "cer_ci95_pp": [
+      -0.4195,
+      0.5279
      ]
     }
    },
@@ -3144,6 +3393,18 @@
       -7.7049,
       -4.1565
      ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 2.8023,
+     "wer_ci95_pp": [
+      1.8182,
+      3.8017
+     ],
+     "cer_delta_pp": 1.4834,
+     "cer_ci95_pp": [
+      0.994,
+      1.9863
+     ]
     }
    },
    "cv17_bn_test": {
@@ -3278,6 +3539,18 @@
       -10.3472,
       -4.2397
      ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": -0.185,
+     "wer_ci95_pp": [
+      -0.7871,
+      0.4205
+     ],
+     "cer_delta_pp": -0.1639,
+     "cer_ci95_pp": [
+      -0.413,
+      0.0814
+     ]
     }
    },
    "ben10_valid": {
@@ -3411,6 +3684,18 @@
      "cer_ci95_pp": [
       -57.0154,
       -44.9665
+     ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 3.4318,
+     "wer_ci95_pp": [
+      1.7803,
+      5.1057
+     ],
+     "cer_delta_pp": 3.9641,
+     "cer_ci95_pp": [
+      2.859,
+      5.0528
      ]
     }
    }
@@ -3548,6 +3833,18 @@
       -5.0156,
       -1.8417
      ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": -0.9332,
+     "wer_ci95_pp": [
+      -1.5631,
+      -0.2949
+     ],
+     "cer_delta_pp": -0.2003,
+     "cer_ci95_pp": [
+      -0.3882,
+      -0.0093
+     ]
     }
    },
    "vaani_test": {
@@ -3681,6 +3978,18 @@
      "cer_ci95_pp": [
       -6.8764,
       -3.5328
+     ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": -0.7141,
+     "wer_ci95_pp": [
+      -1.3367,
+      -0.1097
+     ],
+     "cer_delta_pp": -0.3214,
+     "cer_ci95_pp": [
+      -0.5712,
+      -0.0676
      ]
     }
    },
@@ -3816,6 +4125,18 @@
       -15.5658,
       -8.0003
      ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": -0.5785,
+     "wer_ci95_pp": [
+      -1.1239,
+      -0.0302
+     ],
+     "cer_delta_pp": -0.3158,
+     "cer_ci95_pp": [
+      -0.6248,
+      0.0084
+     ]
     }
    },
    "spring_r2_test": {
@@ -3949,6 +4270,18 @@
      "cer_ci95_pp": [
       -12.8005,
       -3.6646
+     ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 2.9627,
+     "wer_ci95_pp": [
+      -0.1933,
+      7.1058
+     ],
+     "cer_delta_pp": 2.6209,
+     "cer_ci95_pp": [
+      -0.2116,
+      6.2989
      ]
     }
    },
@@ -4084,6 +4417,18 @@
       -5.3636,
       -1.7102
      ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": -0.8991,
+     "wer_ci95_pp": [
+      -1.4137,
+      -0.3879
+     ],
+     "cer_delta_pp": -0.0751,
+     "cer_ci95_pp": [
+      -0.2084,
+      0.065
+     ]
     }
    },
    "kathbath_test_unknown": {
@@ -4217,6 +4562,18 @@
      "cer_ci95_pp": [
       -4.5418,
       -1.9302
+     ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": -0.506,
+     "wer_ci95_pp": [
+      -1.0112,
+      0.0183
+     ],
+     "cer_delta_pp": -0.1101,
+     "cer_ci95_pp": [
+      -0.2359,
+      0.0182
      ]
     }
    },
@@ -4352,6 +4709,18 @@
       -9.7924,
       -3.7426
      ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 0.1092,
+     "wer_ci95_pp": [
+      -0.4682,
+      0.6884
+     ],
+     "cer_delta_pp": -0.0892,
+     "cer_ci95_pp": [
+      -0.3731,
+      0.185
+     ]
     }
    },
    "subakko_test": {
@@ -4485,6 +4854,18 @@
      "cer_ci95_pp": [
       -10.7071,
       -4.6456
+     ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": -2.4048,
+     "wer_ci95_pp": [
+      -2.874,
+      -1.948
+     ],
+     "cer_delta_pp": -0.6306,
+     "cer_ci95_pp": [
+      -0.8455,
+      -0.445
      ]
     }
    },
@@ -4620,6 +5001,18 @@
       -9.6997,
       -5.9729
      ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": -0.8667,
+     "wer_ci95_pp": [
+      -1.8265,
+      0.0828
+     ],
+     "cer_delta_pp": -0.4074,
+     "cer_ci95_pp": [
+      -0.7577,
+      -0.0491
+     ]
     }
    },
    "cv17_bn_test": {
@@ -4754,6 +5147,18 @@
       -10.4448,
       -4.3171
      ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": -0.8599,
+     "wer_ci95_pp": [
+      -1.4859,
+      -0.2234
+     ],
+     "cer_delta_pp": -0.2501,
+     "cer_ci95_pp": [
+      -0.5066,
+      0.0153
+     ]
     }
    },
    "ben10_valid": {
@@ -4887,6 +5292,18 @@
      "cer_ci95_pp": [
       -58.1023,
       -44.3773
+     ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 4.0161,
+     "wer_ci95_pp": [
+      -0.1118,
+      8.8121
+     ],
+     "cer_delta_pp": 3.6068,
+     "cer_ci95_pp": [
+      0.6685,
+      7.0032
      ]
     }
    }
@@ -5024,6 +5441,18 @@
       -4.3904,
       -1.1983
      ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 1.6204,
+     "wer_ci95_pp": [
+      0.968,
+      2.2567
+     ],
+     "cer_delta_pp": 0.436,
+     "cer_ci95_pp": [
+      0.262,
+      0.6103
+     ]
     }
    },
    "vaani_test": {
@@ -5157,6 +5586,18 @@
      "cer_ci95_pp": [
       -5.7599,
       -2.3715
+     ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 1.8746,
+     "wer_ci95_pp": [
+      1.2198,
+      2.5244
+     ],
+     "cer_delta_pp": 0.8411,
+     "cer_ci95_pp": [
+      0.5781,
+      1.1068
      ]
     }
    },
@@ -5292,6 +5733,18 @@
       -14.7162,
       -7.0802
      ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 1.7761,
+     "wer_ci95_pp": [
+      1.2093,
+      2.3586
+     ],
+     "cer_delta_pp": 0.5727,
+     "cer_ci95_pp": [
+      0.2507,
+      0.901
+     ]
     }
    },
    "spring_r2_test": {
@@ -5425,6 +5878,18 @@
      "cer_ci95_pp": [
       -14.3178,
       -7.2338
+     ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 1.3708,
+     "wer_ci95_pp": [
+      0.783,
+      1.9522
+     ],
+     "cer_delta_pp": 0.3453,
+     "cer_ci95_pp": [
+      -0.0376,
+      0.7247
      ]
     }
    },
@@ -5560,6 +6025,18 @@
       -4.7121,
       -1.0758
      ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 1.7147,
+     "wer_ci95_pp": [
+      1.1526,
+      2.2729
+     ],
+     "cer_delta_pp": 0.5567,
+     "cer_ci95_pp": [
+      0.4084,
+      0.7074
+     ]
     }
    },
    "kathbath_test_unknown": {
@@ -5693,6 +6170,18 @@
      "cer_ci95_pp": [
       -3.7037,
       -1.0949
+     ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 2.1069,
+     "wer_ci95_pp": [
+      1.5629,
+      2.654
+     ],
+     "cer_delta_pp": 0.7396,
+     "cer_ci95_pp": [
+      0.5726,
+      0.9143
      ]
     }
    },
@@ -5828,6 +6317,18 @@
       -10.4768,
       -4.4377
      ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": -0.9747,
+     "wer_ci95_pp": [
+      -1.5602,
+      -0.3924
+     ],
+     "cer_delta_pp": -0.7846,
+     "cer_ci95_pp": [
+      -1.0761,
+      -0.4987
+     ]
     }
    },
    "subakko_test": {
@@ -5961,6 +6462,18 @@
      "cer_ci95_pp": [
       -8.2384,
       -1.989
+     ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 5.8439,
+     "wer_ci95_pp": [
+      4.9292,
+      6.8573
+     ],
+     "cer_delta_pp": 1.9011,
+     "cer_ci95_pp": [
+      1.2483,
+      2.6557
      ]
     }
    },
@@ -6096,6 +6609,18 @@
       -6.5732,
       -2.9515
      ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 6.5579,
+     "wer_ci95_pp": [
+      5.3944,
+      7.7317
+     ],
+     "cer_delta_pp": 2.6691,
+     "cer_ci95_pp": [
+      2.1496,
+      3.2129
+     ]
     }
    },
    "cv17_bn_test": {
@@ -6230,6 +6755,18 @@
       -10.1728,
       -4.0323
      ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 0.9579,
+     "wer_ci95_pp": [
+      0.3783,
+      1.5352
+     ],
+     "cer_delta_pp": 0.0338,
+     "cer_ci95_pp": [
+      -0.183,
+      0.2489
+     ]
     }
    },
    "ben10_valid": {
@@ -6363,6 +6900,1626 @@
      "cer_ci95_pp": [
       -49.2538,
       -37.2461
+     ]
+    },
+    "rumble_bn": {
+     "wer_delta_pp": 10.961,
+     "wer_ci95_pp": [
+      9.3714,
+      12.4839
+     ],
+     "cer_delta_pp": 11.6998,
+     "cer_ci95_pp": [
+      10.4585,
+      12.9126
+     ]
+    }
+   }
+  },
+  "rumble_bn": {
+   "fleurs_test": {
+    "granite_speech_bn": {
+     "wer_delta_pp": -0.4774,
+     "wer_ci95_pp": [
+      -1.1526,
+      0.181
+     ],
+     "cer_delta_pp": -0.2058,
+     "cer_ci95_pp": [
+      -0.4224,
+      0.0011
+     ]
+    },
+    "whisper_turbo_bn": {
+     "wer_delta_pp": 0.6221,
+     "wer_ci95_pp": [
+      -0.1061,
+      1.2997
+     ],
+     "cer_delta_pp": -0.1571,
+     "cer_ci95_pp": [
+      -0.7248,
+      0.2797
+     ]
+    },
+    "qwen3_asr_bn": {
+     "wer_delta_pp": 1.1574,
+     "wer_ci95_pp": [
+      0.5552,
+      1.747
+     ],
+     "cer_delta_pp": 0.2556,
+     "cer_ci95_pp": [
+      0.0793,
+      0.4324
+     ]
+    },
+    "canary_1b_v2_bn": {
+     "wer_delta_pp": 1.4323,
+     "wer_ci95_pp": [
+      0.826,
+      2.0261
+     ],
+     "cer_delta_pp": 0.3574,
+     "cer_ci95_pp": [
+      0.1983,
+      0.5199
+     ]
+    },
+    "voxtral_mini_bn": {
+     "wer_delta_pp": 0.9332,
+     "wer_ci95_pp": [
+      0.2949,
+      1.5632
+     ],
+     "cer_delta_pp": 0.2003,
+     "cer_ci95_pp": [
+      0.0098,
+      0.3885
+     ]
+    },
+    "fastconformer_hybrid_bn": {
+     "wer_delta_pp": 0.1808,
+     "wer_ci95_pp": [
+      -0.3802,
+      0.7292
+     ],
+     "cer_delta_pp": 0.0586,
+     "cer_ci95_pp": [
+      -0.105,
+      0.2146
+     ]
+    },
+    "hishab_conformer_large": {
+     "wer_delta_pp": 2.1846,
+     "wer_ci95_pp": [
+      1.4553,
+      2.8711
+     ],
+     "cer_delta_pp": 0.831,
+     "cer_ci95_pp": [
+      0.6567,
+      1.0112
+     ]
+    },
+    "whisper_medium": {
+     "wer_delta_pp": -0.8825,
+     "wer_ci95_pp": [
+      -1.5404,
+      -0.245
+     ],
+     "cer_delta_pp": -0.1339,
+     "cer_ci95_pp": [
+      -0.3062,
+      0.0375
+     ]
+    },
+    "fastconformer_ctc": {
+     "wer_delta_pp": -1.6204,
+     "wer_ci95_pp": [
+      -2.2565,
+      -0.967
+     ],
+     "cer_delta_pp": -0.436,
+     "cer_ci95_pp": [
+      -0.6101,
+      -0.2619
+     ]
+    },
+    "wav2vec2": {
+     "wer_delta_pp": -5.2373,
+     "wer_ci95_pp": [
+      -6.0578,
+      -4.4226
+     ],
+     "cer_delta_pp": -1.05,
+     "cer_ci95_pp": [
+      -1.2453,
+      -0.8669
+     ]
+    },
+    "whistle_bn_bd": {
+     "wer_delta_pp": -3.3492,
+     "wer_ci95_pp": [
+      -4.0525,
+      -2.6609
+     ],
+     "cer_delta_pp": -1.2404,
+     "cer_ci95_pp": [
+      -1.475,
+      -1.0155
+     ]
+    },
+    "whistle_bn_bd_a100": {
+     "wer_delta_pp": -5.0709,
+     "wer_ci95_pp": [
+      -6.7694,
+      -3.8341
+     ],
+     "cer_delta_pp": -3.0107,
+     "cer_ci95_pp": [
+      -4.8302,
+      -1.6297
+     ]
+    }
+   },
+   "vaani_test": {
+    "granite_speech_bn": {
+     "wer_delta_pp": 0.2777,
+     "wer_ci95_pp": [
+      -0.3455,
+      0.8977
+     ],
+     "cer_delta_pp": -0.2494,
+     "cer_ci95_pp": [
+      -0.5161,
+      0.0103
+     ]
+    },
+    "whisper_turbo_bn": {
+     "wer_delta_pp": 1.4085,
+     "wer_ci95_pp": [
+      0.8164,
+      2.0175
+     ],
+     "cer_delta_pp": 0.7059,
+     "cer_ci95_pp": [
+      0.4592,
+      0.9484
+     ]
+    },
+    "qwen3_asr_bn": {
+     "wer_delta_pp": 0.1091,
+     "wer_ci95_pp": [
+      -2.043,
+      1.4551
+     ],
+     "cer_delta_pp": -0.3161,
+     "cer_ci95_pp": [
+      -1.7531,
+      0.5083
+     ]
+    },
+    "canary_1b_v2_bn": {
+     "wer_delta_pp": 0.8728,
+     "wer_ci95_pp": [
+      0.2451,
+      1.4878
+     ],
+     "cer_delta_pp": 0.367,
+     "cer_ci95_pp": [
+      0.1232,
+      0.6093
+     ]
+    },
+    "voxtral_mini_bn": {
+     "wer_delta_pp": 0.7141,
+     "wer_ci95_pp": [
+      0.1098,
+      1.3367
+     ],
+     "cer_delta_pp": 0.3214,
+     "cer_ci95_pp": [
+      0.068,
+      0.5713
+     ]
+    },
+    "fastconformer_hybrid_bn": {
+     "wer_delta_pp": 0.2678,
+     "wer_ci95_pp": [
+      -0.4037,
+      0.923
+     ],
+     "cer_delta_pp": 0.0509,
+     "cer_ci95_pp": [
+      -0.2262,
+      0.3171
+     ]
+    },
+    "hishab_conformer_large": {
+     "wer_delta_pp": -10.3055,
+     "wer_ci95_pp": [
+      -11.43,
+      -9.2039
+     ],
+     "cer_delta_pp": -3.6771,
+     "cer_ci95_pp": [
+      -4.1497,
+      -3.2168
+     ]
+    },
+    "whisper_medium": {
+     "wer_delta_pp": -3.5608,
+     "wer_ci95_pp": [
+      -4.4075,
+      -2.7081
+     ],
+     "cer_delta_pp": -1.8157,
+     "cer_ci95_pp": [
+      -2.2025,
+      -1.4454
+     ]
+    },
+    "fastconformer_ctc": {
+     "wer_delta_pp": -1.8746,
+     "wer_ci95_pp": [
+      -2.5238,
+      -1.2196
+     ],
+     "cer_delta_pp": -0.8411,
+     "cer_ci95_pp": [
+      -1.1068,
+      -0.5774
+     ]
+    },
+    "wav2vec2": {
+     "wer_delta_pp": -8.4904,
+     "wer_ci95_pp": [
+      -9.5333,
+      -7.4551
+     ],
+     "cer_delta_pp": -2.5269,
+     "cer_ci95_pp": [
+      -2.8864,
+      -2.1731
+     ]
+    },
+    "whistle_bn_bd": {
+     "wer_delta_pp": -4.632,
+     "wer_ci95_pp": [
+      -5.4267,
+      -3.8148
+     ],
+     "cer_delta_pp": -2.7482,
+     "cer_ci95_pp": [
+      -3.1751,
+      -2.3465
+     ]
+    },
+    "whistle_bn_bd_a100": {
+     "wer_delta_pp": -5.9512,
+     "wer_ci95_pp": [
+      -7.0803,
+      -4.9161
+     ],
+     "cer_delta_pp": -4.5955,
+     "cer_ci95_pp": [
+      -6.5771,
+      -3.2124
+     ]
+    }
+   },
+   "spring_r1_test": {
+    "granite_speech_bn": {
+     "wer_delta_pp": -1.6949,
+     "wer_ci95_pp": [
+      -2.3108,
+      -1.0973
+     ],
+     "cer_delta_pp": -1.1206,
+     "cer_ci95_pp": [
+      -1.5719,
+      -0.7314
+     ]
+    },
+    "whisper_turbo_bn": {
+     "wer_delta_pp": 1.1469,
+     "wer_ci95_pp": [
+      0.6168,
+      1.6799
+     ],
+     "cer_delta_pp": 0.5508,
+     "cer_ci95_pp": [
+      0.2155,
+      0.8822
+     ]
+    },
+    "qwen3_asr_bn": {
+     "wer_delta_pp": -0.1725,
+     "wer_ci95_pp": [
+      -1.2469,
+      0.6268
+     ],
+     "cer_delta_pp": -0.2321,
+     "cer_ci95_pp": [
+      -1.3023,
+      0.4438
+     ]
+    },
+    "canary_1b_v2_bn": {
+     "wer_delta_pp": 0.6648,
+     "wer_ci95_pp": [
+      0.1368,
+      1.2033
+     ],
+     "cer_delta_pp": 0.3748,
+     "cer_ci95_pp": [
+      0.0995,
+      0.6642
+     ]
+    },
+    "voxtral_mini_bn": {
+     "wer_delta_pp": 0.5785,
+     "wer_ci95_pp": [
+      0.0304,
+      1.1258
+     ],
+     "cer_delta_pp": 0.3158,
+     "cer_ci95_pp": [
+      -0.0076,
+      0.6249
+     ]
+    },
+    "fastconformer_hybrid_bn": {
+     "wer_delta_pp": 0.5278,
+     "wer_ci95_pp": [
+      0.0,
+      1.0661
+     ],
+     "cer_delta_pp": 0.2787,
+     "cer_ci95_pp": [
+      -0.0638,
+      0.6123
+     ]
+    },
+    "hishab_conformer_large": {
+     "wer_delta_pp": -5.0137,
+     "wer_ci95_pp": [
+      -5.8557,
+      -4.1918
+     ],
+     "cer_delta_pp": -1.9283,
+     "cer_ci95_pp": [
+      -2.4732,
+      -1.3995
+     ]
+    },
+    "whisper_medium": {
+     "wer_delta_pp": -2.588,
+     "wer_ci95_pp": [
+      -3.2573,
+      -1.9265
+     ],
+     "cer_delta_pp": -2.5342,
+     "cer_ci95_pp": [
+      -3.0394,
+      -2.0475
+     ]
+    },
+    "fastconformer_ctc": {
+     "wer_delta_pp": -1.7761,
+     "wer_ci95_pp": [
+      -2.3584,
+      -1.2078
+     ],
+     "cer_delta_pp": -0.5727,
+     "cer_ci95_pp": [
+      -0.9009,
+      -0.2505
+     ]
+    },
+    "wav2vec2": {
+     "wer_delta_pp": -9.8295,
+     "wer_ci95_pp": [
+      -10.6254,
+      -9.026
+     ],
+     "cer_delta_pp": -3.2943,
+     "cer_ci95_pp": [
+      -3.682,
+      -2.9009
+     ]
+    },
+    "whistle_bn_bd": {
+     "wer_delta_pp": -5.9322,
+     "wer_ci95_pp": [
+      -6.6625,
+      -5.2051
+     ],
+     "cer_delta_pp": -3.9355,
+     "cer_ci95_pp": [
+      -4.5313,
+      -3.3685
+     ]
+    },
+    "whistle_bn_bd_a100": {
+     "wer_delta_pp": -10.6313,
+     "wer_ci95_pp": [
+      -13.3938,
+      -8.315
+     ],
+     "cer_delta_pp": -11.0977,
+     "cer_ci95_pp": [
+      -15.3064,
+      -7.6297
+     ]
+    }
+   },
+   "spring_r2_test": {
+    "granite_speech_bn": {
+     "wer_delta_pp": -1.0367,
+     "wer_ci95_pp": [
+      -1.7129,
+      -0.3904
+     ],
+     "cer_delta_pp": -0.4601,
+     "cer_ci95_pp": [
+      -0.8756,
+      -0.0722
+     ]
+    },
+    "whisper_turbo_bn": {
+     "wer_delta_pp": 0.9139,
+     "wer_ci95_pp": [
+      0.369,
+      1.4636
+     ],
+     "cer_delta_pp": 0.3203,
+     "cer_ci95_pp": [
+      -0.0009,
+      0.6483
+     ]
+    },
+    "qwen3_asr_bn": {
+     "wer_delta_pp": 0.1572,
+     "wer_ci95_pp": [
+      -1.3295,
+      1.1503
+     ],
+     "cer_delta_pp": -0.1602,
+     "cer_ci95_pp": [
+      -0.9655,
+      0.3774
+     ]
+    },
+    "canary_1b_v2_bn": {
+     "wer_delta_pp": 0.2948,
+     "wer_ci95_pp": [
+      -1.2599,
+      1.3313
+     ],
+     "cer_delta_pp": -0.1657,
+     "cer_ci95_pp": [
+      -1.7519,
+      0.7299
+     ]
+    },
+    "voxtral_mini_bn": {
+     "wer_delta_pp": -2.9627,
+     "wer_ci95_pp": [
+      -7.1041,
+      0.1937
+     ],
+     "cer_delta_pp": -2.6209,
+     "cer_ci95_pp": [
+      -6.2857,
+      0.2117
+     ]
+    },
+    "fastconformer_hybrid_bn": {
+     "wer_delta_pp": 0.4471,
+     "wer_ci95_pp": [
+      -0.108,
+      1.0057
+     ],
+     "cer_delta_pp": 0.4268,
+     "cer_ci95_pp": [
+      0.0967,
+      0.7623
+     ]
+    },
+    "hishab_conformer_large": {
+     "wer_delta_pp": -5.2032,
+     "wer_ci95_pp": [
+      -6.0912,
+      -4.3416
+     ],
+     "cer_delta_pp": -2.3719,
+     "cer_ci95_pp": [
+      -3.1051,
+      -1.7129
+     ]
+    },
+    "whisper_medium": {
+     "wer_delta_pp": -2.663,
+     "wer_ci95_pp": [
+      -3.4282,
+      -1.9159
+     ],
+     "cer_delta_pp": -2.4024,
+     "cer_ci95_pp": [
+      -2.9161,
+      -1.9117
+     ]
+    },
+    "fastconformer_ctc": {
+     "wer_delta_pp": -1.3708,
+     "wer_ci95_pp": [
+      -1.9515,
+      -0.7829
+     ],
+     "cer_delta_pp": -0.3453,
+     "cer_ci95_pp": [
+      -0.7245,
+      0.0376
+     ]
+    },
+    "wav2vec2": {
+     "wer_delta_pp": -10.2688,
+     "wer_ci95_pp": [
+      -11.1189,
+      -9.429
+     ],
+     "cer_delta_pp": -3.2375,
+     "cer_ci95_pp": [
+      -3.6324,
+      -2.8363
+     ]
+    },
+    "whistle_bn_bd": {
+     "wer_delta_pp": -5.1442,
+     "wer_ci95_pp": [
+      -5.8721,
+      -4.4195
+     ],
+     "cer_delta_pp": -3.4217,
+     "cer_ci95_pp": [
+      -3.9245,
+      -2.9367
+     ]
+    },
+    "whistle_bn_bd_a100": {
+     "wer_delta_pp": -10.4604,
+     "wer_ci95_pp": [
+      -13.4357,
+      -7.9367
+     ],
+     "cer_delta_pp": -10.9308,
+     "cer_ci95_pp": [
+      -14.6585,
+      -7.5869
+     ]
+    }
+   },
+   "kathbath_test_known": {
+    "granite_speech_bn": {
+     "wer_delta_pp": -0.0463,
+     "wer_ci95_pp": [
+      -0.6062,
+      0.5076
+     ],
+     "cer_delta_pp": -0.0907,
+     "cer_ci95_pp": [
+      -0.2274,
+      0.042
+     ]
+    },
+    "whisper_turbo_bn": {
+     "wer_delta_pp": 1.242,
+     "wer_ci95_pp": [
+      0.7766,
+      1.7013
+     ],
+     "cer_delta_pp": 0.3088,
+     "cer_ci95_pp": [
+      0.1993,
+      0.4202
+     ]
+    },
+    "qwen3_asr_bn": {
+     "wer_delta_pp": 1.4088,
+     "wer_ci95_pp": [
+      0.9179,
+      1.9043
+     ],
+     "cer_delta_pp": 0.2904,
+     "cer_ci95_pp": [
+      0.1871,
+      0.3974
+     ]
+    },
+    "canary_1b_v2_bn": {
+     "wer_delta_pp": 0.7044,
+     "wer_ci95_pp": [
+      0.2039,
+      1.2265
+     ],
+     "cer_delta_pp": 0.1671,
+     "cer_ci95_pp": [
+      0.0426,
+      0.2945
+     ]
+    },
+    "voxtral_mini_bn": {
+     "wer_delta_pp": 0.8991,
+     "wer_ci95_pp": [
+      0.3881,
+      1.4151
+     ],
+     "cer_delta_pp": 0.0751,
+     "cer_ci95_pp": [
+      -0.065,
+      0.2085
+     ]
+    },
+    "fastconformer_hybrid_bn": {
+     "wer_delta_pp": 0.0649,
+     "wer_ci95_pp": [
+      -0.4444,
+      0.5732
+     ],
+     "cer_delta_pp": -0.0028,
+     "cer_ci95_pp": [
+      -0.121,
+      0.1138
+     ]
+    },
+    "hishab_conformer_large": {
+     "wer_delta_pp": 2.3357,
+     "wer_ci95_pp": [
+      1.6727,
+      3.0038
+     ],
+     "cer_delta_pp": 0.5992,
+     "cer_ci95_pp": [
+      0.4479,
+      0.7603
+     ]
+    },
+    "whisper_medium": {
+     "wer_delta_pp": 1.9742,
+     "wer_ci95_pp": [
+      1.3357,
+      2.6083
+     ],
+     "cer_delta_pp": 0.3725,
+     "cer_ci95_pp": [
+      0.2185,
+      0.5292
+     ]
+    },
+    "fastconformer_ctc": {
+     "wer_delta_pp": -1.7147,
+     "wer_ci95_pp": [
+      -2.2725,
+      -1.1523
+     ],
+     "cer_delta_pp": -0.5567,
+     "cer_ci95_pp": [
+      -0.7071,
+      -0.4084
+     ]
+    },
+    "wav2vec2": {
+     "wer_delta_pp": -7.3964,
+     "wer_ci95_pp": [
+      -8.2357,
+      -6.5747
+     ],
+     "cer_delta_pp": -1.4023,
+     "cer_ci95_pp": [
+      -1.576,
+      -1.2334
+     ]
+    },
+    "whistle_bn_bd": {
+     "wer_delta_pp": -3.9392,
+     "wer_ci95_pp": [
+      -4.5773,
+      -3.309
+     ],
+     "cer_delta_pp": -1.3556,
+     "cer_ci95_pp": [
+      -1.5945,
+      -1.148
+     ]
+    },
+    "whistle_bn_bd_a100": {
+     "wer_delta_pp": -5.9042,
+     "wer_ci95_pp": [
+      -7.798,
+      -4.4569
+     ],
+     "cer_delta_pp": -3.1234,
+     "cer_ci95_pp": [
+      -5.2783,
+      -1.6437
+     ]
+    }
+   },
+   "kathbath_test_unknown": {
+    "granite_speech_bn": {
+     "wer_delta_pp": -0.138,
+     "wer_ci95_pp": [
+      -0.6831,
+      0.4139
+     ],
+     "cer_delta_pp": -0.0677,
+     "cer_ci95_pp": [
+      -0.2095,
+      0.0729
+     ]
+    },
+    "whisper_turbo_bn": {
+     "wer_delta_pp": 0.9016,
+     "wer_ci95_pp": [
+      0.4384,
+      1.3724
+     ],
+     "cer_delta_pp": 0.3091,
+     "cer_ci95_pp": [
+      0.1984,
+      0.4223
+     ]
+    },
+    "qwen3_asr_bn": {
+     "wer_delta_pp": 0.9568,
+     "wer_ci95_pp": [
+      0.4873,
+      1.4344
+     ],
+     "cer_delta_pp": 0.1694,
+     "cer_ci95_pp": [
+      0.0532,
+      0.2884
+     ]
+    },
+    "canary_1b_v2_bn": {
+     "wer_delta_pp": 0.322,
+     "wer_ci95_pp": [
+      -0.1651,
+      0.8331
+     ],
+     "cer_delta_pp": 0.1044,
+     "cer_ci95_pp": [
+      -0.0168,
+      0.2269
+     ]
+    },
+    "voxtral_mini_bn": {
+     "wer_delta_pp": 0.506,
+     "wer_ci95_pp": [
+      -0.0183,
+      1.012
+     ],
+     "cer_delta_pp": 0.1101,
+     "cer_ci95_pp": [
+      -0.0182,
+      0.236
+     ]
+    },
+    "fastconformer_hybrid_bn": {
+     "wer_delta_pp": -0.0828,
+     "wer_ci95_pp": [
+      -0.5853,
+      0.4373
+     ],
+     "cer_delta_pp": -0.0254,
+     "cer_ci95_pp": [
+      -0.1453,
+      0.0947
+     ]
+    },
+    "hishab_conformer_large": {
+     "wer_delta_pp": 2.5393,
+     "wer_ci95_pp": [
+      1.894,
+      3.1889
+     ],
+     "cer_delta_pp": 0.5956,
+     "cer_ci95_pp": [
+      0.446,
+      0.7463
+     ]
+    },
+    "whisper_medium": {
+     "wer_delta_pp": 1.4169,
+     "wer_ci95_pp": [
+      0.7527,
+      2.0644
+     ],
+     "cer_delta_pp": 0.2907,
+     "cer_ci95_pp": [
+      0.1392,
+      0.4389
+     ]
+    },
+    "fastconformer_ctc": {
+     "wer_delta_pp": -2.1069,
+     "wer_ci95_pp": [
+      -2.6539,
+      -1.5611
+     ],
+     "cer_delta_pp": -0.7396,
+     "cer_ci95_pp": [
+      -0.9142,
+      -0.5724
+     ]
+    },
+    "wav2vec2": {
+     "wer_delta_pp": -7.4708,
+     "wer_ci95_pp": [
+      -8.2208,
+      -6.7117
+     ],
+     "cer_delta_pp": -1.3394,
+     "cer_ci95_pp": [
+      -1.4963,
+      -1.1842
+     ]
+    },
+    "whistle_bn_bd": {
+     "wer_delta_pp": -4.4898,
+     "wer_ci95_pp": [
+      -5.1645,
+      -3.8324
+     ],
+     "cer_delta_pp": -1.3973,
+     "cer_ci95_pp": [
+      -1.6136,
+      -1.19
+     ]
+    },
+    "whistle_bn_bd_a100": {
+     "wer_delta_pp": -6.0355,
+     "wer_ci95_pp": [
+      -7.8125,
+      -4.8196
+     ],
+     "cer_delta_pp": -2.9441,
+     "cer_ci95_pp": [
+      -4.4379,
+      -1.8137
+     ]
+    }
+   },
+   "indicvoices_conv": {
+    "granite_speech_bn": {
+     "wer_delta_pp": -0.8032,
+     "wer_ci95_pp": [
+      -1.4423,
+      -0.1877
+     ],
+     "cer_delta_pp": -0.4022,
+     "cer_ci95_pp": [
+      -0.6814,
+      -0.1253
+     ]
+    },
+    "whisper_turbo_bn": {
+     "wer_delta_pp": 0.2417,
+     "wer_ci95_pp": [
+      -0.5598,
+      1.0227
+     ],
+     "cer_delta_pp": -0.5184,
+     "cer_ci95_pp": [
+      -1.1426,
+      0.0681
+     ]
+    },
+    "qwen3_asr_bn": {
+     "wer_delta_pp": 1.3256,
+     "wer_ci95_pp": [
+      0.7864,
+      1.8663
+     ],
+     "cer_delta_pp": 0.4079,
+     "cer_ci95_pp": [
+      0.1529,
+      0.662
+     ]
+    },
+    "canary_1b_v2_bn": {
+     "wer_delta_pp": 0.5848,
+     "wer_ci95_pp": [
+      0.0151,
+      1.168
+     ],
+     "cer_delta_pp": 0.4164,
+     "cer_ci95_pp": [
+      0.1506,
+      0.6927
+     ]
+    },
+    "voxtral_mini_bn": {
+     "wer_delta_pp": -0.1092,
+     "wer_ci95_pp": [
+      -0.687,
+      0.4689
+     ],
+     "cer_delta_pp": 0.0892,
+     "cer_ci95_pp": [
+      -0.1845,
+      0.3731
+     ]
+    },
+    "fastconformer_hybrid_bn": {
+     "wer_delta_pp": 0.6004,
+     "wer_ci95_pp": [
+      0.0078,
+      1.1733
+     ],
+     "cer_delta_pp": 0.2025,
+     "cer_ci95_pp": [
+      -0.0823,
+      0.4952
+     ]
+    },
+    "hishab_conformer_large": {
+     "wer_delta_pp": -16.0636,
+     "wer_ci95_pp": [
+      -17.2817,
+      -14.8947
+     ],
+     "cer_delta_pp": -6.5433,
+     "cer_ci95_pp": [
+      -7.291,
+      -5.838
+     ]
+    },
+    "whisper_medium": {
+     "wer_delta_pp": -11.1978,
+     "wer_ci95_pp": [
+      -12.2215,
+      -10.1997
+     ],
+     "cer_delta_pp": -6.471,
+     "cer_ci95_pp": [
+      -7.2095,
+      -5.7702
+     ]
+    },
+    "fastconformer_ctc": {
+     "wer_delta_pp": 0.9747,
+     "wer_ci95_pp": [
+      0.3926,
+      1.561
+     ],
+     "cer_delta_pp": 0.7846,
+     "cer_ci95_pp": [
+      0.499,
+      1.0766
+     ]
+    },
+    "wav2vec2": {
+     "wer_delta_pp": -19.4869,
+     "wer_ci95_pp": [
+      -20.6881,
+      -18.3086
+     ],
+     "cer_delta_pp": -6.7911,
+     "cer_ci95_pp": [
+      -7.3171,
+      -6.2701
+     ]
+    },
+    "whistle_bn_bd": {
+     "wer_delta_pp": -6.0901,
+     "wer_ci95_pp": [
+      -6.9427,
+      -5.2508
+     ],
+     "cer_delta_pp": -3.2645,
+     "cer_ci95_pp": [
+      -3.8532,
+      -2.7411
+     ]
+    },
+    "whistle_bn_bd_a100": {
+     "wer_delta_pp": -7.7199,
+     "wer_ci95_pp": [
+      -9.0174,
+      -6.6023
+     ],
+     "cer_delta_pp": -6.1495,
+     "cer_ci95_pp": [
+      -9.6644,
+      -3.6629
+     ]
+    }
+   },
+   "subakko_test": {
+    "granite_speech_bn": {
+     "wer_delta_pp": 1.5967,
+     "wer_ci95_pp": [
+      0.7834,
+      2.2965
+     ],
+     "cer_delta_pp": 0.0196,
+     "cer_ci95_pp": [
+      -0.5274,
+      0.4198
+     ]
+    },
+    "whisper_turbo_bn": {
+     "wer_delta_pp": -0.7693,
+     "wer_ci95_pp": [
+      -2.9891,
+      0.5913
+     ],
+     "cer_delta_pp": -0.8705,
+     "cer_ci95_pp": [
+      -2.4023,
+      0.1018
+     ]
+    },
+    "qwen3_asr_bn": {
+     "wer_delta_pp": 0.6723,
+     "wer_ci95_pp": [
+      -2.1151,
+      2.2572
+     ],
+     "cer_delta_pp": -0.641,
+     "cer_ci95_pp": [
+      -2.8636,
+      0.5563
+     ]
+    },
+    "canary_1b_v2_bn": {
+     "wer_delta_pp": 2.2626,
+     "wer_ci95_pp": [
+      1.8089,
+      2.73
+     ],
+     "cer_delta_pp": 0.6296,
+     "cer_ci95_pp": [
+      0.452,
+      0.8092
+     ]
+    },
+    "voxtral_mini_bn": {
+     "wer_delta_pp": 2.4048,
+     "wer_ci95_pp": [
+      1.9481,
+      2.874
+     ],
+     "cer_delta_pp": 0.6306,
+     "cer_ci95_pp": [
+      0.445,
+      0.8456
+     ]
+    },
+    "fastconformer_hybrid_bn": {
+     "wer_delta_pp": -0.5236,
+     "wer_ci95_pp": [
+      -1.3987,
+      0.2929
+     ],
+     "cer_delta_pp": -1.2778,
+     "cer_ci95_pp": [
+      -2.1322,
+      -0.5329
+     ]
+    },
+    "hishab_conformer_large": {
+     "wer_delta_pp": -0.0259,
+     "wer_ci95_pp": [
+      -0.8712,
+      0.7637
+     ],
+     "cer_delta_pp": 0.1023,
+     "cer_ci95_pp": [
+      -0.2023,
+      0.4012
+     ]
+    },
+    "whisper_medium": {
+     "wer_delta_pp": -8.656,
+     "wer_ci95_pp": [
+      -9.4589,
+      -7.8617
+     ],
+     "cer_delta_pp": -2.3064,
+     "cer_ci95_pp": [
+      -2.7347,
+      -1.9463
+     ]
+    },
+    "fastconformer_ctc": {
+     "wer_delta_pp": -5.8439,
+     "wer_ci95_pp": [
+      -6.8564,
+      -4.9291
+     ],
+     "cer_delta_pp": -1.9011,
+     "cer_ci95_pp": [
+      -2.652,
+      -1.248
+     ]
+    },
+    "wav2vec2": {
+     "wer_delta_pp": -13.7178,
+     "wer_ci95_pp": [
+      -14.5408,
+      -12.9121
+     ],
+     "cer_delta_pp": -2.6734,
+     "cer_ci95_pp": [
+      -2.9091,
+      -2.4321
+     ]
+    },
+    "whistle_bn_bd": {
+     "wer_delta_pp": -5.5272,
+     "wer_ci95_pp": [
+      -6.3281,
+      -4.7787
+     ],
+     "cer_delta_pp": -2.0676,
+     "cer_ci95_pp": [
+      -2.665,
+      -1.5482
+     ]
+    },
+    "whistle_bn_bd_a100": {
+     "wer_delta_pp": -11.0156,
+     "wer_ci95_pp": [
+      -15.4193,
+      -7.3969
+     ],
+     "cer_delta_pp": -6.7848,
+     "cer_ci95_pp": [
+      -10.037,
+      -4.0422
+     ]
+    }
+   },
+   "banspeech": {
+    "granite_speech_bn": {
+     "wer_delta_pp": -2.8023,
+     "wer_ci95_pp": [
+      -3.8007,
+      -1.8169
+     ],
+     "cer_delta_pp": -1.4834,
+     "cer_ci95_pp": [
+      -1.9858,
+      -0.9928
+     ]
+    },
+    "whisper_turbo_bn": {
+     "wer_delta_pp": 0.0289,
+     "wer_ci95_pp": [
+      -0.9572,
+      0.9818
+     ],
+     "cer_delta_pp": -0.5067,
+     "cer_ci95_pp": [
+      -1.4484,
+      0.2989
+     ]
+    },
+    "qwen3_asr_bn": {
+     "wer_delta_pp": 0.7367,
+     "wer_ci95_pp": [
+      -0.1381,
+      1.598
+     ],
+     "cer_delta_pp": 0.303,
+     "cer_ci95_pp": [
+      -0.0952,
+      0.6823
+     ]
+    },
+    "canary_1b_v2_bn": {
+     "wer_delta_pp": -1.0833,
+     "wer_ci95_pp": [
+      -2.0375,
+      -0.1404
+     ],
+     "cer_delta_pp": -0.4858,
+     "cer_ci95_pp": [
+      -1.0945,
+      0.0415
+     ]
+    },
+    "voxtral_mini_bn": {
+     "wer_delta_pp": 0.8667,
+     "wer_ci95_pp": [
+      -0.0825,
+      1.829
+     ],
+     "cer_delta_pp": 0.4074,
+     "cer_ci95_pp": [
+      0.0496,
+      0.7578
+     ]
+    },
+    "fastconformer_hybrid_bn": {
+     "wer_delta_pp": -1.9211,
+     "wer_ci95_pp": [
+      -2.9445,
+      -0.8896
+     ],
+     "cer_delta_pp": -1.2431,
+     "cer_ci95_pp": [
+      -1.824,
+      -0.7052
+     ]
+    },
+    "hishab_conformer_large": {
+     "wer_delta_pp": -5.3301,
+     "wer_ci95_pp": [
+      -6.4597,
+      -4.2044
+     ],
+     "cer_delta_pp": -1.5748,
+     "cer_ci95_pp": [
+      -2.1026,
+      -1.0782
+     ]
+    },
+    "whisper_medium": {
+     "wer_delta_pp": -1.82,
+     "wer_ci95_pp": [
+      -2.7684,
+      -0.8739
+     ],
+     "cer_delta_pp": -1.0212,
+     "cer_ci95_pp": [
+      -1.4772,
+      -0.5883
+     ]
+    },
+    "fastconformer_ctc": {
+     "wer_delta_pp": -6.5579,
+     "wer_ci95_pp": [
+      -7.7304,
+      -5.3909
+     ],
+     "cer_delta_pp": -2.6691,
+     "cer_ci95_pp": [
+      -3.2123,
+      -2.1493
+     ]
+    },
+    "wav2vec2": {
+     "wer_delta_pp": -11.2235,
+     "wer_ci95_pp": [
+      -12.513,
+      -9.9393
+     ],
+     "cer_delta_pp": -3.3063,
+     "cer_ci95_pp": [
+      -3.8488,
+      -2.7843
+     ]
+    },
+    "whistle_bn_bd": {
+     "wer_delta_pp": -10.169,
+     "wer_ci95_pp": [
+      -11.4745,
+      -8.883
+     ],
+     "cer_delta_pp": -6.1295,
+     "cer_ci95_pp": [
+      -7.2466,
+      -5.1627
+     ]
+    },
+    "whistle_bn_bd_a100": {
+     "wer_delta_pp": -12.5813,
+     "wer_ci95_pp": [
+      -17.2926,
+      -9.5527
+     ],
+     "cer_delta_pp": -7.1899,
+     "cer_ci95_pp": [
+      -9.2229,
+      -5.6414
+     ]
+    }
+   },
+   "cv17_bn_test": {
+    "granite_speech_bn": {
+     "wer_delta_pp": 0.185,
+     "wer_ci95_pp": [
+      -0.4205,
+      0.7872
+     ],
+     "cer_delta_pp": 0.1639,
+     "cer_ci95_pp": [
+      -0.0812,
+      0.4131
+     ]
+    },
+    "whisper_turbo_bn": {
+     "wer_delta_pp": 1.5892,
+     "wer_ci95_pp": [
+      1.0324,
+      2.151
+     ],
+     "cer_delta_pp": 0.8195,
+     "cer_ci95_pp": [
+      0.5815,
+      1.0636
+     ]
+    },
+    "qwen3_asr_bn": {
+     "wer_delta_pp": 1.2953,
+     "wer_ci95_pp": [
+      -0.7355,
+      2.5782
+     ],
+     "cer_delta_pp": -0.022,
+     "cer_ci95_pp": [
+      -1.7622,
+      0.9559
+     ]
+    },
+    "canary_1b_v2_bn": {
+     "wer_delta_pp": 1.6654,
+     "wer_ci95_pp": [
+      1.0631,
+      2.2652
+     ],
+     "cer_delta_pp": 0.7536,
+     "cer_ci95_pp": [
+      0.5122,
+      1.0041
+     ]
+    },
+    "voxtral_mini_bn": {
+     "wer_delta_pp": 0.8599,
+     "wer_ci95_pp": [
+      0.226,
+      1.4865
+     ],
+     "cer_delta_pp": 0.2501,
+     "cer_ci95_pp": [
+      -0.0153,
+      0.5071
+     ]
+    },
+    "fastconformer_hybrid_bn": {
+     "wer_delta_pp": 0.664,
+     "wer_ci95_pp": [
+      0.0761,
+      1.2447
+     ],
+     "cer_delta_pp": 0.4545,
+     "cer_ci95_pp": [
+      0.2354,
+      0.678
+     ]
+    },
+    "hishab_conformer_large": {
+     "wer_delta_pp": 3.8315,
+     "wer_ci95_pp": [
+      3.1024,
+      4.5549
+     ],
+     "cer_delta_pp": 1.6845,
+     "cer_ci95_pp": [
+      1.4096,
+      1.9649
+     ]
+    },
+    "whisper_medium": {
+     "wer_delta_pp": 1.0558,
+     "wer_ci95_pp": [
+      0.4687,
+      1.6487
+     ],
+     "cer_delta_pp": 0.5204,
+     "cer_ci95_pp": [
+      0.2855,
+      0.7592
+     ]
+    },
+    "fastconformer_ctc": {
+     "wer_delta_pp": -0.9579,
+     "wer_ci95_pp": [
+      -1.5348,
+      -0.3766
+     ],
+     "cer_delta_pp": -0.0338,
+     "cer_ci95_pp": [
+      -0.2488,
+      0.183
+     ]
+    },
+    "wav2vec2": {
+     "wer_delta_pp": -5.5187,
+     "wer_ci95_pp": [
+      -6.329,
+      -4.7395
+     ],
+     "cer_delta_pp": -0.7367,
+     "cer_ci95_pp": [
+      -0.9801,
+      -0.4942
+     ]
+    },
+    "whistle_bn_bd": {
+     "wer_delta_pp": -5.9214,
+     "wer_ci95_pp": [
+      -6.7268,
+      -5.1371
+     ],
+     "cer_delta_pp": -2.5277,
+     "cer_ci95_pp": [
+      -2.9126,
+      -2.1549
+     ]
+    },
+    "whistle_bn_bd_a100": {
+     "wer_delta_pp": -9.3502,
+     "wer_ci95_pp": [
+      -12.4781,
+      -6.977
+     ],
+     "cer_delta_pp": -6.794,
+     "cer_ci95_pp": [
+      -10.2119,
+      -4.0631
+     ]
+    }
+   },
+   "ben10_valid": {
+    "granite_speech_bn": {
+     "wer_delta_pp": -3.4318,
+     "wer_ci95_pp": [
+      -5.1054,
+      -1.7793
+     ],
+     "cer_delta_pp": -3.9641,
+     "cer_ci95_pp": [
+      -5.0523,
+      -2.8581
+     ]
+    },
+    "whisper_turbo_bn": {
+     "wer_delta_pp": 3.7473,
+     "wer_ci95_pp": [
+      2.3309,
+      5.2088
+     ],
+     "cer_delta_pp": -1.113,
+     "cer_ci95_pp": [
+      -2.2668,
+      0.0772
+     ]
+    },
+    "qwen3_asr_bn": {
+     "wer_delta_pp": 2.5664,
+     "wer_ci95_pp": [
+      0.7889,
+      4.2726
+     ],
+     "cer_delta_pp": 1.3125,
+     "cer_ci95_pp": [
+      0.1556,
+      2.4679
+     ]
+    },
+    "canary_1b_v2_bn": {
+     "wer_delta_pp": -10.4581,
+     "wer_ci95_pp": [
+      -14.8719,
+      -6.257
+     ],
+     "cer_delta_pp": -8.5476,
+     "cer_ci95_pp": [
+      -11.5563,
+      -5.6909
+     ]
+    },
+    "voxtral_mini_bn": {
+     "wer_delta_pp": -4.0161,
+     "wer_ci95_pp": [
+      -8.8094,
+      0.1119
+     ],
+     "cer_delta_pp": -3.6068,
+     "cer_ci95_pp": [
+      -7.0003,
+      -0.6666
+     ]
+    },
+    "fastconformer_hybrid_bn": {
+     "wer_delta_pp": 5.0515,
+     "wer_ci95_pp": [
+      3.6862,
+      6.4897
+     ],
+     "cer_delta_pp": 1.7526,
+     "cer_ci95_pp": [
+      0.7774,
+      2.8035
+     ]
+    },
+    "hishab_conformer_large": {
+     "wer_delta_pp": 2.421,
+     "wer_ci95_pp": [
+      1.0502,
+      3.8691
+     ],
+     "cer_delta_pp": 3.2519,
+     "cer_ci95_pp": [
+      2.1482,
+      4.4212
+     ]
+    },
+    "whisper_medium": {
+     "wer_delta_pp": -8.8285,
+     "wer_ci95_pp": [
+      -10.3111,
+      -7.2793
+     ],
+     "cer_delta_pp": -13.4987,
+     "cer_ci95_pp": [
+      -14.7304,
+      -12.219
+     ]
+    },
+    "fastconformer_ctc": {
+     "wer_delta_pp": -10.961,
+     "wer_ci95_pp": [
+      -12.4839,
+      -9.3703
+     ],
+     "cer_delta_pp": -11.6998,
+     "cer_ci95_pp": [
+      -12.9109,
+      -10.457
+     ]
+    },
+    "wav2vec2": {
+     "wer_delta_pp": -14.5456,
+     "wer_ci95_pp": [
+      -16.063,
+      -12.9678
+     ],
+     "cer_delta_pp": -8.9246,
+     "cer_ci95_pp": [
+      -9.9427,
+      -7.8523
+     ]
+    },
+    "whistle_bn_bd": {
+     "wer_delta_pp": -13.912,
+     "wer_ci95_pp": [
+      -15.5507,
+      -12.223
+     ],
+     "cer_delta_pp": -19.0047,
+     "cer_ci95_pp": [
+      -20.6078,
+      -17.4006
+     ]
+    },
+    "whistle_bn_bd_a100": {
+     "wer_delta_pp": -54.8987,
+     "wer_ci95_pp": [
+      -60.8816,
+      -49.346
+     ],
+     "cer_delta_pp": -54.7053,
+     "cer_ci95_pp": [
+      -61.0419,
+      -48.9604
      ]
     }
    }

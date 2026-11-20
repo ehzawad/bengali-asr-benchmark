@@ -1,11 +1,13 @@
 #!/usr/bin/env python
-"""Render the benchmark report (asr_benchmark.pdf): a two-page summary centred on Voxtral Mini
-bn-BD, read from the committed summaries:
+"""Render the benchmark report (asr_benchmark.pdf): a summary centred on Voxtral Mini bn-BD (pages 1-3, full
+sets) and the three-model comparison on one GPU (page 4, cleaned subsets), read from the committed summaries:
 
-  * outputs_fleurs/clean_test_table.json    — five models on the FLEURS bn_in test split
-  * outputs_multiset/summary_multiset.json  — the same five on six official-split subsets
+  * outputs_fleurs/clean_test_table.json    — every model on the FLEURS bn_in test split
+  * outputs_multiset/summary_multiset.json  — the same models on the ten subsets
+  * outputs_compare3/summary.json           — Rumble-2-Flash, Voxtral Mini and Qwen3-ASR bn-BD on one A100 and one B200
   * eval_manifest.json                      — FLEURS clip durations
-All five ran on one NVIDIA A100-SXM4-40GB (Colab), greedy at batch 1, one model at a time.
+Pages 1-3: one NVIDIA A100-SXM4-40GB (Colab), greedy at batch 1, one model at a time; Whistle bn-BD on an A100 80 GB
+and a CPU, Rumble-2-Flash bn-BD on another A100-SXM4-40GB. Granite Speech bn-BD is in the README only.
 
 Every number is read from those files so the PDF cannot drift from the runs, and the claims the
 text makes are asserted against them. The README carries the full tables and intervals.
@@ -38,6 +40,7 @@ ALL_MODELS = [
     ("whisper_turbo_bn", "Whisper turbo bn-BD", "#008300", "private"),
     ("whistle_bn_bd_a100", "Whistle bn-BD (55M, A100)", "#9a5b13", "private"),
     ("whistle_bn_bd", "Whistle bn-BD (55M, CPU)", "#9a5b13", "private"),
+    ("rumble_bn", "Rumble-2-Flash bn-BD", "#0a7fa0", "private"),   # passes the checks against its neighbours here and on page 4
     ("fastconformer_ctc", "ehzawad FastConformer-CTC", "#6250d6", "public"),
     ("hishab_conformer_large", "Conformer Large (hishab)", "#e34948", "public"),
     ("whisper_medium", "Whisper Medium", "#2a78d6", "public"),
@@ -69,7 +72,7 @@ FLEURS_TEST_S = statistics.mean(r["duration"] for r in json.loads(Path("eval_man
                                 if r["split"] == "test")
 
 
-VLLM = {MINI, "whisper_medium", "whisper_turbo_bn", "qwen3_asr_bn"}   # the autoregressive decoders
+VLLM = {MINI, "whisper_medium", "whisper_turbo_bn", "qwen3_asr_bn", "rumble_bn"}   # the autoregressive decoders
 CPU = {"whistle_bn_bd"}   # run on CPU with its own engine, so its time is not compared with the A100 rows
 WHISTLE = {"whistle_bn_bd", "whistle_bn_bd_a100"}   # the same checkpoint, A100 (JAX, greedy) and CPU (needle engine)
 HATCH = "///"
@@ -123,9 +126,11 @@ def header(fig, title, subtitle):
     fig.text(0.06, 0.915, subtitle, size=10, color=NAVY_SUB, va="center")
 
 
-def footer(fig, page):
-    fig.text(0.06, 0.03, "bengali-asr-benchmark · Colab A100-SXM4-40GB, 13 Oct 2026 · Whistle bn-BD: A100 80 GB and CPU, "
-             "21-22 Oct · full tables in README.md", size=7, color=MUTED)
+def footer(fig, page, text=None):
+    fig.text(0.06, 0.03, text or "bengali-asr-benchmark · Colab A100-SXM4-40GB, 13 Oct 2026 · Whistle bn-BD: A100 80 GB "
+             "and CPU, 21-22 Oct · full tables in README.md", size=7, color=MUTED)
+    if text is None and "rumble_bn" in KEYS:
+        fig.text(0.06, 0.017, "Rumble-2-Flash bn-BD: another A100-SXM4-40GB, 20 Nov 2026", size=7, color=MUTED)
     fig.text(0.94, 0.03, str(page), size=7, color=MUTED, ha="right")
 
 
@@ -158,7 +163,7 @@ def wer_page(pdf, page, title, subtitle, sets, notes):
     fig = plt.figure(figsize=(8.27, 11.69))
     header(fig, title, subtitle)
     top = legend(fig, 0.857) - 0.02
-    height = (0.06 if len(MODELS) <= 6 else 0.041) * len(sets) - 0.01
+    height = (0.06 if len(MODELS) <= 6 else 0.041 if len(MODELS) <= 11 else 0.036) * len(sets) - 0.01
     ax = fig.add_axes([0.27, top - height, 0.67, height])
     n, group = len(MODELS), len(MODELS) + 1.4
     xmax = 10 * math.ceil(max(wer(k, s) for k in KEYS for s, _, _ in sets) / 10 + 0.05)
@@ -292,7 +297,8 @@ def page3(pdf):
     heading(fig, 0.06, y, "How it was measured")
     y = bullets(fig, 0.06, y - 0.032, [
         f"One Colab A100 (40 GB) on 13 Oct 2026, one model on the GPU at a time; Whistle bn-BD on {GPU_WHISTLE} "
-        "and a CPU on 21-22 Oct.",
+        "and a CPU on 21-22 Oct" + ("; Rumble-2-Flash bn-BD on another A100 (40 GB) on 20 Nov 2026, vLLM 0.31."
+                                    if "rumble_bn" in KEYS else "."),
         "The same audio for every model: 16 kHz, cut at pauses into pieces of at most 25 s.",
         "Plain decoding: greedy, one clip at a time, no external language model (Whistle bn-BD on CPU: its engine's "
         "default decoding).",
@@ -326,10 +332,137 @@ def page3(pdf):
     pdf.savefig(fig); plt.close(fig)
 
 
+# ---------------------------------------------------------------------------------------------
+# Page 4: Rumble-2-Flash, Voxtral Mini and Qwen3-ASR bn-BD re-decoded together on one A100 and one B200
+C3_PATH = Path("outputs_compare3/summary.json")
+C3_ORDER = [MINI, "rumble_bn", "qwen3_asr_bn"]   # Rumble in the middle: each adjacent pair of bars passes the checks
+C3_SETS = [("fleurs_test", "FLEURS"), ("subakko_test", "SUBAK.KO"), ("banspeech", "BanSpeech"),
+           ("cv17_bn_test", "Common Voice 17"), ("ben10_valid", "Ben-10 dialects"), ("vaani_test", "Vaani"),
+           ("spring_r1_test", "SPRING-INX R1"), ("spring_r2_test", "SPRING-INX R2"),
+           ("kathbath_test_known", "Kathbath known"), ("kathbath_test_unknown", "Kathbath unknown"),
+           ("indicvoices_conv", "IndicVoices")]
+
+
+def c3_bars(ax, rows, xmax, ticks, yticklabels=True):
+    """rows: [(label, {model: value}, bold label)] top first; three bars per row in C3_ORDER, with a 2 px gap between
+    bars; the numbers are in the table below the charts."""
+    n, group = len(C3_ORDER), len(C3_ORDER) + 1.3
+    centers = []
+    for i, (label, vals, _) in enumerate(rows):
+        base = -i * group
+        centers.append(base - (n - 1) / 2)
+        for j, m in enumerate(C3_ORDER):
+            ax.barh(base - j, vals[m], height=0.86, color=COLOR[m], edgecolor=PAGE, linewidth=1.0)
+    ax.set_yticks(centers)
+    ax.set_yticklabels([r[0] for r in rows] if yticklabels else [""] * len(rows), size=8.2)
+    if yticklabels:
+        for t, r in zip(ax.get_yticklabels(), rows):
+            if r[2]:
+                t.set_fontweight("bold")
+    ax.tick_params(axis="y", length=0)
+    ax.set_xlim(0, xmax)
+    ax.set_xticks(ticks)
+    ax.tick_params(axis="x", labelsize=7.6)
+    ax.grid(axis="x", color=GRID, linewidth=0.7)
+    ax.set_axisbelow(True)
+    ax.spines[["top", "right", "left"]].set_visible(False)
+    ax.set_ylim(-(len(rows) - 1) * group - n + 0.4, 0.6)
+
+
+def page4(pdf, c3):
+    runs, avg, tok = c3["runs"], c3["average"], c3["output_tokens_fleurs_test"]
+    gpus = {g: c3["gpus"][g]["device"].replace("NVIDIA ", "") for g in ("a100", "b200")}
+    short = {MINI: "Voxtral Mini", "rumble_bn": "Rumble", "qwen3_asr_bn": "Qwen3-ASR"}
+    fig = plt.figure(figsize=(8.27, 11.69))
+    header(fig, "Three models, one GPU", f"Every set decoded by all three on one {gpus['a100']} and on one "
+           f"{gpus['b200']} · cleaned subsets")
+    x, y = 0.06, 0.862   # legend: one row, in the bar order
+    renderer = fig.canvas.get_renderer()
+    for m in C3_ORDER:
+        fig.patches.append(FancyBboxPatch((x, y - 0.0055), 0.016, 0.011, boxstyle="round,pad=0,rounding_size=0.002",
+                                          transform=fig.transFigure, facecolor=COLOR[m], edgecolor="none"))
+        t = fig.text(x + 0.024, y, NAME[m], size=8.6, va="center")
+        x += 0.024 + t.get_window_extent(renderer).width / fig.bbox.width + 0.035
+
+    # word error rate, A100 runs
+    w = lambda g, s, m: 100 * runs[g][s][m]["wer"]   # noqa: E731
+    heading(fig, 0.06, 0.835, f"Word error rate, {gpus['a100']} runs (lower is better)", size=11.5)
+    rows = [("Average, 11 sets", {m: 100 * avg["a100"][m]["wer"] for m in C3_ORDER}, True)] + \
+           [(label, {m: w("a100", s, m) for m in C3_ORDER}, False) for s, label in C3_SETS]
+    xmax = 10 * math.ceil(max(v for _, vals, _ in rows for v in vals.values()) / 10 + 0.05)
+    ax = fig.add_axes([0.22, 0.60, 0.72, 0.21])
+    c3_bars(ax, rows, xmax, list(range(0, xmax + 1, 10)))
+    ax.set_xticklabels([f"{t}%" for t in range(0, xmax + 1, 10)])
+    gap = max(abs(w("b200", s, m) - w("a100", s, m)) for s, _ in C3_SETS for m in C3_ORDER)
+    worst = max(((s, m) for s, _ in C3_SETS for m in C3_ORDER), key=lambda k: abs(w("b200", *k) - w("a100", *k)))
+    text_block(fig, 0.06, 0.572, f"The {gpus['b200']} runs read within {gap:.1f} points of these on every set (the "
+               f"largest gap: {short[worst[1]]} on {dict(C3_SETS)[worst[0]]}).", 130, size=7.8)
+
+    # time per clip, both GPUs on one scale
+    heading(fig, 0.06, 0.54, "Time per clip, mean over each set (shorter is faster)", size=11.5)
+    ms_ = lambda g, s, m: runs[g][s][m]["ms_per_clip_mean"]   # noqa: E731
+    top = max(ms_(g, s, m) for g in ("a100", "b200") for s, _ in C3_SETS for m in C3_ORDER)
+    step = 400 if top > 800 else 200 if top > 400 else 100
+    xmax = step * math.ceil(top * 1.05 / step)
+    for i, g in enumerate(("a100", "b200")):
+        ax = fig.add_axes([0.22 + i * 0.385, 0.33, 0.33, 0.17])
+        rows = [("Average, 11 sets", {m: avg[g][m]["ms_per_clip_mean"] for m in C3_ORDER}, True)] + \
+               [(label, {m: ms_(g, s, m) for m in C3_ORDER}, False) for s, label in C3_SETS]
+        c3_bars(ax, rows, xmax, list(range(0, xmax + 1, step)), yticklabels=(i == 0))
+        ax.set_title(gpus[g], size=9, weight="bold", loc="left", color=INK)
+        ax.set_xlabel("ms per clip", size=7.6, color=MUTED)
+
+    # the averages and the token arithmetic
+    y = 0.262
+    heading(fig, 0.06, y, "Averages over the eleven sets", size=11.5)
+    y -= 0.034
+    cols = [("WER\nA100", lambda m: f"{100 * avg['a100'][m]['wer']:.2f}%"),
+            ("WER\nB200", lambda m: f"{100 * avg['b200'][m]['wer']:.2f}%"),
+            ("ms/clip\nA100", lambda m: f"{avg['a100'][m]['ms_per_clip_mean']:.0f}"),
+            ("ms/clip\nB200", lambda m: f"{avg['b200'][m]['ms_per_clip_mean']:.0f}"),
+            ("tokens/\nclip", lambda m: f"{tok['a100'][m]['tokens_per_clip_mean']:.0f}"),
+            ("ms/token\nA100", lambda m: f"{tok['a100'][m]['fit_ms_per_token']:.2f}"),
+            ("ms/token\nB200", lambda m: f"{tok['b200'][m]['fit_ms_per_token']:.2f}")]
+    xs = [0.44 + 0.083 * i for i in range(len(cols))]
+    for x_, (head, _) in zip(xs, cols):
+        fig.text(x_, y, head, size=7.4, color=MUTED, weight="bold", ha="right", va="center", linespacing=1.25)
+    y -= 0.026
+    for m in C3_ORDER:
+        fig.patches.append(Rectangle((0.06, y - 0.005), 0.012, 0.01, transform=fig.transFigure, facecolor=COLOR[m],
+                                     edgecolor="none"))
+        fig.text(0.08, y, NAME[m], size=8.6, va="center")
+        for x_, (_, f) in zip(xs, cols):
+            fig.text(x_, y, f(m), size=8.6, ha="right", va="center")
+        y -= 0.02
+    r, v = "rumble_bn", MINI
+    fast = lambda g: min(C3_ORDER, key=lambda m: avg[g][m]["ms_per_clip_mean"])   # noqa: E731
+    assert fast("a100") == r and fast("b200") == v, "the text below assumes this speed order"
+    spread = {g: max(avg[g][m]["wer"] for m in C3_ORDER) - min(avg[g][m]["wer"] for m in C3_ORDER) for g in avg}
+    scored = sum(c3["sets"][s]["n_kept"] for s in c3["sets"])
+    same = [sum(d.values()) / scored for d in c3["same_transcript_b200_vs_a100"].values()]
+    bullets(fig, 0.06, y - 0.004, [
+        f"Accuracy: the three averages span {100 * spread['a100']:.2f} points on the A100 and "
+        f"{100 * spread['b200']:.2f} on the B200; each model's transcripts on the two GPUs are identical on "
+        f"{min(same):.0%}-{max(same):.0%} of the scored clips.",
+        f"Speed: on the A100 Rumble is {avg['a100'][v]['ms_per_clip_mean'] / avg['a100'][r]['ms_per_clip_mean']:.1f}x "
+        f"faster than Voxtral Mini; on the B200 Voxtral Mini is faster. Voxtral Mini writes a FLEURS test transcript in "
+        f"{tok['a100'][r]['tokens_per_clip_mean'] / tok['a100'][v]['tokens_per_clip_mean']:.1f}x fewer tokens (each "
+        f"model's own tokenizer), but each of its tokens costs "
+        f"{tok['a100'][v]['fit_ms_per_token'] / tok['a100'][r]['fit_ms_per_token']:.1f}x Rumble's on the A100 and "
+        f"{tok['b200'][v]['fit_ms_per_token'] / tok['b200'][r]['fit_ms_per_token']:.1f}x on the B200 (ms/token: "
+        "least-squares fit of each FLEURS test clip's time against its output tokens).",
+    ], 118, size=8.0, gap=0.002)
+    footer(fig, 4, f"bengali-asr-benchmark · three-model comparison, 20 Nov 2026 · {gpus['a100']} (two cards of "
+           f"that model) and {gpus['b200']}, vLLM 0.31")
+    pdf.savefig(fig); plt.close(fig)
+
+
 def main():
     out = "asr_benchmark.pdf"
     with PdfPages(out) as pdf:
         page1(pdf); page2(pdf); page3(pdf)
+        if C3_PATH.exists():
+            page4(pdf, json.loads(C3_PATH.read_text()))
     print("wrote", out)
 
 

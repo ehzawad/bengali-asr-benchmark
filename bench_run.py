@@ -239,6 +239,42 @@ class GraniteSpeechVLLMBackend:
         return out
 
 
+class RumbleVLLMBackend:
+    """Rumble-2-Flash bn-BD (qwen3_asr architecture with a pruned 99,630-token vocabulary) under vLLM, one request
+    per staged piece. The prompt is the one the fine-tune was trained and evaluated with: the controls
+    <nodigits><nofiller><verbatim> in the system turn, the audio in the user turn, and the forced prefix
+    'language Bengali<asr_text>' after the assistant header, so the generation is the transcript (vLLM's endpoint
+    prompt for this architecture leaves the language unset and has no controls). If the model writes another
+    '<asr_text>', everything up to it is cut, as in the fine-tune's own evaluation. Greedy, at most 500 new tokens
+    (as Qwen3-ASR). Runs in an interpreter with vllm[audio]. finish_reasons holds the last clip's per-piece stop
+    reasons ("length" = hit the cap)."""
+
+    AUDIO = "<|audio_start|><|audio_pad|><|audio_end|>"
+    PROMPT = ("<|im_start|>system\n<nodigits><nofiller><verbatim><|im_end|>\n<|im_start|>user\n" + AUDIO +
+              "<|im_end|>\n<|im_start|>assistant\nlanguage Bengali<asr_text>")
+
+    def __init__(self, model, **kw):
+        import re
+        from vllm import LLM, SamplingParams
+        from vllm.model_executor.models.qwen3_asr import Qwen3ASRForConditionalGeneration as Q
+        assert Q.get_placeholder_str("audio", 0) == self.AUDIO, Q.get_placeholder_str("audio", 0)
+        self.llm = LLM(model=model, gpu_memory_utilization=0.85, max_model_len=4096, max_num_seqs=8,
+                       limit_mm_per_prompt={"audio": 1}, seed=0)
+        self.sp = SamplingParams(temperature=0.0, max_tokens=500, skip_special_tokens=False)
+        self.special = re.compile(r"<\|[a-z_]+\|>")
+        self.finish_reasons = []
+
+    def transcribe(self, paths, batch_size=1, verbose=False):
+        out, self.finish_reasons = [], []
+        for p in paths:
+            o = self.llm.generate([{"prompt": self.PROMPT, "multi_modal_data": {"audio": (_read_staged(p), 16000)}}],
+                                  self.sp, use_tqdm=False)[0].outputs[0]
+            self.finish_reasons.append(o.finish_reason)
+            text = o.text.split("<asr_text>")[-1]
+            out.append(SimpleNamespace(text=self.special.sub("", text).strip()))
+        return out
+
+
 def _read_staged(path):
     """Read a chunk staged by asr_core.decode. Asserts the staged format so a
     future change cannot silently route a model through different audio."""
@@ -251,7 +287,8 @@ def _read_staged(path):
 
 KINDS = {"nemo": NeMoBackend, "whisper": WhisperBackend, "wav2vec2": Wav2Vec2Backend,
          "voxtral_vllm": VoxtralVLLMBackend, "whisper_vllm": WhisperVLLMBackend, "canary": CanaryBackend,
-         "qwen3_asr_vllm": Qwen3ASRVLLMBackend, "granite_speech_vllm": GraniteSpeechVLLMBackend}
+         "qwen3_asr_vllm": Qwen3ASRVLLMBackend, "granite_speech_vllm": GraniteSpeechVLLMBackend,
+         "rumble_vllm": RumbleVLLMBackend}
 
 
 def gpu_state():

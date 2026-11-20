@@ -43,13 +43,14 @@ MODELS = {
     "wav2vec2": "Wav2Vec2",
     "whistle_bn_bd": "Whistle bn-BD ‡ (55M, CPU engine)",
     "whistle_bn_bd_a100": "Whistle bn-BD ‡ (55M, A100, greedy)",
+    "rumble_bn": "Rumble-2-Flash bn-BD ‡",
 }
 # the two Whistle rows are one checkpoint under two runtimes: each is ranked against the other models, not against
 # the other; the remaining models' ranks are computed with the CPU row
 WHISTLE = ["whistle_bn_bd", "whistle_bn_bd_a100"]
 MIN_SECONDS = 0.5
 SEED = 20260903
-PAIRED = ["granite_speech_bn", "voxtral_mini_bn", "fastconformer_ctc"]   # compared pairwise with every other model
+PAIRED = ["granite_speech_bn", "voxtral_mini_bn", "fastconformer_ctc", "rumble_bn"]   # compared pairwise with every other model
 # provenance flags from the model cards (as in the README): N = card does not list the corpus, S = trained on another
 # split of it; every other cell is U (the card does not say either way). FLEURS is reported without flags.
 FLAGS = {"fastconformer_ctc": dict(subakko_test="S", banspeech="N", cv17_bn_test="S", ben10_valid="N", vaani_test="N",
