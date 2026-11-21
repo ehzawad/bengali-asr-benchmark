@@ -43,14 +43,19 @@ MODELS = {
     "wav2vec2": "Wav2Vec2",
     "whistle_bn_bd": "Whistle bn-BD ‡ (55M, CPU engine)",
     "whistle_bn_bd_a100": "Whistle bn-BD ‡ (55M, A100, greedy)",
-    "rumble_bn": "Rumble-2-Flash bn-BD ‡",
+    "rumble_bn": "Rumble-2-Flash bn-BD ‡ (plain greedy)",
+    "rumble_bn_rec": "Rumble-2-Flash bn-BD ‡ (recommended decoding)",
 }
-# the two Whistle rows are one checkpoint under two runtimes: each is ranked against the other models, not against
-# the other; the remaining models' ranks are computed with the CPU row
-WHISTLE = ["whistle_bn_bd", "whistle_bn_bd_a100"]
+# one checkpoint, two rows: Whistle bn-BD under two runtimes (CPU engine, A100 greedy) and Rumble-2-Flash bn-BD under
+# two decodings (plain greedy, the harness protocol; the model card's recommended decoding). Each row is ranked against
+# the other models, not against its sibling; the remaining models' ranks are computed with the first row of each pair
+PAIRS = [["whistle_bn_bd", "whistle_bn_bd_a100"], ["rumble_bn", "rumble_bn_rec"]]
+SIBLING = {a: b for p in PAIRS for a, b in (p, p[::-1])}
+SECOND = {p[1] for p in PAIRS}
+WHISTLE = PAIRS[0]
 MIN_SECONDS = 0.5
 SEED = 20260903
-PAIRED = ["granite_speech_bn", "voxtral_mini_bn", "fastconformer_ctc", "rumble_bn"]   # compared pairwise with every other model
+PAIRED = ["granite_speech_bn", "voxtral_mini_bn", "fastconformer_ctc", "rumble_bn", "rumble_bn_rec"]   # compared pairwise with every other model
 # provenance flags from the model cards (as in the README): N = card does not list the corpus, S = trained on another
 # split of it; every other cell is U (the card does not say either way). FLEURS is reported without flags.
 FLAGS = {"fastconformer_ctc": dict(subakko_test="S", banspeech="N", cv17_bn_test="S", ben10_valid="N", vaani_test="N",
@@ -133,7 +138,7 @@ def main():
         print(f"scored {name}", file=sys.stderr, flush=True)
     names = [n for n, _ in SETS]
     for m in MODELS:
-        others = [x for x in MODELS if x not in WHISTLE or x == m] if m in WHISTLE else [x for x in MODELS if x != "whistle_bn_bd_a100"]
+        others = [x for x in MODELS if x != SIBLING.get(m) and (x not in SECOND or x == m)]
         ranks = [1 + sum(wer[o][n] < wer[m][n] for o in others if o != m) for n in names]
         s = summary["models"][m]
         s["macro"] = {"wer": float(np.mean([wer[m][n] for n in names])),
@@ -172,7 +177,8 @@ def main():
             cells = []
             for n in group:
                 r = summary["models"][m][n]
-                best = all(r["wer"] <= summary["models"][o][n]["wer"] for o in MODELS if o not in WHISTLE or o == m)
+                best = all(r["wer"] <= summary["models"][o][n]["wer"] for o in MODELS
+                           if o != SIBLING.get(m) and (o not in SECOND or o == m))
                 lo, hi = r["wer_ci_reference_clustered"]
                 v = f"{100 * r['wer']:.2f}%"
                 flag = "" if n == "fleurs_test" else f" <sub>{FLAGS.get(m, {}).get(n, 'U')}</sub>"
@@ -183,7 +189,8 @@ def main():
         print(f"| Set | {MODELS[m]} | Best other model | Difference |")
         print("|---|---:|---|---|")
         for n in names:
-            o = min((x for x in MODELS if x != m and x not in WHISTLE), key=lambda x: wer[x][n])
+            o = min((x for x in MODELS if x not in (m, SIBLING.get(m)) and x not in SECOND and x not in WHISTLE),
+                    key=lambda x: wer[x][n])
             d = per[n][o]
             lo, hi = d["wer_ci95_pp"]
             verdict = "lower" if hi < 0 else "higher" if lo > 0 else "inconclusive"

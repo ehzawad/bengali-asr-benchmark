@@ -30,7 +30,7 @@
   "ehzawad/Qwen3-ASR-1.7B-bn-BD": "9a6458ec4842764cfeb8c0457f6cab0be7606e1f",
   "ehzawad/whistle-bn-BD": "7fdb8ebd7a1621436bfc28284645da24a3c633d2",
   "ehzawad/granite-speech-5.0-2b-bn-BD": "435cff6a47e52b446497c4d10f1a5bd2f874b17e",
-  "ehzawad/Rumble-2-Flash-bn-BD": "d4a6255dd92a6509bd1d626bd362235ca14ddac9",
+  "ehzawad/Rumble-2-Flash-bn-BD": "27e8a272548fb8a9f255c87ef08f2a1c5f3d25ea",
   "_note": "fastconformer_ctc decoded from stt_bn_fastconformer_ctc_v2.nemo at the revision above (LFS sha256 bea300ce4f1f1df1fa4707562ddaa7c64db6f01121ef3d64a6333635f3626572)"
  },
  "models": {
@@ -346,50 +346,92 @@
     "kind": "rumble_vllm",
     "model": "ehzawad/Rumble-2-Flash-bn-BD",
     "adapter": null,
-    "revision": "d4a6255dd92a6509bd1d626bd362235ca14ddac9",
+    "revision": "27e8a272548fb8a9f255c87ef08f2a1c5f3d25ea",
     "n": 1322,
+    "manifest_sha256": "27e5649cd8577a85b857e3b688e667742c41df99a9f0226732f2cab5ce8bd462",
     "failures": 0,
-    "audio_seconds": 17574.4,
-    "ms_per_clip_mean": 210.25,
-    "ms_per_clip_median": 196.72,
-    "ms_per_clip_p95": 332.21,
-    "inference_wall_s": 277.9,
-    "loop_wall_s": 278.0,
-    "audio_s_per_wall_s": 63.2,
-    "rtf": 0.01582,
     "batch_size": 1,
-    "decoding": "greedy, no external LM or rescoring",
-    "gpu_before": "NVIDIA A100-SXM4-40GB, 33746 MiB, 0 %, 1095 MHz, 35",
-    "gpu_after": "NVIDIA A100-SXM4-40GB, 34166 MiB, 93 %, 1410 MHz, 43",
+    "decoding": "greedy, no external LM or rescoring; at most 500 new tokens per piece (the harness protocol)",
+    "gpu_before": "NVIDIA A100-SXM4-80GB, 67925 MiB, 0 %, 1155 MHz, 27",
+    "gpu_after": "NVIDIA A100-SXM4-80GB, 68347 MiB, 56 %, 1410 MHz, 33",
+    "vllm": "0.31.0",
     "torch": "2.13.0+cu130",
     "python": "3.12.15",
-    "manifest_sha256": "27e5649cd8577a85b857e3b688e667742c41df99a9f0226732f2cab5ce8bd462",
-    "model_note": "weights read from a local folder whose model.safetensors is byte-identical to this revision (sha256 9de2c8927f3b6a30b3b37d3125a183ebf95e992e66a2e104d3d9db8dc7a720b1)"
+    "model_note": "weights read from a local folder whose files are byte-identical to this revision (model.safetensors sha256 7819df76dc095da673dd8a94645103e83a022db24cdb3a894739015c8d576baf)",
+    "ms_per_clip_mean": null,
+    "run_note": "accuracy run: per-clip times are not a speed measurement and are omitted (null)"
    },
    "n": 1322,
-   "wer": 0.16172,
-   "cer": 0.05256,
+   "wer": 0.15504,
+   "cer": 0.04844,
    "wer_ci_utterance": [
-    0.15116,
-    0.17642
+    0.14856,
+    0.16162
    ],
    "wer_ci_sentence_clustered": [
-    0.14873,
-    0.17784
+    0.14551,
+    0.16497
    ],
    "word_counts": {
-    "errors": 4088,
+    "errors": 3919,
     "ref_words": 25278
    },
    "failures": 0,
    "empty_hyps": 0,
    "multi_piece_clips": 31,
    "forced_cuts": 10,
-   "wer_test": 0.1563,
-   "cer_test": 0.05032,
+   "wer_test": 0.155,
+   "cer_test": 0.04934,
    "n_test": 920,
-   "wer_validation": 0.17454,
-   "cer_validation": 0.0578,
+   "wer_validation": 0.15512,
+   "cer_validation": 0.04635,
+   "n_validation": 402
+  },
+  "rumble_bn_rec": {
+   "meta": {
+    "label": "rumble_bn_rec",
+    "kind": "rumble_vllm",
+    "model": "ehzawad/Rumble-2-Flash-bn-BD",
+    "adapter": null,
+    "revision": "27e8a272548fb8a9f255c87ef08f2a1c5f3d25ea",
+    "n": 1322,
+    "manifest_sha256": "27e5649cd8577a85b857e3b688e667742c41df99a9f0226732f2cab5ce8bd462",
+    "failures": 0,
+    "batch_size": 1,
+    "decoding": "greedy, no external LM or rescoring; the model card's recommended decoding: at most ceil(5.51 + 6.9219375 * s) new tokens for a piece of s seconds, then in each piece's text any sequence of 1 to 4 words repeated 4 or more times in a row is kept once; pieces joined with spaces. 'pieces' keeps each piece's raw text and finish reason",
+    "gpu_before": "NVIDIA A100-SXM4-80GB, 67925 MiB, 0 %, 1155 MHz, 27",
+    "gpu_after": "NVIDIA A100-SXM4-80GB, 68347 MiB, 52 %, 1410 MHz, 34",
+    "vllm": "0.31.0",
+    "torch": "2.13.0+cu130",
+    "python": "3.12.15",
+    "model_note": "weights read from a local folder whose files are byte-identical to this revision (model.safetensors sha256 7819df76dc095da673dd8a94645103e83a022db24cdb3a894739015c8d576baf)",
+    "ms_per_clip_mean": null,
+    "run_note": "transcripts from the capped decode of the accuracy run with the collapse applied; on FLEURS they equal the plain transcripts on all 1,322 recordings (no piece reaches the cap, nothing to collapse). Per-clip times are omitted (null): the accuracy run is not a speed measurement"
+   },
+   "n": 1322,
+   "wer": 0.15504,
+   "cer": 0.04844,
+   "wer_ci_utterance": [
+    0.14856,
+    0.16162
+   ],
+   "wer_ci_sentence_clustered": [
+    0.14551,
+    0.16497
+   ],
+   "word_counts": {
+    "errors": 3919,
+    "ref_words": 25278
+   },
+   "failures": 0,
+   "empty_hyps": 0,
+   "multi_piece_clips": 31,
+   "forced_cuts": 10,
+   "wer_test": 0.155,
+   "cer_test": 0.04934,
+   "n_test": 920,
+   "wer_validation": 0.15512,
+   "cer_validation": 0.04635,
    "n_validation": 402
   },
   "voxtral_mini_bn": {

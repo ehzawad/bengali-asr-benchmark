@@ -1,8 +1,10 @@
 # Bengali ASR benchmark
 
 A controlled comparison of twelve Bengali speech-to-text models on eleven evaluation sets. Four models are
-public checkpoints; eight are the author's private bn-BD fine-tunes, marked ‡, one of them a
-55M-parameter on-device model (Whistle bn-BD) measured twice, on an A100 and on CPU. The sets are:
+public checkpoints; eight are the author's bn-BD fine-tunes, marked ‡ (private, except Rumble-2-Flash bn-BD,
+public but gated). Two of them have two rows: Whistle bn-BD, a 55M-parameter on-device model measured on an A100
+and on CPU, and Rumble-2-Flash bn-BD, scored under plain greedy decoding and under its model card's recommended
+decoding. The sets are:
 
 - the FLEURS Bengali test split;
 - 1,000-utterance samples of six Indian sets: Vaani, SPRING-INX R1 and R2, Kathbath (known- and
@@ -19,17 +21,19 @@ audio path and the same scorer, so accuracy and speed are comparable across the 
 Whistle bn-BD, run later on an A100-SXM4-80GB in JAX (greedy, batch 1) and on CPU in its own engine (see
 [On-device model: Whistle bn-BD](#on-device-model-whistle-bn-bd)), Granite Speech 5.0 2B bn-BD, added
 on 23 Oct 2026 and decoded with the same harness on another A100-SXM4-40GB, and Rumble-2-Flash bn-BD, added
-on 20 Nov 2026 in the same way on another A100-SXM4-40GB. Every other autoregressive decoder (Voxtral Mini,
-Whisper Medium, Whisper turbo, Qwen3-ASR, Granite Speech, Rumble-2-Flash) ran through vLLM; the CTC and
-RNN-T models, Canary and Wav2Vec2 through NeMo or PyTorch. Rumble-2-Flash, Voxtral Mini and Qwen3-ASR were
-also decoded together on one A100 and on one B200 (see
-[Three-model comparison on one GPU](#three-model-comparison-on-one-gpu)).
+on 21 Nov 2026 with the same harness on an A100-SXM4-80GB (the same chip with more memory; its timing on an
+A100-SXM4-40GB, comparable with the other rows, is being measured; see
+[Rumble-2-Flash bn-BD: plain and recommended decoding](#rumble-2-flash-bn-bd-plain-and-recommended-decoding)).
+Every other autoregressive decoder (Voxtral Mini, Whisper Medium, Whisper turbo, Qwen3-ASR, Granite Speech,
+Rumble-2-Flash) ran through vLLM; the CTC and RNN-T models, Canary and Wav2Vec2 through NeMo or PyTorch. Voxtral
+Mini and Qwen3-ASR were also decoded together on one A100 and on one B200 (see
+[Two-model comparison on one GPU](#two-model-comparison-on-one-gpu)).
 
 The ‡ models are private or gated, so not every reader can run them; they are here to place the author's
 own fine-tunes in the public field.
 
 Report: [`asr_benchmark.pdf`](asr_benchmark.pdf), a short summary centred on Voxtral Mini bn-BD on the full
-sets (Rumble-2-Flash included, Granite Speech not), plus one page for the three-model comparison, rendered
+sets (Rumble-2-Flash included, Granite Speech not), plus one page for the two-model comparison, rendered
 by `make_report.py` from the committed summaries. Its first three pages predate the cleaned subsets. This
 README has the current tables and intervals.
 
@@ -93,22 +97,24 @@ All models by average rank over the eleven cleaned sets:
 |---|---:|---|---:|---:|
 | Whisper turbo bn-BD ‡ | 3.4 | Vaani, SPRING R1, SPRING R2 | 21.9% | 9.9% |
 | Qwen3-ASR 1.7B bn-BD ‡ | 3.5 | IndicVoices | 21.9% | 9.8% |
-| Canary 1B v2 bn-BD ‡ | 3.9 | — | 23.1% | 10.4% |
-| Voxtral Mini bn-BD ‡ | 4.6 | SUBAK.KO, BanSpeech | 22.8% | 10.2% |
+| Canary 1B v2 bn-BD ‡ | 3.8 | — | 23.1% | 10.4% |
+| Voxtral Mini bn-BD ‡ | 4.5 | SUBAK.KO, BanSpeech | 22.8% | 10.2% |
 | FastConformer hybrid bn-BD ‡ | 5.2 | Ben-10 | 22.4% | 9.8% |
 | Conformer Large (hishab) | 6.1 | FLEURS, Kathbath ×2, Common Voice (trained on all four) | 25.5% | 10.7% |
-| Rumble-2-Flash bn-BD ‡ | 6.2 | — | 22.9% | 9.9% |
-| Granite Speech 5.0 2B bn-BD ‡ | 6.9 | — | 23.6% | 10.6% |
-| Whisper Medium | 7.2 | — | 26.1% | 12.5% |
-| ehzawad FastConformer-CTC | 8.6 | — | 25.9% | 11.6% |
+| Rumble-2-Flash bn-BD ‡ (recommended decoding) | 6.4 | — | 22.8% | 9.7% |
+| Granite Speech 5.0 2B bn-BD ‡ | 6.7 | — | 23.6% | 10.6% |
+| Rumble-2-Flash bn-BD ‡ (plain greedy) | 7.0 | — | 24.4% | 10.6% |
+| Whisper Medium | 7.1 | — | 26.1% | 12.5% |
+| ehzawad FastConformer-CTC | 8.5 | — | 25.9% | 11.6% |
 | Whistle bn-BD ‡ (55M, CPU engine) | 10.5 | — | 29.2% | 14.2% |
 | Whistle bn-BD ‡ (55M, A100, greedy) | 11.2 | — | 35.6% | 20.5% |
-| Wav2Vec2 | 11.8 | — | 33.2% | 13.1% |
+| Wav2Vec2 | 11.7 | — | 33.2% | 13.1% |
 
-Ranks and averages weight the eleven sets equally; Ben-10's 60–80 % error rates dominate the average WER
+Ranks and averages weight the eleven sets equally; Ben-10's 60–82 % error rates dominate the average WER
 (121 % for greedy Whistle on the A100, see below). The two Whistle rows are one checkpoint under two
-runtimes, so each is ranked against the eleven other models, not against the other; the other ranks are
-those with the CPU row.
+runtimes and the two Rumble-2-Flash rows one checkpoint under two decodings, so each row is ranked against
+the eleven other models, not against its sibling; the other ranks are those with Whistle's CPU row and
+Rumble-2-Flash's plain-greedy row.
 Several leads are inside their intervals (see [Paired comparisons](#paired-comparisons)).
 
 - **Whisper turbo bn-BD** is the most accurate on Indian conversational speech, but its multilingual
@@ -119,13 +125,16 @@ Several leads are inside their intervals (see [Paired comparisons](#paired-compa
   BanSpeech, though not separably from Canary on SUBAK.KO or Qwen3-ASR on BanSpeech.
 - **FastConformer hybrid bn-BD** is best on the Ben-10 dialects and runs in 0.1 s per clip, 2–9× faster
   than the other private models except Whistle bn-BD (139 ms on the A100).
-- **Rumble-2-Flash bn-BD**, the newest and at 508.6M parameters the smallest of the models decoded through
-  vLLM, is seventh by average rank (22.9 % average WER, the fifth lowest). It leads on no set: the best
-  other model is lower by 0.9 points on BanSpeech (inside the interval) up to 5.1 points on Ben-10, outside
-  the interval on every other set. It is the fastest of the vLLM decoders on the A100 (211 ms per FLEURS
-  clip); on a B200 Voxtral Mini is faster (see
-  [Three-model comparison on one GPU](#three-model-comparison-on-one-gpu)).
-- **Granite Speech 5.0 2B bn-BD** is eighth by average rank (23.6 % average WER). It leads on
+- **Rumble-2-Flash bn-BD**, the newest and at 415.0M parameters the smallest of the models decoded through
+  vLLM, leads on no set: the best other model is lower by 1.2 points (SPRING R2) to 3.8 points (Common Voice)
+  on ten sets, each outside its interval. Under plain greedy decoding it is eighth by average rank (24.4 %
+  average WER), held back by Ben-10, where 22 of its 1,000 recordings run to the 500-token cap repeating a
+  phrase (81.9 %). With its model card's recommended decoding it is seventh (22.8 %, the fourth-lowest
+  average WER; Ben-10 63.9 %), see
+  [Rumble-2-Flash bn-BD: plain and recommended decoding](#rumble-2-flash-bn-bd-plain-and-recommended-decoding).
+  Its timing on an A100-SXM4-40GB is being measured.
+- **Granite Speech 5.0 2B bn-BD** is seventh by average rank (23.6 % average WER; Rumble-2-Flash's
+  recommended-decoding row ranks just above it). It leads on
   no set: the best other model is lower by 0.8 points on SUBAK.KO (its closest set, 6.2 %) up to 8.5 points on
   Ben-10, each outside its interval, and it is the slowest model here (961 ms per FLEURS clip).
 
@@ -153,8 +162,9 @@ intervals in brackets; flags as below):
 | Voxtral Mini bn-BD ‡ | **5.42%** [4.8–6.1] <sub>U</sub> | **19.24%** [18.0–20.5] <sub>U</sub> | 10.32% [9.5–11.2] <sub>U</sub> | 69.97% [65.5–75.1] <sub>U</sub> |
 | FastConformer hybrid bn-BD ‡ | 8.35% [7.4–9.4] <sub>U</sub> | 22.03% [20.6–23.6] <sub>U</sub> | 10.51% [9.7–11.4] <sub>U</sub> | **60.91%** [59.7–62.1] <sub>U</sub> |
 | Conformer Large (hishab) | 7.85% [6.9–8.8] <sub>S</sub> | 25.44% [23.9–27.1] <sub>N</sub> | **7.35%** [6.7–8.0] <sub>S</sub> | 63.54% [62.3–64.8] <sub>N</sub> |
-| Rumble-2-Flash bn-BD ‡ | 7.83% [7.1–8.6] <sub>U</sub> | 20.11% [18.7–21.6] <sub>U</sub> | 11.18% [10.3–12.1] <sub>U</sub> | 65.96% [64.0–67.9] <sub>U</sub> |
+| Rumble-2-Flash bn-BD ‡ (recommended decoding) | 7.13% [6.4–7.9] <sub>U</sub> | 20.73% [19.3–22.1] <sub>U</sub> | 11.14% [10.2–12.0] <sub>U</sub> | 63.89% [62.4–65.4] <sub>U</sub> |
 | Granite Speech 5.0 2B bn-BD ‡ | 6.23% [5.3–7.3] <sub>U</sub> | 22.91% [21.4–24.5] <sub>U</sub> | 10.99% [10.1–11.9] <sub>U</sub> | 69.39% [67.5–71.4] <sub>U</sub> |
+| Rumble-2-Flash bn-BD ‡ (plain greedy) | 7.21% [6.5–8.0] <sub>U</sub> | 20.66% [19.3–22.0] <sub>U</sub> | 11.14% [10.2–12.0] <sub>U</sub> | 81.90% [74.3–90.2] <sub>U</sub> |
 | Whisper Medium | 16.48% [15.6–17.4] <sub>U</sub> | 21.93% [20.5–23.4] <sub>U</sub> | 10.12% [9.3–11.0] <sub>U</sub> | 74.79% [73.6–75.9] <sub>U</sub> |
 | ehzawad FastConformer-CTC | 13.67% [12.5–14.8] <sub>S</sub> | 26.66% [25.1–28.3] <sub>N</sub> | 12.14% [11.2–13.0] <sub>S</sub> | 76.92% [75.8–78.0] <sub>N</sub> |
 | Whistle bn-BD ‡ (55M, CPU engine) | 13.36% [12.3–14.5] <sub>U</sub> | 30.28% [28.4–32.3] <sub>U</sub> | 17.10% [16.0–18.2] <sub>U</sub> | 79.87% [78.3–81.4] <sub>U</sub> |
@@ -170,8 +180,9 @@ intervals in brackets; flags as below):
   −0.13 [−1.10, +0.83] against Qwen3-ASR on BanSpeech.
 - **Granite Speech bn-BD ‡** is third on SUBAK.KO (6.23 %, +0.81 [+0.19, +1.58] behind Voxtral Mini) and
   eighth on BanSpeech (22.91 %).
-- **Rumble-2-Flash bn-BD ‡** is fifth on SUBAK.KO (7.83 %, +2.40 [+1.95, +2.87] behind Voxtral Mini) and
-  fourth on BanSpeech (20.11 %), not separable from Voxtral Mini there (+0.87 [−0.08, +1.83]).
+- **Rumble-2-Flash bn-BD ‡** is fifth on SUBAK.KO (7.21 %, +1.79 [+1.34, +2.28] behind Voxtral Mini) and
+  fourth on BanSpeech (20.66 %, +1.42 [+0.47, +2.38] behind Voxtral Mini); its recommended decoding reads 7.13 %
+  and 20.73 %.
 - **Digits.** The 288 SUBAK.KO and 72 BanSpeech references that write numbers as digits are outside the
   cleaned subsets (see [Cleaned subsets](#cleaned-subsets)). With them SUBAK.KO reads 4.5–6.5 points
   higher for the other public and private models, but only 0.7 points higher for the ehzawad CTC model
@@ -184,14 +195,16 @@ intervals in brackets; flags as below):
   The hybrid FastConformer reads 60.9 %, Whisper turbo 62.2 % (403 of its 1,000 clips hit the 448-token
   limit), Qwen3-ASR 63.4 % and Conformer Large 63.5 %. Voxtral Mini (70.0 %) and Qwen3-ASR each ran to their
   500-token cap on 18 clips, mostly repeating a word; without them Voxtral Mini reads 61.2 %. Granite Speech
-  (69.4 %) ran to its length cap on 42 clips; without them it reads 65.9 %. Rumble-2-Flash (66.0 %) ran to
-  its 500-token cap on 15 clips; without them it reads 64.1 %. These are conditional diagnostics, since
-  those clips stay in the scores. Canary (76.4 %) produced 37 outputs more than 2.5× the reference's length. Greedy Whistle bn-BD on the A100 produced 104 such outputs, repeating a word or
-  phrase up to its length cap, hence its 120.9 % (more insertions than reference words); the same
-  checkpoint in its CPU engine produced 5 and reads 79.9 %.
-- ehzawad FastConformer-CTC returned 24 empty hypotheses on Ben-10, the hybrid FastConformer 5 on the
-  cleaned SUBAK.KO and 6 on the cleaned BanSpeech, and Rumble-2-Flash 2 on the cleaned SUBAK.KO; they count
-  as full errors.
+  (69.4 %) ran to its length cap on 42 clips; without them it reads 65.9 %. Rumble-2-Flash under plain
+  greedy decoding (81.9 %) ran to its 500-token cap on 22 clips, 20 of them repeating a word or phrase;
+  without them it reads 64.6 %. These are conditional diagnostics, since those clips stay in the scores.
+  Rumble-2-Flash's recommended decoding, which cuts those loops, reads 63.9 % (see
+  [Rumble-2-Flash bn-BD: plain and recommended decoding](#rumble-2-flash-bn-bd-plain-and-recommended-decoding)).
+  Canary (76.4 %) produced 37 outputs more than 2.5× the reference's length. Greedy Whistle bn-BD on the
+  A100 produced 104 such outputs, repeating a word or phrase up to its length cap, hence its 120.9 % (more
+  insertions than reference words); the same checkpoint in its CPU engine produced 5 and reads 79.9 %.
+- ehzawad FastConformer-CTC returned 24 empty hypotheses on Ben-10 and the hybrid FastConformer 5 on the
+  cleaned SUBAK.KO and 6 on the cleaned BanSpeech; they count as full errors.
 
 ## Official test splits beyond FLEURS
 
@@ -214,8 +227,9 @@ conversational (82 replies under 0.5 s); the other five sets are scored whole.
 | Voxtral Mini bn-BD ‡ | 22.08% [20.9–23.2] <sub>U</sub> | 36.87% [35.7–38.2] <sub>U</sub> | 40.01% [36.6–44.3] <sub>U</sub> | 10.77% [10.0–11.5] <sub>U</sub> | 10.82% [10.1–11.6] <sub>U</sub> | 13.34% [12.5–14.3] <sub>U</sub> |
 | FastConformer hybrid bn-BD ‡ | 22.53% [21.4–23.7] <sub>U</sub> | 36.92% [35.7–38.2] <sub>U</sub> | 36.60% [35.4–37.9] <sub>U</sub> | 11.60% [10.8–12.4] <sub>U</sub> | 11.41% [10.6–12.2] <sub>U</sub> | 12.63% [11.8–13.5] <sub>U</sub> |
 | Conformer Large (hishab) | 33.10% [31.8–34.5] <sub>N</sub> | 42.46% [41.2–43.8] <sub>N</sub> | 42.25% [40.9–43.6] <sub>N</sub> | **9.33%** [8.6–10.1] <sub>S</sub> | **8.79%** [8.1–9.5] <sub>S</sub> | 29.30% [27.9–30.8] <sub>N</sub> |
-| Rumble-2-Flash bn-BD ‡ | 22.79% [21.6–24.0] <sub>U</sub> | 37.45% [36.2–38.7] <sub>U</sub> | 37.05% [35.8–38.4] <sub>U</sub> | 11.67% [10.9–12.5] <sub>U</sub> | 11.33% [10.6–12.1] <sub>U</sub> | 13.23% [12.4–14.1] <sub>U</sub> |
+| Rumble-2-Flash bn-BD ‡ (recommended decoding) | 22.85% [21.7–24.0] <sub>U</sub> | 37.86% [36.6–39.1] <sub>U</sub> | 37.37% [36.1–38.7] <sub>U</sub> | 11.82% [11.0–12.6] <sub>U</sub> | 11.43% [10.7–12.2] <sub>U</sub> | 13.38% [12.5–14.3] <sub>U</sub> |
 | Granite Speech 5.0 2B bn-BD ‡ | 22.52% [21.4–23.7] <sub>U</sub> | 39.15% [37.8–40.5] <sub>U</sub> | 38.08% [36.8–39.5] <sub>U</sub> | 11.72% [10.9–12.5] <sub>U</sub> | 11.46% [10.7–12.3] <sub>U</sub> | 14.04% [13.1–15.0] <sub>U</sub> |
+| Rumble-2-Flash bn-BD ‡ (plain greedy) | 22.85% [21.7–24.0] <sub>U</sub> | 37.82% [36.6–39.1] <sub>U</sub> | 37.37% [36.1–38.7] <sub>U</sub> | 11.82% [11.0–12.6] <sub>U</sub> | 11.43% [10.7–12.2] <sub>U</sub> | 13.28% [12.4–14.2] <sub>U</sub> |
 | Whisper Medium | 26.35% [25.1–27.6] <sub>U</sub> | 40.04% [38.8–41.3] <sub>U</sub> | 39.71% [38.5–40.9] <sub>U</sub> | 9.70% [9.0–10.4] <sub>U</sub> | 9.91% [9.2–10.6] <sub>U</sub> | 24.43% [23.2–25.7] <sub>U</sub> |
 | ehzawad FastConformer-CTC | 24.67% [23.5–25.9] <sub>N</sub> | 39.23% [38.0–40.5] <sub>N</sub> | 38.42% [37.2–39.7] <sub>N</sub> | 13.38% [12.6–14.2] <sub>S</sub> | 13.43% [12.6–14.3] <sub>S</sub> | 12.26% [11.4–13.1] <sub>S</sub> |
 | Whistle bn-BD ‡ (55M, CPU engine) | 27.43% [26.1–28.7] <sub>U</sub> | 43.38% [42.1–44.8] <sub>U</sub> | 42.19% [40.9–43.5] <sub>U</sub> | 15.61% [14.7–16.5] <sub>U</sub> | 15.82% [14.9–16.8] <sub>U</sub> | 19.32% [18.1–20.5] <sub>U</sub> |
@@ -236,7 +250,7 @@ data is undocumented, hence **U** everywhere. None of the three means "verified 
   Whisper Medium second on each.
 - The private fine-tunes are lower still on those three sets, Whisper turbo lowest of all (21.4 / 36.3 /
   36.1 %), Voxtral Mini at 22.1 / 36.9 / 40.0 %, Granite Speech at 22.5 / 39.2 / 38.1 % and Rumble-2-Flash
-  at 22.8 / 37.5 / 37.0 %. Voxtral Mini's
+  at 22.9 / 37.8 / 37.4 %. Voxtral Mini's
   SPRING R2 score includes three recordings that ran to its 500-token cap repeating one word: they hold 663
   of its 8,143 word errors there (36.8 % without them).
 - On Kathbath the order flips back: Conformer Large (9.3 / 8.8 %) and Whisper Medium (9.7 / 9.9 %) lead.
@@ -266,8 +280,8 @@ recordings whose references write numbers as digits.
 | Qwen3-ASR 1.7B bn-BD ‡ | `ehzawad/Qwen3-ASR-1.7B-bn-BD` | vLLM | 11.86% [10.88–12.87] | 2.78% | 656 | 2,038M |
 | Voxtral Mini bn-BD ‡ | `ehzawad/Voxtral-Mini-3B-2507-bn-BD` | vLLM | 12.08% [11.05–13.11] | 2.83% | 438 | 4,676M |
 | Whisper turbo bn-BD ‡ | `ehzawad/whisper-large-v3-turbo-bn-BD` | vLLM | 12.39% [11.25–13.62] | 3.19% | 700 | 808.9M |
+| Rumble-2-Flash bn-BD ‡ | `ehzawad/Rumble-2-Flash-bn-BD` | vLLM | 12.73% [11.75–13.74] | 2.94% | — | 415.0M |
 | FastConformer hybrid bn-BD ‡ | `ehzawad/fastconformer-hybrid-rnnt-ctc-large-bn-BD` | NeMo, RNN-T | 12.83% [11.84–13.86] | 2.98% | 102 | 114.7M |
-| Rumble-2-Flash bn-BD ‡ | `ehzawad/Rumble-2-Flash-bn-BD` | vLLM | 13.01% [12.00–14.04] | 3.03% | 211 | 508.6M |
 | Granite Speech 5.0 2B bn-BD ‡ | `ehzawad/granite-speech-5.0-2b-bn-BD` | vLLM | 13.49% [12.46–14.55] | 3.24% | 961 | 2,313M |
 | Whisper Medium | `SayedShaun/bengali-whisper-medium` | vLLM | 13.90% [12.77–15.04] | 3.17% | 304 | 763.9M |
 | **ehzawad FastConformer-CTC** | `ehzawad/stt_bn_fastconformer_ctc` | NeMo, CTC | 14.63% [13.50–15.78] | 3.47% | 88 | 115.6M |
@@ -276,9 +290,11 @@ recordings whose references write numbers as digits.
 | Wav2Vec2 | `SayedShaun/bangla-wave2vec2-unigram` | PyTorch, CTC | 18.25% [17.08–19.43] | 4.08% | 56 | 315.5M |
 
 Greedy decoding, batch 1, no external language model (Whistle bn-BD on CPU: its engine's own decoding).
-No clip failed and no hypothesis came back empty for any model. `ms/clip` is the mean single-clip latency
-over the 920 test recordings on the A100 (the Colab A100-SXM4-40GB; Granite Speech bn-BD and
-Rumble-2-Flash bn-BD on other A100-SXM4-40GB cards; Whistle bn-BD on an A100-SXM4-80GB, plus its CPU row):
+No clip failed and no hypothesis came back empty for any model. Rumble-2-Flash bn-BD's recommended decoding
+returns the same transcripts on this split, so it has one row here. `ms/clip` is the mean single-clip latency
+over the 920 test recordings on the A100 (the Colab A100-SXM4-40GB; Granite Speech bn-BD on another
+A100-SXM4-40GB card; Whistle bn-BD on an A100-SXM4-80GB, plus its CPU row). Rumble-2-Flash bn-BD's timing on an
+A100-SXM4-40GB is being measured with the same harness; its cells read "—" until that run is in:
 
 | Model | mean ms/clip | median | p95 |
 |---|---:|---:|---:|
@@ -287,13 +303,13 @@ Rumble-2-Flash bn-BD on other A100-SXM4-40GB cards; Whistle bn-BD on an A100-SXM
 | ehzawad FastConformer-CTC | 88 | 84 | 98 |
 | FastConformer hybrid bn-BD ‡ | 102 | 98 | 119 |
 | Whistle bn-BD ‡ (55M), A100-80GB, JAX | 139 | 131 | 235 |
-| Rumble-2-Flash bn-BD ‡ | 211 | 199 | 330 |
 | Whisper Medium | 304 | 288 | 461 |
 | Voxtral Mini bn-BD ‡ | 438 | 420 | 680 |
 | Canary 1B v2 bn-BD ‡ | 485 | 463 | 740 |
 | Qwen3-ASR 1.7B bn-BD ‡ | 656 | 621 | 1,028 |
 | Whisper turbo bn-BD ‡ | 700 | 666 | 1,108 |
 | Granite Speech 5.0 2B bn-BD ‡ | 961 | 911 | 1,485 |
+| Rumble-2-Flash bn-BD ‡ | — | — | — |
 | Whistle bn-BD ‡ (55M), CPU engine, one core | 578 | 530 | 1,012 |
 
 These numbers time the configured pipelines, not the models in isolation:
@@ -315,21 +331,22 @@ Paired comparisons for `ehzawad/stt_bn_fastconformer_ctc` on this split: +0.74 p
 Medium [+0.04, +1.42] at 3.5× its speed; +3.81 points behind Conformer Large [+3.03, +4.54].
 
 Voxtral Mini bn-BD ‡ on this split is not separable from Canary (+0.50 [−0.15, +1.16]), Qwen3-ASR
-(+0.22 [−0.39, +0.83]) or Whisper turbo (−0.31 [−1.13, +0.45]); it is higher than Conformer Large
-(+1.25 [+0.48, +2.01]) and lower than the hybrid FastConformer (−0.75 [−1.41, −0.09]), Rumble-2-Flash
-(−0.93 [−1.56, −0.29]), Granite Speech (−1.41 [−2.16, −0.68]), Whisper Medium (−1.82 [−2.57, −1.07]), the
+(+0.22 [−0.39, +0.83]), Whisper turbo (−0.31 [−1.13, +0.45]) or Rumble-2-Flash (−0.65 [−1.29, +0.01]); it is
+higher than Conformer Large (+1.25 [+0.48, +2.01]) and lower than the hybrid FastConformer
+(−0.75 [−1.41, −0.09]), Granite Speech (−1.41 [−2.16, −0.68]), Whisper Medium (−1.82 [−2.57, −1.07]), the
 ehzawad CTC model (−2.55 [−3.28, −1.82]) and Wav2Vec2.
 
 Granite Speech bn-BD ‡ on this split is lower than the ehzawad CTC model (−1.14 [−1.82, −0.47]), not
-separable from Whisper Medium (−0.41 [−1.14, +0.31]) or Rumble-2-Flash (+0.48 [−0.18, +1.15]), and higher
-than the private fine-tunes other than Whistle and Rumble-2-Flash, from the hybrid FastConformer
-(+0.66 [+0.01, +1.29]) to Canary (+1.91 [+1.29, +2.55]), and than Conformer Large (+2.66 [+1.92, +3.40]).
+separable from Whisper Medium (−0.41 [−1.14, +0.31]), and higher than the private fine-tunes other than
+Whistle, from the hybrid FastConformer (+0.66 [+0.01, +1.29]) and Rumble-2-Flash (+0.76 [+0.09, +1.43]) to
+Canary (+1.91 [+1.29, +2.55]), and than Conformer Large (+2.66 [+1.92, +3.40]).
 
-Rumble-2-Flash bn-BD ‡ on this split is not separable from Granite Speech (−0.48 [−1.15, +0.18]), the hybrid
-FastConformer (+0.18 [−0.38, +0.73]) or Whisper turbo (+0.62 [−0.11, +1.30]); it is lower than Whisper
-Medium (−0.88 [−1.54, −0.24]), the ehzawad CTC model (−1.62 [−2.26, −0.97]), Wav2Vec2 and both Whistle rows,
-and higher than Voxtral Mini (+0.93 [+0.29, +1.56]), Qwen3-ASR (+1.16 [+0.56, +1.75]), Canary
-(+1.43 [+0.83, +2.03]) and Conformer Large (+2.18 [+1.46, +2.87]).
+Rumble-2-Flash bn-BD ‡ on this split (the same transcripts under both decodings) is not separable from the
+hybrid FastConformer (−0.10 [−0.68, +0.48]), Whisper turbo (+0.34 [−0.48, +1.10]) or Voxtral Mini
+(+0.65 [−0.01, +1.29]); it is lower than Granite Speech (−0.76 [−1.43, −0.08]), Whisper Medium
+(−1.16 [−1.85, −0.45]), the ehzawad CTC model (−1.90 [−2.57, −1.23]), Wav2Vec2 and both Whistle rows, and
+higher than Qwen3-ASR (+0.88 [+0.27, +1.47]), Canary (+1.15 [+0.58, +1.71]) and Conformer Large
+(+1.90 [+1.21, +2.58]).
 
 ## Paired comparisons
 
@@ -373,25 +390,27 @@ comparisons). Every pair is in `paired` in `outputs_clean/summary_clean.json`.
 
 | Set | Rumble-2-Flash | Best other model | Rumble-2-Flash minus it, WER points (95% CI) |
 |---|---:|---|---|
-| FLEURS test | 13.01% | Conformer Large (hishab) 10.83% | +2.18 [+1.46, +2.87], higher |
-| Vaani test | 22.79% | Whisper turbo bn-BD ‡ 21.38% | +1.41 [+0.82, +2.02], higher |
-| SPRING-INX R1 eval | 37.45% | Whisper turbo bn-BD ‡ 36.30% | +1.15 [+0.62, +1.68], higher |
-| SPRING-INX R2 eval | 37.05% | Whisper turbo bn-BD ‡ 36.13% | +0.91 [+0.37, +1.46], higher |
-| Kathbath (known spk) | 11.67% | Conformer Large (hishab) 9.33% | +2.34 [+1.67, +3.00], higher |
-| Kathbath (unknown spk) | 11.33% | Conformer Large (hishab) 8.79% | +2.54 [+1.89, +3.19], higher |
-| IndicVoices conversational | 13.23% | Qwen3-ASR 1.7B bn-BD ‡ 11.91% | +1.33 [+0.79, +1.87], higher |
-| SUBAK.KO test | 7.83% | Voxtral Mini bn-BD ‡ 5.42% | +2.40 [+1.95, +2.87], higher |
-| BanSpeech | 20.11% | Voxtral Mini bn-BD ‡ 19.24% | +0.87 [−0.08, +1.83], inconclusive |
-| Common Voice 17 test | 11.18% | Conformer Large (hishab) 7.35% | +3.83 [+3.10, +4.55], higher |
-| Ben-10 validation (dialects) | 65.96% | FastConformer hybrid bn-BD ‡ 60.91% | +5.05 [+3.69, +6.49], higher |
+| FLEURS test | 12.73% | Conformer Large (hishab) 10.83% | +1.90 [+1.21, +2.58], higher |
+| Vaani test | 22.85% | Whisper turbo bn-BD ‡ 21.38% | +1.47 [+0.85, +2.09], higher |
+| SPRING-INX R1 eval | 37.82% | Whisper turbo bn-BD ‡ 36.30% | +1.52 [+0.98, +2.06], higher |
+| SPRING-INX R2 eval | 37.37% | Whisper turbo bn-BD ‡ 36.13% | +1.24 [+0.70, +1.78], higher |
+| Kathbath (known spk) | 11.82% | Conformer Large (hishab) 9.33% | +2.48 [+1.80, +3.18], higher |
+| Kathbath (unknown spk) | 11.43% | Conformer Large (hishab) 8.79% | +2.64 [+1.96, +3.32], higher |
+| IndicVoices conversational | 13.28% | Qwen3-ASR 1.7B bn-BD ‡ 11.91% | +1.37 [+0.81, +1.94], higher |
+| SUBAK.KO test | 7.21% | Voxtral Mini bn-BD ‡ 5.42% | +1.79 [+1.34, +2.28], higher |
+| BanSpeech | 20.66% | Voxtral Mini bn-BD ‡ 19.24% | +1.42 [+0.47, +2.38], higher |
+| Common Voice 17 test | 11.14% | Conformer Large (hishab) 7.35% | +3.79 [+3.01, +4.54], higher |
+| Ben-10 validation (dialects) | 81.90% | FastConformer hybrid bn-BD ‡ 60.91% | +20.99 [+13.70, +28.98], higher |
 
-## Three-model comparison on one GPU
+With its recommended decoding (every pair in `summary_clean.json`), Rumble-2-Flash is still higher than the best
+other model on every set; on Ben-10 the gap narrows to +2.99 [+2.20, +3.82] points.
 
-Rumble-2-Flash bn-BD ‡, Voxtral Mini bn-BD ‡ and Qwen3-ASR 1.7B bn-BD ‡ were decoded together on 20 Nov
-2026, set by set, with the same harness and checkpoints (vLLM 0.31, torch 2.13; greedy, batch 1, one model
-resident at a time): once on an A100-SXM4-40GB (FLEURS and the four Bangladeshi sets on one card, the six
-Indian sets on a second card of the same model) and once on one B200. The A100 runs of Rumble-2-Flash are
-the ones in the tables above. The Voxtral Mini re-run on the A100 gives its published WER on every set
+## Two-model comparison on one GPU
+
+Voxtral Mini bn-BD ‡ and Qwen3-ASR 1.7B bn-BD ‡ were decoded together on 20 Nov 2026, set by set, with the
+same harness and checkpoints (vLLM 0.31, torch 2.13; greedy, batch 1, one model resident at a time): once on
+an A100-SXM4-40GB (FLEURS and the four Bangladeshi sets on one card, the six Indian sets on a second card of
+the same model) and once on one B200. The Voxtral Mini re-run on the A100 gives its published WER on every set
 (average 22.81 %). The Qwen3-ASR re-run averages 21.89 % against the published 21.94 %; single sets move
 where a few clips run to the token cap (SUBAK.KO 6.18 % here, 7.16 % above; Ben-10 64.03 % against 63.39 %).
 
@@ -401,64 +420,102 @@ ms per token: the slope of a least-squares fit of each FLEURS test clip's time a
 
 **A100-SXM4-40GB:**
 
-| Set | Rumble-2-Flash bn-BD ‡ | Voxtral Mini bn-BD ‡ | Qwen3-ASR 1.7B bn-BD ‡ |
-|---|---:|---:|---:|
-| FLEURS test | 13.01% · 211 ms | 12.08% · 409 ms | 11.85% · 624 ms |
-| SUBAK.KO test | 7.83% · 224 ms | 5.42% · 463 ms | 6.18% · 670 ms |
-| BanSpeech | 20.11% · 84 ms | 19.24% · 179 ms | 19.27% · 239 ms |
-| Common Voice 17 test | 11.18% · 108 ms | 10.32% · 211 ms | 9.97% · 315 ms |
-| Ben-10 validation (dialects) | 65.96% · 348 ms | 69.97% · 901 ms | 64.03% · 1,077 ms |
-| Vaani test | 22.79% · 106 ms | 22.08% · 216 ms | 22.61% · 304 ms |
-| SPRING-INX R1 eval | 37.45% · 176 ms | 36.87% · 383 ms | 37.55% · 533 ms |
-| SPRING-INX R2 eval | 37.05% · 184 ms | 40.01% · 405 ms | 36.84% · 552 ms |
-| Kathbath (known spk) | 11.67% · 123 ms | 10.77% · 264 ms | 10.25% · 365 ms |
-| Kathbath (unknown spk) | 11.33% · 126 ms | 10.82% · 264 ms | 10.39% · 366 ms |
-| IndicVoices conversational | 13.23% · 126 ms | 13.34% · 268 ms | 11.89% · 370 ms |
-| **Average, 11 sets** | **22.87% · 165 ms** | **22.81% · 360 ms** | **21.89% · 492 ms** |
-| Clips at the token cap | 15 | 21 | 25 |
-| Tokens per FLEURS test clip | 135 | 51 | 135 |
-| ms per token (fit, FLEURS test) | 1.42 | 7.46 | 4.33 |
+| Set | Voxtral Mini bn-BD ‡ | Qwen3-ASR 1.7B bn-BD ‡ |
+|---|---:|---:|
+| FLEURS test | 12.08% · 409 ms | 11.85% · 624 ms |
+| SUBAK.KO test | 5.42% · 463 ms | 6.18% · 670 ms |
+| BanSpeech | 19.24% · 179 ms | 19.27% · 239 ms |
+| Common Voice 17 test | 10.32% · 211 ms | 9.97% · 315 ms |
+| Ben-10 validation (dialects) | 69.97% · 901 ms | 64.03% · 1,077 ms |
+| Vaani test | 22.08% · 216 ms | 22.61% · 304 ms |
+| SPRING-INX R1 eval | 36.87% · 383 ms | 37.55% · 533 ms |
+| SPRING-INX R2 eval | 40.01% · 405 ms | 36.84% · 552 ms |
+| Kathbath (known spk) | 10.77% · 264 ms | 10.25% · 365 ms |
+| Kathbath (unknown spk) | 10.82% · 264 ms | 10.39% · 366 ms |
+| IndicVoices conversational | 13.34% · 268 ms | 11.89% · 370 ms |
+| **Average, 11 sets** | **22.81% · 360 ms** | **21.89% · 492 ms** |
+| Clips at the token cap | 21 | 25 |
+| Tokens per FLEURS test clip | 51 | 135 |
+| ms per token (fit, FLEURS test) | 7.46 | 4.33 |
 
 **B200:**
 
-| Set | Rumble-2-Flash bn-BD ‡ | Voxtral Mini bn-BD ‡ | Qwen3-ASR 1.7B bn-BD ‡ |
-|---|---:|---:|---:|
-| FLEURS test | 13.02% · 179 ms | 12.09% · 140 ms | 11.78% · 245 ms |
-| SUBAK.KO test | 8.08% · 187 ms | 5.46% · 156 ms | 6.66% · 262 ms |
-| BanSpeech | 20.05% · 70 ms | 19.28% · 66 ms | 19.27% · 98 ms |
-| Common Voice 17 test | 11.21% · 89 ms | 10.26% · 77 ms | 9.94% · 127 ms |
-| Ben-10 validation (dialects) | 66.59% · 293 ms | 68.49% · 289 ms | 64.04% · 412 ms |
-| Vaani test | 22.75% · 87 ms | 22.14% · 78 ms | 22.61% · 123 ms |
-| SPRING-INX R1 eval | 37.46% · 150 ms | 36.91% · 130 ms | 37.60% · 209 ms |
-| SPRING-INX R2 eval | 37.08% · 156 ms | 40.13% · 136 ms | 36.86% · 216 ms |
-| Kathbath (known spk) | 11.57% · 103 ms | 10.79% · 93 ms | 10.31% · 146 ms |
-| Kathbath (unknown spk) | 11.34% · 105 ms | 10.87% · 93 ms | 10.34% · 147 ms |
-| IndicVoices conversational | 13.26% · 105 ms | 13.36% · 94 ms | 11.92% · 147 ms |
-| **Average, 11 sets** | **22.95% · 139 ms** | **22.71% · 123 ms** | **21.94% · 194 ms** |
-| Clips at the token cap | 17 | 19 | 26 |
-| Tokens per FLEURS test clip | 135 | 51 | 135 |
-| ms per token (fit, FLEURS test) | 1.22 | 2.39 | 1.64 |
+| Set | Voxtral Mini bn-BD ‡ | Qwen3-ASR 1.7B bn-BD ‡ |
+|---|---:|---:|
+| FLEURS test | 12.09% · 140 ms | 11.78% · 245 ms |
+| SUBAK.KO test | 5.46% · 156 ms | 6.66% · 262 ms |
+| BanSpeech | 19.28% · 66 ms | 19.27% · 98 ms |
+| Common Voice 17 test | 10.26% · 77 ms | 9.94% · 127 ms |
+| Ben-10 validation (dialects) | 68.49% · 289 ms | 64.04% · 412 ms |
+| Vaani test | 22.14% · 78 ms | 22.61% · 123 ms |
+| SPRING-INX R1 eval | 36.91% · 130 ms | 37.60% · 209 ms |
+| SPRING-INX R2 eval | 40.13% · 136 ms | 36.86% · 216 ms |
+| Kathbath (known spk) | 10.79% · 93 ms | 10.31% · 146 ms |
+| Kathbath (unknown spk) | 10.87% · 93 ms | 10.34% · 147 ms |
+| IndicVoices conversational | 13.36% · 94 ms | 11.92% · 147 ms |
+| **Average, 11 sets** | **22.71% · 123 ms** | **21.94% · 194 ms** |
+| Clips at the token cap | 19 | 26 |
+| Tokens per FLEURS test clip | 51 | 135 |
+| ms per token (fit, FLEURS test) | 2.39 | 1.64 |
 
 **What the tables say.**
 
-- **Average accuracy is about equal.** The three eleven-set averages span 0.98 points on the A100 and 1.01
-  on the B200, and each model's average moves by 0.05–0.10 points between the two cards (88–91 % of the
-  scored transcripts are identical). Single sets differ: on the A100 Voxtral Mini is lowest on four (SUBAK.KO,
-  BanSpeech, Vaani, SPRING R1), Qwen3-ASR on the other seven, and Rumble-2-Flash is 0.2–2.4 points above
-  the lowest on each set, below Voxtral Mini on Ben-10, SPRING R2 and IndicVoices.
-- **The speed order reverses.** On the A100 Rumble-2-Flash is fastest on every set, 2.2× faster than
-  Voxtral Mini and 3.0× faster than Qwen3-ASR on average; on the B200 Voxtral Mini is fastest on every set
-  (123 ms against 139 and 194 ms).
-- **Why.** Voxtral Mini's Tekken tokenizer writes a FLEURS test transcript in 51 tokens, the Qwen-derived
-  tokenizers of Rumble-2-Flash and Qwen3-ASR in 135, so Voxtral Mini generates 2.7× fewer tokens. On the
-  A100 each output token costs it 5.3× as much time as one of Rumble-2-Flash's (the fit slopes), which
-  outweighs that; on the B200 only 2.0×, so the shorter output wins.
+- **Qwen3-ASR is about a point lower on average.** Its eleven-set average is 0.92 points below Voxtral
+  Mini's on the A100 and 0.77 on the B200, and each model's average moves by 0.05–0.10 points between the two
+  cards (89–91 % of the scored transcripts are identical). Single sets differ: on the A100 Voxtral Mini is
+  lower on four (SUBAK.KO, BanSpeech, Vaani, SPRING R1) and Qwen3-ASR on the other seven.
+- **Voxtral Mini is faster on every set on both cards**, 1.4× on the A100 and 1.6× on the B200 on average.
+- **Why.** Voxtral Mini's Tekken tokenizer writes a FLEURS test transcript in 51 tokens, Qwen3-ASR's
+  tokenizer in 135, so Voxtral Mini generates 2.7× fewer tokens, while each of its output tokens costs 1.7×
+  as much time on the A100 and 1.5× on the B200 (the fit slopes); the shorter output wins on both, by more
+  on the B200.
 
 Runs: `outputs_compare3/a100/` and `outputs_compare3/b200/`, in the layout of `outputs_fleurs/` and
 `outputs_multiset/`. `score_compare3.py` rebuilds
 [`outputs_compare3/summary.json`](outputs_compare3/summary.json) from them: per set and model n, WER with a
 95 % interval, CER, mean/median/p95 ms per clip and cap hits, the averages, the token counts and fits, and
 how many transcripts match across the two GPUs.
+
+## Rumble-2-Flash bn-BD: plain and recommended decoding
+
+`ehzawad/Rumble-2-Flash-bn-BD` ‡ (public, gated) was decoded on 21 Nov 2026 on an A100-SXM4-80GB with the
+harness's `rumble_vllm` backend (vLLM 0.31, greedy, batch 1). It has two rows in the tables above, from the
+same accuracy run and the same audio pieces:
+
+- **plain greedy**, the harness protocol every other autoregressive model runs under (at most 500 new tokens
+  per piece);
+- **recommended decoding**, the decoding guard its model card prescribes: a cap on the new tokens of each piece
+  set by the piece's length, and a collapse of any 1-4 word sequence repeated 4 or more times in a row (exact
+  rule under [How the comparison was run](#how-the-comparison-was-run)).
+
+WER on the cleaned subsets, and the clips with a piece stopped by the cap (500 tokens for plain greedy, the
+length-based cap for the recommended decoding):
+
+| Set | Plain greedy | Recommended decoding | Clips at the cap, plain / recommended |
+|---|---:|---:|---:|
+| FLEURS test | 12.73% | 12.73% | 0 / 0 |
+| SUBAK.KO test | 7.21% | 7.13% | 0 / 0 |
+| BanSpeech | 20.66% | 20.73% | 0 / 0 |
+| Common Voice 17 test | 11.14% | 11.14% | 0 / 0 |
+| Ben-10 validation (dialects) | 81.90% | 63.89% | 22 / 40 |
+| Vaani test | 22.85% | 22.85% | 0 / 0 |
+| SPRING-INX R1 eval | 37.82% | 37.86% | 0 / 0 |
+| SPRING-INX R2 eval | 37.37% | 37.37% | 0 / 0 |
+| Kathbath (known spk) | 11.82% | 11.82% | 0 / 0 |
+| Kathbath (unknown spk) | 11.43% | 11.43% | 0 / 0 |
+| IndicVoices conversational | 13.28% | 13.38% | 0 / 0 |
+| **Average, 11 sets** | **24.38%** | **22.76%** | 22 / 40 in all |
+
+- **Ten of the eleven sets** read within 0.1 points under the two decodings: no piece reaches either cap, and
+  the collapse changes 15 of their 9,291 transcripts. It removes a short loop (SUBAK.KO 7.21 % → 7.13 %) but
+  also shortens a few repetitions that the references contain too (IndicVoices 13.28 % → 13.38 %).
+- **Ben-10** is where plain greedy breaks down: 22 recordings run to the 500-token cap, 20 of them repeating a
+  word or phrase, and it reads 81.90 % (64.6 % without those 22). The recommended decoding cuts the loops
+  (its tighter cap stops 40 clips, and the collapse keeps one copy of each repeat) and reads 63.89 %, 2.99
+  points above the hybrid FastConformer's 60.91 %.
+- **Speed.** Its time per clip on an A100-SXM4-40GB, the card model most other rows ran on, is being measured
+  with the same harness; the speed cells read "—" until that run is in. The accuracy run's per-clip times are
+  not a speed measurement and are left out.
 
 ## On-device model: Whistle bn-BD
 
@@ -502,20 +559,21 @@ Bengali vocabulary), deployed as a 4-bit `.cact` archive
   Whistle bn-BD is the exception (an A100-SXM4-80GB and a CPU, 21-22 Oct 2026); its runs
   come from the private bn-whistle repository and were imported with the same checks. Granite Speech bn-BD
   was added on 23 Oct 2026 through `run_all.sh` and the same harness, alone on another A100-SXM4-40GB, in the
-  environment of the other vLLM decoders (vLLM 0.31, torch 2.13). Rumble-2-Flash bn-BD was added on 20 Nov
-  2026 the same way, through `run_all.sh`'s `rumble_bn` entry and the same harness, on another
-  A100-SXM4-40GB (FLEURS and the four Bangladeshi sets on one card, the six Indian sets on a second card of
-  the same model), vLLM 0.31 and torch 2.13. Its weights were read from a local folder whose
-  `model.safetensors` is byte-identical to the pinned revision (SHA-256 recorded in its `run_meta.json`).
+  environment of the other vLLM decoders (vLLM 0.31, torch 2.13). Rumble-2-Flash bn-BD was added on 21 Nov
+  2026 with the harness's `rumble_vllm` backend and audio path (`run_all.sh`'s `rumble_bn` entry reproduces
+  the plain row), alone on an A100-SXM4-80GB, vLLM 0.31 and torch 2.13. Its two rows come from one accuracy
+  run, through a runner that imports that backend and the audio path unchanged and changes only the per-piece
+  token limit for the recommended-decoding row; that run's per-clip times are not a speed measurement and are
+  left out (null). Its weights were read from a local folder whose files are byte-identical to the pinned
+  revision (SHA-256 of the weights in its `run_meta.json`).
 - **One audio path.** `asr_core.py` loads, downmixes and resamples to 16 kHz, cuts the audio at pauses into
   pieces of at most 25 s and stages them as PCM16; every backend reads those staged files. The nine models'
   runs record identical piece counts and forced cuts on all 11,322 clips, and so do Granite Speech's.
   Granite Speech read local copies of the audio, checked against the manifests' SHA-256; 26 Kathbath
   recordings (18 known-speaker, 8 unknown-speaker) could not be rebuilt bit-exactly from the source archive
   (same duration, different PCM samples), so it decoded those local conversions; its two Kathbath
-  `run_meta.json` files list them. Rumble-2-Flash also read local copies; this time every one of its 11,322
-  files matched the manifests' SHA-256 (the six Indian sets were rebuilt bit-exactly from their sources),
-  and its runs record the same piece counts and forced cuts.
+  `run_meta.json` files list them. Rumble-2-Flash also read local copies, each checked against the
+  manifests' SHA-256 before decoding, and its runs record the same piece counts and forced cuts.
 - **One scorer.** `bench_score.norm` strips punctuation to word boundaries and applies Unicode NFC before
   WER/CER. NFC is not cosmetic: Bengali writes য়, ড় and ঢ় either precomposed or as base + nukta.
   - The FLEURS references and the NeMo models use the decomposed form; Whisper and wav2vec2 use the
@@ -546,8 +604,16 @@ Bengali vocabulary), deployed as a 4-bit `.cact` archive
   - Rumble-2-Flash bn-BD: the model's recommended prompt, the controls `<nodigits><nofiller><verbatim>` in
     the system turn and the forced prefix `language Bengali<asr_text>` after the assistant header (vLLM's
     endpoint prompt for this architecture leaves the language unset and has no controls); at most 500 new
-    tokens. Checked against Hugging Face transformers on FLEURS: most transcripts are identical and WER agrees
-    within 0.05 points.
+    tokens per piece (the plain row). Against Hugging Face transformers on the first 50 FLEURS test clips, 48
+    transcripts were identical.
+  - Rumble-2-Flash bn-BD, recommended decoding (its second row): the decoding guard its model card
+    prescribes, a model-specific length cap like Granite Speech's plus a repeat collapse. At most
+    ⌈5.51 + 6.9219375 × s⌉ new tokens for a piece of s seconds; then, in each piece's text, any sequence of 1 to
+    4 words repeated 4 or more times in a row is kept once (the card's `collapse_repeats`), and the pieces are
+    joined with a space. It changes 82 of the 10,291 scored transcripts (67 of
+    them on Ben-10) and no FLEURS test transcript. No other model gets the collapse, though it would also
+    shorten their runaway outputs (Voxtral Mini's on SPRING R2 and Ben-10, for example). Its
+    `predictions.json` keeps each piece's raw text and finish reason, so the collapse can be re-applied.
 - **Canary** runs in NeMo as Bengali-to-Bengali transcription without the punctuation flag (`pnc="no"`),
   beam size 1; the **hybrid FastConformer** with its default RNN-T decoder (greedy).
 - **Timing.** One warm-up clip is discarded. Each clip is then timed between CUDA synchronisations, with
@@ -560,7 +626,8 @@ Bengali vocabulary), deployed as a 4-bit `.cact` archive
 - **Checkpoints pinned** by commit hash in `outputs_fleurs/checkpoint_revisions.json`. The Hub histories of
   `ehzawad/canary-1b-v2-bn-BD` and `ehzawad/fastconformer-hybrid-rnnt-ctc-large-bn-BD` were later squashed to
   one commit, so their pins name the squashed revisions. Each `.nemo` there holds the same members, byte for
-  byte, as at the revision recorded in the runs' `run_meta.json` files.
+  byte, as at the revision recorded in the runs' `run_meta.json` files. `ehzawad/Rumble-2-Flash-bn-BD` is
+  pinned at its current revision, whose weights have the SHA-256 recorded in its runs' `run_meta.json` files.
 - **Intervals** are 95 % bootstraps over distinct references, because several speakers may read the same
   sentence. That matters on FLEURS (349 distinct sentences over 920 recordings). In the 1,000-utterance
   subsets the references are nearly all distinct, except IndicVoices conversational (871), whose short
@@ -572,14 +639,15 @@ Bengali vocabulary), deployed as a 4-bit `.cact` archive
   and BanSpeech are largely spontaneous. There is no telephony and no long-form recording.
 - Seven of the eleven sets are Indian Bengali. SUBAK.KO, BanSpeech and Ben-10 are Bangladeshi; Common
   Voice records no speaker region. Ben-10 is its validation split, as its test split is private.
-- Speed is per-clip latency at batch 1 on one GPU model (Whistle bn-BD: an A100 80 GB card, the same
-  chip with more memory; the three-model comparison adds one B200), from one pass per model and set.
+- Speed is per-clip latency at batch 1 on one GPU model (Whistle bn-BD: an A100 80 GB card, the same chip with
+  more memory; the two-model comparison adds one B200), from one pass per model and set. Rumble-2-Flash bn-BD's
+  timing on an A100-SXM4-40GB is still being measured.
   Throughput under load, batched decoding and CPU inference (except Whistle bn-BD's CPU row) are not
   measured.
 - Cell intervals on the 1,000-utterance subsets run from about ±0.7 points (Kathbath) to ±1.5 points
   (Vaani, SPRING, IndicVoices). A few cells are wider where a handful of runaway outputs carry many errors
-  (Voxtral Mini's SPRING R2 and Ben-10, Canary's Ben-10, Qwen3-ASR's SUBAK.KO, greedy Whistle's SUBAK.KO,
-  BanSpeech, Common Voice and SPRING). Differences inside an
+  (Voxtral Mini's SPRING R2 and Ben-10, Canary's Ben-10, Qwen3-ASR's SUBAK.KO, Rumble-2-Flash's Ben-10 under
+  plain greedy decoding, greedy Whistle's SUBAK.KO, BanSpeech, Common Voice and SPRING). Differences inside an
   interval are not differences.
 - Training provenance is only as good as the model cards; a **U** flag means it could not be established
   either way. The ‡ models are not public (Rumble-2-Flash bn-BD: public, gated) and their training data is
@@ -597,7 +665,7 @@ BENCH_GPU=<GPU UUID> BENCH_PY=venv/bin/python BENCH_PY_VLLM=<python with vllm[au
 python bench_score.py && python clean_split_table.py
 python score_multiset.py
 python score_clean.py                             # the cleaned subsets: every table in this README
-python score_compare3.py                          # the three-model comparison -> outputs_compare3/summary.json
+python score_compare3.py                          # the two-model comparison -> outputs_compare3/summary.json
 python make_report.py                             # -> asr_benchmark.pdf
 ```
 
@@ -633,7 +701,7 @@ so the demo and the measured numbers use the same audio handling.
 ## Files
 
 ```
-asr_benchmark.pdf        the report (full sets, without Granite Speech; page 4: the three-model comparison)
+asr_benchmark.pdf        the report (full sets, without Granite Speech; page 4: the two-model comparison)
 asr_core.py              the single audio path shared by demo and benchmark
 backends.py              model loading for NeMo, wav2vec2 CTC and Whisper seq2seq
 bench_run.py             one model over the FLEURS set, batch 1, timed; backends for NeMo, Canary, wav2vec2,
@@ -647,8 +715,8 @@ score_multiset.py        the subset tables, diagnostics, and Voxtral Mini's pair
 score_clean.py           the cleaned-subset rule, its clip lists and every table in this README
 clean_subsets/           the exact clips scored and removed on each of the eleven sets
 outputs_clean/           summary_clean.json: cleaned-subset scores, intervals, ranks and paired comparisons
-score_compare3.py        the three-model comparison -> outputs_compare3/summary.json
-outputs_compare3/        Rumble-2-Flash, Voxtral Mini and Qwen3-ASR runs on one A100 (a100/) and one B200 (b200/)
+score_compare3.py        the two-model comparison -> outputs_compare3/summary.json
+outputs_compare3/        Voxtral Mini and Qwen3-ASR runs on one A100 (a100/) and one B200 (b200/)
 run_all.sh               every run, one model at a time, GPU pinned by UUID
 make_report.py           summaries -> asr_benchmark.pdf
 bench_server.py          HTTP wrapper to run any of these checkpoints
@@ -695,7 +763,7 @@ Not included: model checkpoints, the built evaluation sets, and the virtualenvs.
     (NVIDIA, CC-BY-4.0).
   - `ehzawad/whistle-bn-BD`, from `Cactus-Compute/whistle` (Cactus Compute, Apache-2.0).
   - `ehzawad/granite-speech-5.0-2b-bn-BD`, from `ibm-granite/granite-speech-5.0-2b` (IBM, Apache-2.0).
-  - `ehzawad/Rumble-2-Flash-bn-BD` (public, gated; 508.6M parameters), from `Reson8/Rumble-2-Flash` (Reson8,
+  - `ehzawad/Rumble-2-Flash-bn-BD` (public, gated; 415.0M parameters), from `Reson8/Rumble-2-Flash` (Reson8,
     Apache-2.0; Qwen3-ASR architecture), under the ehzawad Research-Only Non-Commercial Model License 1.0.
 
 Model licences are those of their respective publishers. Check each model card before use.

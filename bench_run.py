@@ -240,12 +240,11 @@ class GraniteSpeechVLLMBackend:
 
 
 class RumbleVLLMBackend:
-    """Rumble-2-Flash bn-BD (qwen3_asr architecture with a pruned 99,630-token vocabulary) under vLLM, one request
-    per staged piece. The prompt is the one the fine-tune was trained and evaluated with: the controls
-    <nodigits><nofiller><verbatim> in the system turn, the audio in the user turn, and the forced prefix
-    'language Bengali<asr_text>' after the assistant header, so the generation is the transcript (vLLM's endpoint
-    prompt for this architecture leaves the language unset and has no controls). If the model writes another
-    '<asr_text>', everything up to it is cut, as in the fine-tune's own evaluation. Greedy, at most 500 new tokens
+    """Rumble-2-Flash bn-BD (qwen3_asr architecture) under vLLM, one request per staged piece. The prompt is the
+    model's recommended one: the controls <nodigits><nofiller><verbatim> in the system turn, the audio in the user
+    turn, and the forced prefix 'language Bengali<asr_text>' after the assistant header, so the generation is the
+    transcript (vLLM's endpoint prompt for this architecture leaves the language unset and has no controls). If the
+    model writes another '<asr_text>', everything up to it is cut, as in its model card. Greedy, at most 500 new tokens
     (as Qwen3-ASR). Runs in an interpreter with vllm[audio]. finish_reasons holds the last clip's per-piece stop
     reasons ("length" = hit the cap)."""
 

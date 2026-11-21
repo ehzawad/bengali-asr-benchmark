@@ -1,11 +1,6 @@
 {
- "note": "Three models on one GPU: Rumble-2-Flash bn-BD, Voxtral Mini bn-BD and Qwen3-ASR 1.7B bn-BD, each decoded on FLEURS\nand the ten subsets with the unchanged harness (run_all.sh's backends: greedy, batch 1, one model resident at a time) on\none A100-SXM4-40GB (the six Indian sets on a second card of the same model) and on one B200. The runs are under\noutputs_compare3/<gpu>/outputs_fleurs/<label>/ and outputs_compare3/<gpu>/outputs_multiset/<set>__<label>/.\n\n- Accuracy: the cleaned subsets (clean_subsets/<set>.json), scored with bench_score.norm and jiwer and a 95 % bootstrap\n  over distinct references, as score_clean.py does.\n- Latency: per-clip time over every clip of the set (FLEURS: the 920 test recordings), as in the main tables, from the\n  per-clip wall clock in predictions.json (for the subsets this equals run_meta.json's ms_per_clip_*).\n- cap_hits: scored clips with a piece stopped by the token cap (finish reason \"length\").\n- Output tokens: tokens per FLEURS test transcript under each model's own tokenizer (Rumble and Qwen3-ASR: the\n  checkpoint's Hugging Face tokenizer; Voxtral Mini: its Tekken tokenizer through mistral_common), transcript text\n  only (no prompt, language tag or end token), with a least-squares fit of each clip's time against its token count.\n  The tokenizers are read from the Hub at the revisions in outputs_fleurs/checkpoint_revisions.json (the ‡ models need\n  access) or from --tokenizer label=<local dir>; --keep-tokens keeps the committed token block instead.",
+ "note": "Two models on one GPU: Voxtral Mini bn-BD and Qwen3-ASR 1.7B bn-BD, each decoded on FLEURS\nand the ten subsets with the unchanged harness (run_all.sh's backends: greedy, batch 1, one model resident at a time) on\none A100-SXM4-40GB (the six Indian sets on a second card of the same model) and on one B200. The runs are under\noutputs_compare3/<gpu>/outputs_fleurs/<label>/ and outputs_compare3/<gpu>/outputs_multiset/<set>__<label>/.\n\n- Accuracy: the cleaned subsets (clean_subsets/<set>.json), scored with bench_score.norm and jiwer and a 95 % bootstrap\n  over distinct references, as score_clean.py does.\n- Latency: per-clip time over every clip of the set (FLEURS: the 920 test recordings), as in the main tables, from the\n  per-clip wall clock in predictions.json (for the subsets this equals run_meta.json's ms_per_clip_*).\n- cap_hits: scored clips with a piece stopped by the token cap (finish reason \"length\").\n- Output tokens: tokens per FLEURS test transcript under each model's own tokenizer (Qwen3-ASR: the checkpoint's\n  Hugging Face tokenizer; Voxtral Mini: its Tekken tokenizer through mistral_common), transcript text\n  only (no prompt, language tag or end token), with a least-squares fit of each clip's time against its token count.\n  The tokenizers are read from the Hub at the revisions in outputs_fleurs/checkpoint_revisions.json (the ‡ models need\n  access) or from --tokenizer label=<local dir>; --keep-tokens keeps the committed token block instead.",
  "models": {
-  "rumble_bn": {
-   "name": "Rumble-2-Flash bn-BD ‡",
-   "checkpoint": "ehzawad/Rumble-2-Flash-bn-BD",
-   "revision": "d4a6255dd92a6509bd1d626bd362235ca14ddac9"
-  },
   "voxtral_mini_bn": {
    "name": "Voxtral Mini bn-BD ‡",
    "checkpoint": "ehzawad/Voxtral-Mini-3B-2507-bn-BD",
@@ -74,22 +69,6 @@
  "runs": {
   "a100": {
    "fleurs_test": {
-    "rumble_bn": {
-     "n": 733,
-     "wer": 0.13013599537037038,
-     "cer": 0.030339577547384842,
-     "wer_ci_reference_clustered": [
-      0.11997,
-      0.14044
-     ],
-     "word_errors": 1799,
-     "ref_words": 13824,
-     "cap_hits": 0,
-     "ms_per_clip_mean": 211.19,
-     "ms_per_clip_median": 199.18,
-     "ms_per_clip_p95": 330.16,
-     "clips_timed": 920
-    },
     "voxtral_mini_bn": {
      "n": 733,
      "wer": 0.12080439814814815,
@@ -124,22 +103,6 @@
     }
    },
    "subakko_test": {
-    "rumble_bn": {
-     "n": 712,
-     "wer": 0.07828560346499451,
-     "cer": 0.021451241070597843,
-     "wer_ci_reference_clustered": [
-      0.07097,
-      0.08593
-     ],
-     "word_errors": 1211,
-     "ref_words": 15469,
-     "cap_hits": 0,
-     "ms_per_clip_mean": 224.45,
-     "ms_per_clip_median": 222.3,
-     "ms_per_clip_p95": 310.72,
-     "clips_timed": 1000
-    },
     "voxtral_mini_bn": {
      "n": 712,
      "wer": 0.05423750727260974,
@@ -174,22 +137,6 @@
     }
    },
    "banspeech": {
-    "rumble_bn": {
-     "n": 928,
-     "wer": 0.20106890076556405,
-     "cer": 0.06677983807782711,
-     "wer_ci_reference_clustered": [
-      0.18658,
-      0.2162
-     ],
-     "word_errors": 1392,
-     "ref_words": 6923,
-     "cap_hits": 0,
-     "ms_per_clip_mean": 84.14,
-     "ms_per_clip_median": 66.77,
-     "ms_per_clip_p95": 185.66,
-     "clips_timed": 1000
-    },
     "voxtral_mini_bn": {
      "n": 928,
      "wer": 0.19240213780153112,
@@ -224,22 +171,6 @@
     }
    },
    "cv17_bn_test": {
-    "rumble_bn": {
-     "n": 1000,
-     "wer": 0.11178839664743659,
-     "cer": 0.029213483146067417,
-     "wer_ci_reference_clustered": [
-      0.10311,
-      0.12064
-     ],
-     "word_errors": 1027,
-     "ref_words": 9187,
-     "cap_hits": 0,
-     "ms_per_clip_mean": 107.61,
-     "ms_per_clip_median": 101.9,
-     "ms_per_clip_p95": 179.05,
-     "clips_timed": 1000
-    },
     "voxtral_mini_bn": {
      "n": 1000,
      "wer": 0.1031892892130184,
@@ -274,22 +205,6 @@
     }
    },
    "ben10_valid": {
-    "rumble_bn": {
-     "n": 1000,
-     "wer": 0.6595828608056802,
-     "cer": 0.34802030266706624,
-     "wer_ci_reference_clustered": [
-      0.63991,
-      0.67942
-     ],
-     "word_errors": 26754,
-     "ref_words": 40562,
-     "cap_hits": 15,
-     "ms_per_clip_mean": 347.94,
-     "ms_per_clip_median": 328.22,
-     "ms_per_clip_p95": 635.82,
-     "clips_timed": 1000
-    },
     "voxtral_mini_bn": {
      "n": 1000,
      "wer": 0.69974360238647,
@@ -324,22 +239,6 @@
     }
    },
    "vaani_test": {
-    "rumble_bn": {
-     "n": 1000,
-     "wer": 0.2279309660781591,
-     "cer": 0.06795792579064744,
-     "wer_ci_reference_clustered": [
-      0.21611,
-      0.23987
-     ],
-     "word_errors": 2298,
-     "ref_words": 10082,
-     "cap_hits": 0,
-     "ms_per_clip_mean": 105.6,
-     "ms_per_clip_median": 91.49,
-     "ms_per_clip_p95": 192.68,
-     "clips_timed": 1000
-    },
     "voxtral_mini_bn": {
      "n": 1000,
      "wer": 0.2207895258877207,
@@ -374,22 +273,6 @@
     }
    },
    "spring_r1_test": {
-    "rumble_bn": {
-     "n": 1000,
-     "wer": 0.3745052268344667,
-     "cer": 0.22109759229839898,
-     "wer_ci_reference_clustered": [
-      0.3623,
-      0.38727
-     ],
-     "word_errors": 7380,
-     "ref_words": 19706,
-     "cap_hits": 0,
-     "ms_per_clip_mean": 176.08,
-     "ms_per_clip_median": 174.32,
-     "ms_per_clip_p95": 301.78,
-     "clips_timed": 1000
-    },
     "voxtral_mini_bn": {
      "n": 1000,
      "wer": 0.3687201867451538,
@@ -424,22 +307,6 @@
     }
    },
    "spring_r2_test": {
-    "rumble_bn": {
-     "n": 1000,
-     "wer": 0.370461357048101,
-     "cer": 0.20991334617093763,
-     "wer_ci_reference_clustered": [
-      0.35766,
-      0.38387
-     ],
-     "word_errors": 7540,
-     "ref_words": 20353,
-     "cap_hits": 0,
-     "ms_per_clip_mean": 183.73,
-     "ms_per_clip_median": 187.55,
-     "ms_per_clip_p95": 319.55,
-     "clips_timed": 1000
-    },
     "voxtral_mini_bn": {
      "n": 1000,
      "wer": 0.4000884390507542,
@@ -474,22 +341,6 @@
     }
    },
    "kathbath_test_known": {
-    "rumble_bn": {
-     "n": 1000,
-     "wer": 0.1166929279822041,
-     "cer": 0.023230448885929997,
-     "wer_ci_reference_clustered": [
-      0.10894,
-      0.1246
-     ],
-     "word_errors": 1259,
-     "ref_words": 10789,
-     "cap_hits": 0,
-     "ms_per_clip_mean": 123.04,
-     "ms_per_clip_median": 118.89,
-     "ms_per_clip_p95": 168.88,
-     "clips_timed": 1000
-    },
     "voxtral_mini_bn": {
      "n": 1000,
      "wer": 0.10770228936880155,
@@ -524,22 +375,6 @@
     }
    },
    "kathbath_test_unknown": {
-    "rumble_bn": {
-     "n": 1000,
-     "wer": 0.11325788941024933,
-     "cer": 0.02196096142718022,
-     "wer_ci_reference_clustered": [
-      0.10569,
-      0.12115
-     ],
-     "word_errors": 1231,
-     "ref_words": 10869,
-     "cap_hits": 0,
-     "ms_per_clip_mean": 125.53,
-     "ms_per_clip_median": 122.05,
-     "ms_per_clip_p95": 171.87,
-     "clips_timed": 1000
-    },
     "voxtral_mini_bn": {
      "n": 1000,
      "wer": 0.10819762627656639,
@@ -574,22 +409,6 @@
     }
    },
    "indicvoices_conv": {
-    "rumble_bn": {
-     "n": 918,
-     "wer": 0.13233000623830318,
-     "cer": 0.046638435282620704,
-     "wer_ci_reference_clustered": [
-      0.12359,
-      0.1415
-     ],
-     "word_errors": 1697,
-     "ref_words": 12824,
-     "cap_hits": 0,
-     "ms_per_clip_mean": 125.75,
-     "ms_per_clip_median": 104.31,
-     "ms_per_clip_p95": 298.88,
-     "clips_timed": 1000
-    },
     "voxtral_mini_bn": {
      "n": 918,
      "wer": 0.13342170929507174,
@@ -626,22 +445,6 @@
   },
   "b200": {
    "fleurs_test": {
-    "rumble_bn": {
-     "n": 733,
-     "wer": 0.13020833333333334,
-     "cer": 0.030239994688914217,
-     "wer_ci_reference_clustered": [
-      0.12008,
-      0.14045
-     ],
-     "word_errors": 1800,
-     "ref_words": 13824,
-     "cap_hits": 0,
-     "ms_per_clip_mean": 178.86,
-     "ms_per_clip_median": 168.65,
-     "ms_per_clip_p95": 284.85,
-     "clips_timed": 920
-    },
     "voxtral_mini_bn": {
      "n": 733,
      "wer": 0.1208767361111111,
@@ -676,22 +479,6 @@
     }
    },
    "subakko_test": {
-    "rumble_bn": {
-     "n": 712,
-     "wer": 0.08080677484000258,
-     "cer": 0.022236925080894438,
-     "wer_ci_reference_clustered": [
-      0.07218,
-      0.09072
-     ],
-     "word_errors": 1250,
-     "ref_words": 15469,
-     "cap_hits": 0,
-     "ms_per_clip_mean": 187.14,
-     "ms_per_clip_median": 184.57,
-     "ms_per_clip_p95": 261.09,
-     "clips_timed": 1000
-    },
     "voxtral_mini_bn": {
      "n": 712,
      "wer": 0.05462537979184175,
@@ -726,22 +513,6 @@
     }
    },
    "banspeech": {
-    "rumble_bn": {
-     "n": 928,
-     "wer": 0.20049111656796187,
-     "cer": 0.06670148863933142,
-     "wer_ci_reference_clustered": [
-      0.18627,
-      0.21524
-     ],
-     "word_errors": 1388,
-     "ref_words": 6923,
-     "cap_hits": 0,
-     "ms_per_clip_mean": 70.18,
-     "ms_per_clip_median": 54.6,
-     "ms_per_clip_p95": 159.72,
-     "clips_timed": 1000
-    },
     "voxtral_mini_bn": {
      "n": 928,
      "wer": 0.19283547594973277,
@@ -776,22 +547,6 @@
     }
    },
    "cv17_bn_test": {
-    "rumble_bn": {
-     "n": 1000,
-     "wer": 0.1121149450310221,
-     "cer": 0.029027625242882486,
-     "wer_ci_reference_clustered": [
-      0.10347,
-      0.12102
-     ],
-     "word_errors": 1030,
-     "ref_words": 9187,
-     "cap_hits": 0,
-     "ms_per_clip_mean": 88.84,
-     "ms_per_clip_median": 83.93,
-     "ms_per_clip_p95": 151.49,
-     "clips_timed": 1000
-    },
     "voxtral_mini_bn": {
      "n": 1000,
      "wer": 0.10264504190704256,
@@ -826,22 +581,6 @@
     }
    },
    "ben10_valid": {
-    "rumble_bn": {
-     "n": 1000,
-     "wer": 0.6658941866771856,
-     "cer": 0.3523374288282889,
-     "wer_ci_reference_clustered": [
-      0.64474,
-      0.68733
-     ],
-     "word_errors": 27010,
-     "ref_words": 40562,
-     "cap_hits": 17,
-     "ms_per_clip_mean": 293.44,
-     "ms_per_clip_median": 277.31,
-     "ms_per_clip_p95": 531.31,
-     "clips_timed": 1000
-    },
     "voxtral_mini_bn": {
      "n": 1000,
      "wer": 0.6848774715250727,
@@ -876,22 +615,6 @@
     }
    },
    "vaani_test": {
-    "rumble_bn": {
-     "n": 1000,
-     "wer": 0.2275342194009125,
-     "cer": 0.06806328691590426,
-     "wer_ci_reference_clustered": [
-      0.21556,
-      0.23939
-     ],
-     "word_errors": 2294,
-     "ref_words": 10082,
-     "cap_hits": 0,
-     "ms_per_clip_mean": 87.34,
-     "ms_per_clip_median": 75.2,
-     "ms_per_clip_p95": 164.41,
-     "clips_timed": 1000
-    },
     "voxtral_mini_bn": {
      "n": 1000,
      "wer": 0.22138464590359055,
@@ -926,22 +649,6 @@
     }
    },
    "spring_r1_test": {
-    "rumble_bn": {
-     "n": 1000,
-     "wer": 0.3746067187658581,
-     "cer": 0.22107856660419897,
-     "wer_ci_reference_clustered": [
-      0.36244,
-      0.38729
-     ],
-     "word_errors": 7382,
-     "ref_words": 19706,
-     "cap_hits": 0,
-     "ms_per_clip_mean": 149.57,
-     "ms_per_clip_median": 148.11,
-     "ms_per_clip_p95": 265.65,
-     "clips_timed": 1000
-    },
     "voxtral_mini_bn": {
      "n": 1000,
      "wer": 0.36907540850502385,
@@ -976,22 +683,6 @@
     }
    },
    "spring_r2_test": {
-    "rumble_bn": {
-     "n": 1000,
-     "wer": 0.37075615388394834,
-     "cer": 0.21023737224114947,
-     "wer_ci_reference_clustered": [
-      0.35789,
-      0.38454
-     ],
-     "word_errors": 7546,
-     "ref_words": 20353,
-     "cap_hits": 0,
-     "ms_per_clip_mean": 156.4,
-     "ms_per_clip_median": 159.62,
-     "ms_per_clip_p95": 273.23,
-     "clips_timed": 1000
-    },
     "voxtral_mini_bn": {
      "n": 1000,
      "wer": 0.4012676263941434,
@@ -1026,22 +717,6 @@
     }
    },
    "kathbath_test_known": {
-    "rumble_bn": {
-     "n": 1000,
-     "wer": 0.11567337102604505,
-     "cer": 0.023102964715214527,
-     "wer_ci_reference_clustered": [
-      0.10792,
-      0.12352
-     ],
-     "word_errors": 1248,
-     "ref_words": 10789,
-     "cap_hits": 0,
-     "ms_per_clip_mean": 103.35,
-     "ms_per_clip_median": 99.75,
-     "ms_per_clip_p95": 143.43,
-     "clips_timed": 1000
-    },
     "voxtral_mini_bn": {
      "n": 1000,
      "wer": 0.10788766336083047,
@@ -1076,22 +751,6 @@
     }
    },
    "kathbath_test_unknown": {
-    "rumble_bn": {
-     "n": 1000,
-     "wer": 0.11344189897874689,
-     "cer": 0.021989188884027493,
-     "wer_ci_reference_clustered": [
-      0.10591,
-      0.12149
-     ],
-     "word_errors": 1233,
-     "ref_words": 10869,
-     "cap_hits": 0,
-     "ms_per_clip_mean": 104.57,
-     "ms_per_clip_median": 101.66,
-     "ms_per_clip_p95": 146.07,
-     "clips_timed": 1000
-    },
     "voxtral_mini_bn": {
      "n": 1000,
      "wer": 0.10874965498205906,
@@ -1126,22 +785,6 @@
     }
    },
    "indicvoices_conv": {
-    "rumble_bn": {
-     "n": 918,
-     "wer": 0.1326419213973799,
-     "cer": 0.046822553004659595,
-     "wer_ci_reference_clustered": [
-      0.12377,
-      0.14192
-     ],
-     "word_errors": 1701,
-     "ref_words": 12824,
-     "cap_hits": 0,
-     "ms_per_clip_mean": 105.07,
-     "ms_per_clip_median": 85.22,
-     "ms_per_clip_p95": 254.9,
-     "clips_timed": 1000
-    },
     "voxtral_mini_bn": {
      "n": 918,
      "wer": 0.13357766687461012,
@@ -1179,12 +822,6 @@
  },
  "average": {
   "a100": {
-   "rumble_bn": {
-    "wer": 0.22873092096777536,
-    "cer": 0.09878210476042351,
-    "ms_per_clip_mean": 165.0054545454545,
-    "cap_hits": 15
-   },
    "voxtral_mini_bn": {
     "wer": 0.22811788285871326,
     "cer": 0.1022619129486093,
@@ -1199,12 +836,6 @@
    }
   },
   "b200": {
-   "rumble_bn": {
-    "wer": 0.22946996726385419,
-    "cer": 0.09925794498595143,
-    "ms_per_clip_mean": 138.61454545454544,
-    "cap_hits": 17
-   },
    "voxtral_mini_bn": {
     "wer": 0.22707297920955077,
     "cer": 0.10172675040419271,
@@ -1220,19 +851,6 @@
   }
  },
  "same_transcript_b200_vs_a100": {
-  "rumble_bn": {
-   "fleurs_test": 679,
-   "subakko_test": 681,
-   "banspeech": 879,
-   "cv17_bn_test": 975,
-   "ben10_valid": 380,
-   "vaani_test": 949,
-   "spring_r1_test": 853,
-   "spring_r2_test": 855,
-   "kathbath_test_known": 956,
-   "kathbath_test_unknown": 976,
-   "indicvoices_conv": 865
-  },
   "voxtral_mini_bn": {
    "fleurs_test": 696,
    "subakko_test": 689,
@@ -1262,19 +880,10 @@
  },
  "output_tokens_fleurs_test": {
   "tokenizers": {
-   "rumble_bn": "ehzawad/Rumble-2-Flash-bn-BD@d4a6255dd92a6509bd1d626bd362235ca14ddac9 tokenizer.json (sha256 60d63d6d615abcf61470a29a74b8c7434a96f87f2e97bca710cb767e076c0040), Qwen2Tokenizer",
    "voxtral_mini_bn": "ehzawad/Voxtral-Mini-3B-2507-bn-BD@d1c7aeb0cd18f8a7a057bf756df5ee2ccb7aebcd tekken.json (sha256 4aaf3836c2a5332f029ce85a7a62255c966f47b6797ef81dedd0ade9c862e4a8), Tekkenizer",
    "qwen3_asr_bn": "ehzawad/Qwen3-ASR-1.7B-bn-BD@9a6458ec4842764cfeb8c0457f6cab0be7606e1f tokenizer.json (sha256 fe1fad59be22a41ee293363fcf95fdedbc7c93f3b49270b1d2e18bd1399a7a05), Qwen2Tokenizer"
   },
   "a100": {
-   "rumble_bn": {
-    "clips": 920,
-    "tokens_per_clip_mean": 135.44,
-    "tokens_per_clip_median": 127.5,
-    "tokens_max": 357,
-    "fit_ms_per_token": 1.417,
-    "fit_intercept_ms": 19.3
-   },
    "voxtral_mini_bn": {
     "clips": 920,
     "tokens_per_clip_mean": 50.56,
@@ -1293,14 +902,6 @@
    }
   },
   "b200": {
-   "rumble_bn": {
-    "clips": 920,
-    "tokens_per_clip_mean": 135.43,
-    "tokens_per_clip_median": 128.0,
-    "tokens_max": 356,
-    "fit_ms_per_token": 1.217,
-    "fit_intercept_ms": 14.0
-   },
    "voxtral_mini_bn": {
     "clips": 920,
     "tokens_per_clip_mean": 50.55,

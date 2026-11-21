@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Three models on one GPU: Rumble-2-Flash bn-BD, Voxtral Mini bn-BD and Qwen3-ASR 1.7B bn-BD, each decoded on FLEURS
+"""Two models on one GPU: Voxtral Mini bn-BD and Qwen3-ASR 1.7B bn-BD, each decoded on FLEURS
 and the ten subsets with the unchanged harness (run_all.sh's backends: greedy, batch 1, one model resident at a time) on
 one A100-SXM4-40GB (the six Indian sets on a second card of the same model) and on one B200. The runs are under
 outputs_compare3/<gpu>/outputs_fleurs/<label>/ and outputs_compare3/<gpu>/outputs_multiset/<set>__<label>/.
@@ -9,8 +9,8 @@ outputs_compare3/<gpu>/outputs_fleurs/<label>/ and outputs_compare3/<gpu>/output
 - Latency: per-clip time over every clip of the set (FLEURS: the 920 test recordings), as in the main tables, from the
   per-clip wall clock in predictions.json (for the subsets this equals run_meta.json's ms_per_clip_*).
 - cap_hits: scored clips with a piece stopped by the token cap (finish reason "length").
-- Output tokens: tokens per FLEURS test transcript under each model's own tokenizer (Rumble and Qwen3-ASR: the
-  checkpoint's Hugging Face tokenizer; Voxtral Mini: its Tekken tokenizer through mistral_common), transcript text
+- Output tokens: tokens per FLEURS test transcript under each model's own tokenizer (Qwen3-ASR: the checkpoint's
+  Hugging Face tokenizer; Voxtral Mini: its Tekken tokenizer through mistral_common), transcript text
   only (no prompt, language tag or end token), with a least-squares fit of each clip's time against its token count.
   The tokenizers are read from the Hub at the revisions in outputs_fleurs/checkpoint_revisions.json (the ‡ models need
   access) or from --tokenizer label=<local dir>; --keep-tokens keeps the committed token block instead.
@@ -28,8 +28,7 @@ from bench_score import counts, boot   # noqa: E402  (the published scorer, unch
 
 R = A / "outputs_compare3"
 GPUS = {"a100": "A100-SXM4-40GB", "b200": "B200"}
-MODELS = {"rumble_bn": ("Rumble-2-Flash bn-BD ‡", "ehzawad/Rumble-2-Flash-bn-BD"),
-          "voxtral_mini_bn": ("Voxtral Mini bn-BD ‡", "ehzawad/Voxtral-Mini-3B-2507-bn-BD"),
+MODELS = {"voxtral_mini_bn": ("Voxtral Mini bn-BD ‡", "ehzawad/Voxtral-Mini-3B-2507-bn-BD"),
           "qwen3_asr_bn": ("Qwen3-ASR 1.7B bn-BD ‡", "ehzawad/Qwen3-ASR-1.7B-bn-BD")}
 SETS = [("fleurs_test", "FLEURS test"), ("subakko_test", "SUBAK.KO test"), ("banspeech", "BanSpeech"),
         ("cv17_bn_test", "Common Voice 17 test"), ("ben10_valid", "Ben-10 validation (dialects)"),
@@ -154,7 +153,8 @@ def main():
         if not (args.keep_tokens and "output_tokens_fleurs_test" in old):
             raise
         print(f"tokens: kept from the committed summary.json ({e})", file=sys.stderr)
-        summary["output_tokens_fleurs_test"] = old["output_tokens_fleurs_test"]
+        summary["output_tokens_fleurs_test"] = {k: {m: v for m, v in d.items() if m in MODELS}
+                                                for k, d in old["output_tokens_fleurs_test"].items()}
     (R / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=1) + "\n")
 
     label = dict(SETS)

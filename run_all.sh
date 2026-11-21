@@ -4,8 +4,9 @@
 # batch 1, one model resident at a time, the harness unchanged (bench_run.py for FLEURS,
 # bench_run_set.py for the subsets), checkpoints at the revisions in
 # outputs_fleurs/checkpoint_revisions.json. This produced every run in outputs_fleurs/ and
-# outputs_multiset/ (except the Whistle runs, imported), on one Colab A100-SXM4-40GB; granite_speech_bn and rumble_bn ran later
-# on other A100-SXM4-40GB cards. A completed run (run_meta.json present) is
+# outputs_multiset/ (except the Whistle runs, imported), on one Colab A100-SXM4-40GB; granite_speech_bn ran later
+# on another A100-SXM4-40GB card and rumble_bn on an A100-SXM4-80GB. rumble_bn_rec (the model card's recommended
+# decoding: a per-piece token cap and a repeat collapse) is not produced by this script. A completed run (run_meta.json present) is
 # skipped, never overwritten.
 #
 #   BENCH_GPU=<GPU UUID> BENCH_PY=<python with the benchmark's requirements> \
@@ -84,7 +85,7 @@ for label in $MODELS; do
       py=${BENCH_PY_VLLM:?set BENCH_PY_VLLM for granite_speech_bn}
       export PATH="$(dirname "$py"):$PATH"
       args=(granite_speech_vllm "$(snapshot ehzawad/granite-speech-5.0-2b-bn-BD)" --revision "$(rev ehzawad/granite-speech-5.0-2b-bn-BD)") ;;
-    rumble_bn)              # added 20 Nov 2026, decoded on an A100-SXM4-40GB with the same harness
+    rumble_bn)              # added 21 Nov 2026, decoded on an A100-SXM4-80GB with the same harness
       py=${BENCH_PY_VLLM:?set BENCH_PY_VLLM for rumble_bn}
       export PATH="$(dirname "$py"):$PATH"
       args=(rumble_vllm "$(snapshot ehzawad/Rumble-2-Flash-bn-BD)" --revision "$(rev ehzawad/Rumble-2-Flash-bn-BD)") ;;

@@ -124,12 +124,22 @@
   },
   "rumble_bn": {
    "n": 920,
-   "wer": 0.1563,
+   "wer": 0.155,
    "wer_ci95": [
-    0.14501,
-    0.16817
+    0.14369,
+    0.16707
    ],
-   "cer": 0.05032,
+   "cer": 0.04934,
+   "ours": false
+  },
+  "rumble_bn_rec": {
+   "n": 920,
+   "wer": 0.155,
+   "wer_ci95": [
+    0.14369,
+    0.16707
+   ],
+   "cer": 0.04934,
    "ours": false
   }
  },
@@ -335,15 +345,29 @@
   "voxtral_mini_bn_vs_rumble_bn": {
    "a": "voxtral_mini_bn",
    "b": "rumble_bn",
-   "wer_delta_pp": -0.9009,
+   "wer_delta_pp": -0.7714,
    "wer_ci95_pp": [
-    -1.4325,
-    -0.3651
+    -1.3404,
+    -0.1919
    ],
-   "cer_delta_pp": -0.2531,
+   "cer_delta_pp": -0.1548,
    "cer_ci95_pp": [
-    -0.4635,
-    -0.0644
+    -0.3148,
+    0.0035
+   ]
+  },
+  "voxtral_mini_bn_vs_rumble_bn_rec": {
+   "a": "voxtral_mini_bn",
+   "b": "rumble_bn_rec",
+   "wer_delta_pp": -0.7714,
+   "wer_ci95_pp": [
+    -1.3404,
+    -0.1919
+   ],
+   "cer_delta_pp": -0.1548,
+   "cer_ci95_pp": [
+    -0.3148,
+    0.0035
    ]
   }
  },
@@ -418,12 +442,6 @@
    "ms_per_clip_mean": 960.77,
    "ms_per_clip_median": 910.86,
    "ms_per_clip_p95": 1484.5,
-   "n": 920
-  },
-  "rumble_bn": {
-   "ms_per_clip_mean": 211.19,
-   "ms_per_clip_median": 199.18,
-   "ms_per_clip_p95": 330.16,
    "n": 920
   }
  }
