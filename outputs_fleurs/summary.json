@@ -733,7 +733,6 @@
      "layer_scan_unroll": 8,
      "xla_flags": "--xla_gpu_enable_command_buffer=FUSION,CUBLAS,CUBLASLT,CUSTOM_CALL,CUDNN,WHILE,CONDITIONAL --xla_gpu_graph_min_graph_size=1",
      "python": "3.12.15",
-     "slurm_job": "21748799",
      "compile_s": 18.2
     }
    },
