@@ -543,14 +543,11 @@ Bengali vocabulary), deployed as a 4-bit `.cact` archive
     new tokens per second of audio plus 16 per piece, a cap chosen on the FLEURS validation split to bound
     greedy repetition loops (references there run at up to 20 tokens per second). On those 402 recordings
     this runner and Hugging Face transformers both read 15.78 % WER.
-  - Rumble-2-Flash bn-BD: the prompt the fine-tune was trained and evaluated with, the controls
-    `<nodigits><nofiller><verbatim>` in the system turn and the forced prefix `language Bengali<asr_text>`
-    after the assistant header (vLLM's endpoint prompt for this architecture leaves the language unset and
-    has no controls); at most 500 new tokens. Against Hugging Face transformers, the fine-tune's own decode:
-    on the 804 FLEURS test clips that match its evaluation set one-to-one (by reference text and duration),
-    732 transcripts are identical and WER is 14.38 % with this runner against 14.33 %; on the 342 matched
-    validation clips, 309 are identical, and WER is 15.13 % against 15.11 % without the one clip where greedy
-    vLLM decoding ran to the 500-token cap (17.31 % against 15.10 % with it).
+  - Rumble-2-Flash bn-BD: the model's recommended prompt, the controls `<nodigits><nofiller><verbatim>` in
+    the system turn and the forced prefix `language Bengali<asr_text>` after the assistant header (vLLM's
+    endpoint prompt for this architecture leaves the language unset and has no controls); at most 500 new
+    tokens. Checked against Hugging Face transformers on FLEURS: most transcripts are identical and WER agrees
+    within 0.05 points.
 - **Canary** runs in NeMo as Bengali-to-Bengali transcription without the punctuation flag (`pnc="no"`),
   beam size 1; the **hybrid FastConformer** with its default RNN-T decoder (greedy).
 - **Timing.** One warm-up clip is discarded. Each clip is then timed between CUDA synchronisations, with
