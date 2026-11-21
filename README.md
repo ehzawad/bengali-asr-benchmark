@@ -557,7 +557,10 @@ Bengali vocabulary), deployed as a 4-bit `.cact` archive
 - **Every scored clip counts.** The cleaned-subset rule removes clips by their duration and reference only,
   never by a model's output, and the same clips are scored for every model. No model raised on a clip. Empty
   hypotheses and runaway outputs stay in the denominator as full errors.
-- **Checkpoints pinned** by commit hash in `outputs_fleurs/checkpoint_revisions.json`.
+- **Checkpoints pinned** by commit hash in `outputs_fleurs/checkpoint_revisions.json`. The Hub histories of
+  `ehzawad/canary-1b-v2-bn-BD` and `ehzawad/fastconformer-hybrid-rnnt-ctc-large-bn-BD` were later squashed to
+  one commit, so their pins name the squashed revisions. Each `.nemo` there holds the same members, byte for
+  byte, as at the revision recorded in the runs' `run_meta.json` files.
 - **Intervals** are 95 % bootstraps over distinct references, because several speakers may read the same
   sentence. That matters on FLEURS (349 distinct sentences over 920 recordings). In the 1,000-utterance
   subsets the references are nearly all distinct, except IndicVoices conversational (871), whose short
